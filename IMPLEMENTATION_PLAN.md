@@ -15,30 +15,38 @@ This is an implementation guide, not a claim of completed work. Inspect reposito
 
 ## Milestone 1 — Compact procedural noise orb
 
-- [ ] Create a client-only Three.js/R3F canvas loaded in a Next.js-compatible way, without SSR crashes.
-- [ ] Render a noise-deformed, warm amber orb on transparent background; maintain apparent diameter 180–240px desktop, 120–160px mobile.
-- [ ] Add restrained ambient movement and subtle pointer response.
-- [ ] Model typed `idle | thinking | talking` states and smoothly interpolate deformation/energy uniforms.
-- [ ] Idle: slow movement; Thinking: more frequent ripples; Talking: rhythmic controlled pulses.
-- [ ] Provide test controls for state switching, labeled clearly as development/demo controls.
-- [ ] Cap device pixel ratio, avoid unnecessary updates/allocations in frame loops and clean up resources.
-- [ ] Honor `prefers-reduced-motion` and ensure an accessible fallback if WebGL is unsupported.
+- [x] Create a client-only Three.js/R3F canvas loaded in a Next.js-compatible way, without SSR crashes.
+- [x] Render a noise-deformed, warm amber orb on transparent background; maintain apparent diameter 180–240px desktop, 120–160px mobile.
+- [x] Add restrained ambient movement and subtle pointer response.
+- [x] Model typed `idle | thinking | talking` states and smoothly interpolate deformation/energy uniforms.
+- [x] Idle: slow movement; Thinking: more frequent ripples; Talking: rhythmic controlled pulses.
+- [x] Provide test controls for state switching, labeled clearly as development/demo controls.
+- [x] Cap device pixel ratio, avoid unnecessary updates/allocations in frame loops and clean up resources.
+- [x] Honor `prefers-reduced-motion` and ensure an accessible fallback if WebGL is unsupported.
+
+**Status:** HD Subtle orb explicitly approved by the user; Milestone 1 is complete. The existing environment restriction on production builds remains documented separately.
 
 **Done when:** State changes are visually clear but calm, orb size is balanced in both viewports, no animation jumps, builds/checks pass.
 
 ## Milestone 2 — Minimalist conversation shell
 
-- [ ] Design a quiet Lain header, welcome screen and chat area around the orb.
-- [ ] Add an accessible chat-input component (visual UI only for now; label placeholder behavior honestly).
-- [ ] Keep orb above welcome content; when messages appear, move/shrink orb to free reading space.
-- [ ] Test narrow screens, keyboard access and soft keyboard avoidance.
-- [ ] Keep debug controls removable or dev-only.
+- [x] Design a quiet Lain header, welcome screen and chat area around the orb.
+- [x] Add reusable ChatWindow, ChatHeader, NewChat, ChatMessage and ChatInput components.
+- [x] Maintain local messages with stable IDs and explicit roles; send trimmed non-empty input with Enter / Shift+Enter and IME support.
+- [x] Simulate a clearly labeled short reply, with Thinking → Talking → Idle lifecycle; no API or storage.
+- [x] Prevent duplicate submissions and cancel timers on reset/unmount; New Chat clears local messages and draft.
+- [x] Keep the approved orb canvas mounted and preserve its shader; move/shrink its frame to free reading space.
+- [x] Scroll only the message region, follow the latest content when pinned and preserve a reader's position otherwise.
+- [x] Test narrow screens, keyboard focus, reduced motion and visual-viewport changes for keyboard avoidance.
+- [x] Keep animation test controls and diagnostics out of the chat interface.
 
-**Done when:** Desktop/mobile layouts look balanced and do not make the orb the dominant page element.
+**Scope update:** The user's Milestone 2 request authorizes functional local messages and scripted replies. Real model requests, streaming and persistence remain excluded.
+
+**Done when:** Local conversation behavior and desktop/mobile layouts are reviewable, accessibility checks pass, and the approved orb remains secondary to messages. Physical-device review and the restricted production build are reported as limitations.
 
 ## Milestone 3 — Actual chat flow
 
-- [ ] Implement messages, composer, loading/error states and streaming UI.
+- [ ] Replace scripted local replies with the actual request/streaming lifecycle, including loading/error states and streaming UI.
 - [ ] Create a server-only OpenAI route/handler; never expose credentials to the client.
 - [ ] Connect AI request lifecycle to typed states, including success, abort and error paths.
 - [ ] Add appropriate basic request validation, rate/abuse protections and token/cost controls.

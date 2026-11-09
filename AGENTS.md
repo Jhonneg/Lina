@@ -34,3 +34,26 @@ For each task, report:
 3. Checks executed and their actual outcome.
 4. Known limitations and one recommended next task.
 If a product decision is genuinely missing, make the smallest reversible assumption and record it in PROJECT_CONTEXT.md under Open decisions; don't stall on optional preferences.
+
+## Execution Efficiency
+
+Codex usage and execution time are important constraints.
+
+- Work on one narrowly defined task at a time.
+- Avoid unrelated refactoring or optional polish.
+- Do not repeatedly inspect unchanged project files.
+- Read only the context and source files relevant
+  to the current task.
+- Preserve existing working implementations.
+- Run lint and typecheck once after changes.
+- If validation fails, fix relevant errors and rerun
+  only the affected check.
+- Do not repeatedly attempt production builds when
+  the known environment port-binding restriction
+  remains unchanged.
+- Perform one focused browser verification when
+  visual changes require it.
+- Avoid repeated screenshot comparisons unless
+  specifically requested.
+- Report unfinished work rather than expanding scope.
+- Stop after satisfying the task's acceptance criteria.

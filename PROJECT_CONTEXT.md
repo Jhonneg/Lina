@@ -1,5 +1,5 @@
 Lain 2.0 — Project Context
-Status: Milestone 1 approved HD Subtle orb integrated; production build verification remains blocked in the execution environment.
+Status: Milestone 1 HD Subtle orb approved and complete. Milestone 2 local chat interface implemented for review; production build verification remains blocked in the execution environment.
 Product vision
 Lain 2.0 is a minimalist conversational AI application represented by a living, responsive 3D entity. The orb is a visual companion for a chat interface, not a standalone full-screen 3D art exhibit. The user wants a polished, calm experience with expressive but clean and restrained animation.
 Confirmed design choices
@@ -30,6 +30,11 @@ Later roadmap (do not pre-build)
 3. PostgreSQL + Drizzle, anonymous sessions, saved conversation history.
 4. Bind AI streaming/responding to orb states, refine transitions and optional audio-related behavior if requested.
 5. Mobile optimization, error states, accessibility, production-readiness, deployment.
+Milestone 2 local preview
+- The current chat shell uses reusable ChatWindow, ChatHeader, NewChat, ChatMessage and ChatInput components. Messages have stable UUIDs and explicit user/assistant roles, and exist only in React memory; refresh clears them.
+- Replies are scripted and labeled as a local demo. Sending triggers Thinking for 900ms, then appends one complete assistant message with Talking for 1600ms, then restores Idle. There is no network request, model streaming, storage or backend.
+- The same approved orb canvas remains mounted while its frame moves and shrinks near the header. Its renderer, geometry, animation helper and shaders are unchanged.
+- Only the message log scrolls; it follows new messages when near the bottom and preserves the reader's position otherwise. Sending explicitly returns to the latest content. New Chat clears messages/draft and cancels pending work.
 Explicit non-goals for now
 - The separate developer portfolio redesign.
 - The green theme from older prototypes.
@@ -37,6 +42,7 @@ Explicit non-goals for now
 - Separate constellation / particle alternatives. The reference's translucent wireframe Noise Orb is the current design.
 - Backend integration, voice, authentication and database in the first milestone.
 Open decisions
+- Review the Milestone 2 layout and reversible local-demo timing (900ms Thinking / 1600ms Talking). Real request/streaming lifecycle remains a later milestone.
 - Final UI layout after the first visual prototype is reviewed.
 - Exact shader method/effect levels based on how the orb actually renders on target devices.
 - Future chat model, deployment and persistence/session specifics.
