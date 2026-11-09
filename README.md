@@ -92,3 +92,44 @@ Payload limits, origin checks and timeouts do not prevent direct clients from
 making repeated calls. Enforce upload limits at the reverse proxy too. Do not
 deploy the real provider until these controls and the chosen model's cost/output
 budget have been reviewed. The app does not log full conversations or credentials.
+
+### Backend streaming (Milestone 3B)
+
+`POST /api/chat/stream` accepts the same JSON request and limits as `/api/chat`.
+The existing endpoint and local-demo frontend are unchanged. Verify streaming
+without API credits using `LAIN_AI_MODE=mock npm run dev`, then:
+
+```bash
+curl -N http://localhost:3000/api/chat/stream \
+  -H 'Content-Type: application/json' \
+  -d '{"messages":[{"role":"user","content":"Hello"}]}'
+```
+
+The POST response uses SSE with JSON payloads and blank-line frame separators:
+
+```text
+event: delta
+data: {"text":"incremental text"}
+
+event: done
+data: {"finishReason":"completed"}
+
+```
+
+On stream failure, `event: error` carries `{"code":"AI_UNAVAILABLE","message":"..."}`
+(or a safe timeout/internal error code) and closes without `done`. Validation and
+configuration failures return the existing JSON error envelope with an HTTP error
+status before opening SSE; after opening, failures use SSE because HTTP status is
+already 200. Treat EOF without `done` as interrupted output. Partial text can
+precede an error; there are no retries or resumable event IDs.
+
+Streams share the 25-second overall deadline, 768-token provider cap and server-only
+configuration. They additionally limit emitted text to 16,000 UTF-8 bytes and use
+demand-driven reads. Client disconnects or cancelling the response reader abort
+provider work; completion/error/cancellation clears timers and closes iterators.
+Mock chunks arrive every 80ms and remain development-only. In browsers use POST
+`fetch` and its response reader; native `EventSource` uses GET. Hosting/proxies must
+support streaming and disconnect propagation; buffering is discouraged by response
+headers but needs verification on the deployment platform. Public-deployment abuse
+protections described above are still required. `npm test` covers both endpoints
+with fake SDK transports; no billable calls are made.
