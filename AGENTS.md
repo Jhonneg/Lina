@@ -14,6 +14,8 @@ Read these files in order before making changes:
 2. IMPLEMENTATION_PLAN.md — milestones, acceptance criteria and boundaries.
 3. This file — rules for editing and reporting.
 4. Repository-local instructions and source files relevant to the task.
+Visual specifications:
+- `docs/references/`
 Working principles
 - Inspect before changing: identify the actual framework version, package manager, routes, dependencies, existing conventions and scripts. Do not assume the repository is empty.
 - Small tasks: implement one focused milestone or subtask per request. Prefer focused file reads over reloading the entire repository, especially to conserve Codex usage.

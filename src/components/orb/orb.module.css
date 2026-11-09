@@ -1,0 +1,25 @@
+.demo { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.stage { position: relative; width: 224px; height: 224px; }
+.stage::before { content: ""; position: absolute; inset: 22%; border-radius: 50%; background: var(--lain-amber); opacity: 0.025; filter: blur(26px); pointer-events: none; }
+.status { display: flex; align-items: center; gap: 7px; color: var(--lain-gold); font-size: 11px; letter-spacing: 0.1em; }
+.statusDot { width: 5px; height: 5px; border-radius: 50%; background: var(--lain-amber); }
+.heading { margin-top: 22px; font-size: clamp(25px, 4vw, 32px); font-weight: 400; letter-spacing: -0.035em; }
+.description { margin-top: 10px; font-size: 14px; color: rgb(244 229 207 / 60%); }
+.controls { margin-top: 30px; border: 0; padding: 0; }
+.controls legend { width: 100%; margin-bottom: 10px; color: rgb(244 229 207 / 55%); font-size: 10px; letter-spacing: 0.08em; }
+.buttons { display: flex; gap: 4px; padding: 4px; border: 1px solid rgb(197 159 96 / 18%); border-radius: 999px; }
+.buttons button { padding: 9px 16px; min-height: 40px; border: 0; border-radius: 999px; background: transparent; color: rgb(244 229 207 / 65%); font-size: 12px; cursor: pointer; transition: background 200ms, color 200ms; }
+.buttons button:hover { color: var(--lain-cream); background: rgb(197 159 96 / 8%); }
+.buttons button[aria-pressed="true"] { background: rgb(197 159 96 / 14%); color: var(--lain-gold); }
+.buttons button:focus-visible { outline: 2px solid var(--lain-gold); outline-offset: 3px; }
+.fallback { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.staticOrb { display: block; width: 136px; height: 136px; color: var(--lain-amber); }
+.fallbackNote { position: absolute; bottom: 8px; color: var(--lain-gold); font-size: 10px; }
+@media (min-width: 640px) {
+  .stage { width: 320px; height: 300px; }
+  .staticOrb { width: 200px; height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) { .buttons button { transition: none; } }
+.debug { position: fixed; right: 12px; bottom: 12px; z-index: 30; max-width: min(340px, calc(100vw - 24px)); border: 1px solid rgb(197 159 96 / 25%); border-radius: 8px; padding: 8px 12px; background: var(--lain-plum); color: var(--lain-gold); text-align: left; font-size: 11px; }
+.debug summary { cursor: pointer; }
+.debug pre { max-height: 45svh; overflow: auto; margin-top: 8px; font-size: 10px; line-height: 1.5; }
