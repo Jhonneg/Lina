@@ -11,10 +11,10 @@ try {
     join(root, "node_modules/typescript/bin/tsc"),
     "--target", "ES2022", "--module", "commonjs", "--moduleResolution", "node",
     "--esModuleInterop", "--strict", "--skipLibCheck", "--rootDir", root,
-    "--outDir", output, join(root, "tests/server/chat.test.ts"), join(root, "tests/server/chat-stream.test.ts"), join(root, "tests/chat/chat-stream.test.ts"),
+    "--outDir", output, join(root, "tests/server/chat.test.ts"), join(root, "tests/server/chat-stream.test.ts"), join(root, "tests/chat/chat-stream.test.ts"), join(root, "tests/db/schema.test.ts"),
   ], { cwd: root, stdio: "inherit" });
   symlinkSync(join(root, "node_modules"), join(output, "node_modules"), "dir");
-  execFileSync(process.execPath, ["--conditions=react-server", "--test", "--test-isolation=none", join(output, "tests/server/chat.test.js"), join(output, "tests/server/chat-stream.test.js"), join(output, "tests/chat/chat-stream.test.js")], {
+  execFileSync(process.execPath, ["--conditions=react-server", "--test", "--test-isolation=none", join(output, "tests/server/chat.test.js"), join(output, "tests/server/chat-stream.test.js"), join(output, "tests/chat/chat-stream.test.js"), join(output, "tests/db/schema.test.js")], {
     cwd: root, stdio: "inherit",
   });
 } catch {

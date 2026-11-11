@@ -133,3 +133,49 @@ support streaming and disconnect propagation; buffering is discouraged by respon
 headers but needs verification on the deployment platform. Public-deployment abuse
 protections described above are still required. `npm test` covers both endpoints
 with fake SDK transports; no billable calls are made.
+
+### Database foundation (Milestone 4A)
+
+PostgreSQL uses Drizzle ORM with `pg` (node-postgres). Set `DATABASE_URL` in your
+ignored `.env.local` or server environment using a PostgreSQL connection URL.
+Drizzle CLI loads Next.js environment files through `@next/env`. Do not use a
+`NEXT_PUBLIC_` variable or commit real credentials. Configure verified TLS according
+to your database provider; this setup does not disable certificate verification.
+
+```bash
+npm run db:generate -- --name=describe_schema_change  # Offline SQL + metadata
+npm run db:migrate                                  # Applies pending SQL to DATABASE_URL
+```
+
+Generated migrations and their `drizzle/meta` journal/snapshots belong in source
+control. Review SQL and confirm the target database before applying; migrations
+are explicit commands and never run on application startup. PostgreSQL 13+ provides
+the `gen_random_uuid()` used by primary-key defaults without an extra extension.
+No PostgreSQL instance is provisioned by this project.
+
+The schema in `src/server/db/schema.ts` defines sessions, conversations and messages.
+Deleting a session cascades to its conversations and messages; deleting a
+conversation cascades to its messages. Token hashes are uniquely indexed;
+conversation listing uses `(session_id, updated_at DESC, id)` and ordered message
+retrieval uses `(conversation_id, created_at, id)`. An expiration index supports
+future cleanup, but no cleanup/session logic is implemented. Store only token
+hashes in `token_hash`, never raw session tokens.
+
+All timestamps use `timestamptz`; creation/update timestamps default to database
+`now()`. Expiration must be supplied explicitly. `updated_at` is initialized on
+insert and must be advanced by future persistence code; no update trigger exists.
+Database enums enforce user/assistant roles and completed/interrupted/failed
+message status (default completed). The UUID tie-breakers give deterministic order
+when timestamps match; they do not represent insertion sequence.
+
+Future server code can call `getDatabase()` from `src/server/db`. Importing that
+module does not read configuration or open connections. The first call validates
+configuration and creates a pool (max 5); sockets open only for actual queries.
+Development reloads reuse the pool. Pool sizing and provider connection limits
+must be reviewed for the eventual hosting platform. No application code currently
+calls this client, so mock/streaming chat, tests and UI builds work without a
+database. There are no cookies, sessions, CRUD routes or persistence yet.
+
+`npm test` includes offline schema/migration and lazy-client checks; it never
+applies migrations or queries a live database. Initial SQL has not been applied
+to a database; supply an explicitly chosen local test database to verify it there.

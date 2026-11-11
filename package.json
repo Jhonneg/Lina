@@ -8,24 +8,31 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/test-server.mjs"
+    "test": "node scripts/test-server.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
+    "drizzle-orm": "0.45.4",
     "next": "16.4.5",
     "openai": "^7.53.0",
+    "pg": "8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
     "three": "^0.187.0"
   },
   "devDependencies": {
+    "@next/env": "16.4.5",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
+    "@types/pg": "8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.187.0",
+    "drizzle-kit": "0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
