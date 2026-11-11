@@ -8,6 +8,13 @@
       "when": 1794434721046,
       "tag": "0000_initial_database",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794437819872,
+      "tag": "0001_stream_request_idempotency",
+      "breakpoints": true
     }
   ]
 }

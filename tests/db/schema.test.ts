@@ -7,7 +7,7 @@ import { conversations, messageRole, messages, messageStatus, sessions } from ".
 
 test("database schema enforces required fields, UUID/time defaults and database enums", () => {
   assert.deepEqual(messageRole.enumValues, ["user", "assistant"]);
-  assert.deepEqual(messageStatus.enumValues, ["completed", "interrupted", "failed"]);
+  assert.deepEqual(messageStatus.enumValues, ["completed", "interrupted", "failed", "pending"]);
   for (const table of [sessions, conversations, messages]) {
     assert.equal(table.id.primary, true);
     assert.equal(table.id.hasDefault, true);
@@ -43,8 +43,8 @@ test("ownership foreign keys cascade and list indexes include deterministic orde
 
 test("committed initial migration contains table constraints, enums and ordered indexes", () => {
   const files = readdirSync("drizzle").filter(file => file.endsWith(".sql"));
-  assert.equal(files.length, 1);
-  const sql = readFileSync(`drizzle/${files[0]}`, "utf8");
+  assert.ok(files.includes("0000_initial_database.sql"));
+  const sql = readFileSync("drizzle/0000_initial_database.sql", "utf8");
   for (const name of ["sessions", "conversations", "messages"]) assert.ok(sql.includes(`CREATE TABLE "${name}"`));
   assert.equal((sql.match(/PRIMARY KEY DEFAULT gen_random_uuid\(\)/g) ?? []).length, 3);
   assert.equal((sql.match(/ON DELETE cascade/g) ?? []).length, 2);

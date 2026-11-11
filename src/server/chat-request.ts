@@ -67,6 +67,10 @@ function tooLarge() {
 }
 
 export async function readChatRequest(request: Request, signal: AbortSignal): Promise<ConversationMessage[]> {
+  return validateMessages(await readChatBody(request, signal));
+}
+
+export async function readChatBody(request: Request, signal: AbortSignal): Promise<unknown> {
   const reader = request.body?.getReader();
   if (!reader) return invalid("A JSON body is required.");
   const chunks: Uint8Array[] = [];
@@ -95,5 +99,5 @@ export async function readChatRequest(request: Request, signal: AbortSignal): Pr
   let parsed: unknown;
   try { parsed = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(data)); }
   catch { return invalid("Body must be valid UTF-8 JSON."); }
-  return validateMessages(parsed);
+  return parsed;
 }

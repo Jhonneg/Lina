@@ -1,7 +1,7 @@
-import { index, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 export const messageRole = pgEnum("message_role", ["user", "assistant"]);
-export const messageStatus = pgEnum("message_status", ["completed", "interrupted", "failed"]);
+export const messageStatus = pgEnum("message_status", ["completed", "interrupted", "failed", "pending"]);
 
 export const sessions = pgTable("sessions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -26,3 +26,18 @@ export const messages = pgTable("messages", {
   status: messageStatus("status").notNull().default("completed"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [index("messages_conversation_created_idx").on(table.conversationId, table.createdAt, table.id)]);
+
+export const streamRequestState = pgEnum("stream_request_state", ["running", "completed", "interrupted", "failed"]);
+export const streamRequests = pgTable("stream_requests", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  sessionId: uuid("session_id").notNull().references(() => sessions.id, { onDelete: "cascade" }),
+  requestId: uuid("request_id").notNull(),
+  fingerprint: text("fingerprint").notNull(),
+  conversationId: uuid("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  userMessageId: uuid("user_message_id").notNull().unique().references(() => messages.id, { onDelete: "cascade" }),
+  assistantMessageId: uuid("assistant_message_id").notNull().unique().references(() => messages.id, { onDelete: "cascade" }),
+  state: streamRequestState("state").notNull().default("running"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  staleAt: timestamp("stale_at", { withTimezone: true }).notNull(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+}, (table) => [unique("stream_requests_session_request_unique").on(table.sessionId, table.requestId)]);

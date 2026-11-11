@@ -151,7 +151,7 @@ Generated migrations and their `drizzle/meta` journal/snapshots belong in source
 control. Review SQL and confirm the target database before applying; migrations
 are explicit commands and never run on application startup. PostgreSQL 13+ provides
 the `gen_random_uuid()` used by primary-key defaults without an extra extension.
-No PostgreSQL instance is provisioned by this project.
+No PostgreSQL instance is provisioned automatically; local Compose setup is below.
 
 The schema in `src/server/db/schema.ts` defines sessions, conversations and messages.
 Deleting a session cascades to its conversations and messages; deleting a
@@ -177,5 +177,40 @@ calls this client, so mock/streaming chat, tests and UI builds work without a
 database. There are no cookies, sessions, CRUD routes or persistence yet.
 
 `npm test` includes offline schema/migration and lazy-client checks; it never
-applies migrations or queries a live database. Initial SQL has not been applied
-to a database; supply an explicitly chosen local test database to verify it there.
+applies migrations or queries a live database. Migrations are not applied automatically; choose the intended local development
+database explicitly before applying them.
+
+
+### Local PostgreSQL with Docker Compose
+
+`compose.yaml` runs PostgreSQL 17 with the existing `lain` Compose project,
+`lain` database user, `lain_dev` database, and persistent `lain_postgres_data`
+named volume. Port 5432 is published only on `127.0.0.1`.
+
+If `.env` does not exist, copy `.env.example` to `.env`. Set a non-empty
+`POSTGRES_PASSWORD` there, then set `DATABASE_URL` to
+`postgresql://lain:URL_ENCODED_PASSWORD@127.0.0.1:5432/lain_dev`, substituting the
+same password with special characters URL-encoded. `.env` is ignored by Git;
+never commit it or print resolved Compose configuration containing credentials.
+Keep any `.env.local` or exported `DATABASE_URL` aligned: these can override
+`.env` for the application/Drizzle. Compose reads its password from `.env`.
+
+```bash
+docker compose config --quiet                    # Validate without printing secrets
+docker compose up -d --no-recreate --wait postgres # Start/reuse the local database
+docker compose ps postgres                       # Check container health and port
+docker compose exec -T postgres pg_isready -U lain -d lain_dev
+```
+
+After confirming the effective `DATABASE_URL` targets this disposable local
+`lain_dev` database, apply the reviewed migrations explicitly:
+
+```bash
+npm run db:migrate
+docker compose stop postgres                     # Stop; retain container and volume
+```
+
+The health check uses `pg_isready`; it does not replace application credential
+verification. PostgreSQL initialization variables apply only to an empty volume.
+Changing `.env` does not change an existing database password. No volumes or
+existing containers need to be deleted for normal start/stop or migrations.

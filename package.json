@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "test": "node scripts/test-server.mjs",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "test:session:postgres": "node scripts/test-session-postgres.mjs",
+    "test:conversations:postgres": "node scripts/test-conversations-postgres.mjs",
+    "test:stream:postgres": "node scripts/test-stream-postgres.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
