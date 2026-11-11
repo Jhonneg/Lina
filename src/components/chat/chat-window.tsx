@@ -1,39 +1,33 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import { OrbPresence } from "@/components/orb/orb-presence";
 import type { OrbState } from "@/components/orb/orb-state";
 import { ChatHeader } from "./chat-header";
 import { ChatInput } from "./chat-input";
 import { ChatMessage } from "./chat-message";
 import type { Message } from "./chat-types";
+import { chatReducer, conversationContext, INITIAL_CHAT, MAX_MESSAGE_CHARS } from "./chat-state";
+import { ChatStreamError, streamChat, type ContextMessage } from "./chat-stream";
 import styles from "./chat.module.css";
 
-const REPLIES = [
-  "Let’s take it one thought at a time. What would you like to explore a little further?",
-  "We can leave some room around that. What feels most important to you right now?",
-  "There’s no rush. Start wherever you like, and we’ll make space for the next thought.",
-];
 const STATUS: Record<OrbState, string> = { idle: "Ready", thinking: "Thinking", talking: "Responding" };
 
 export function ChatWindow() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [{ messages, phase, error, retryContext }, dispatch] = useReducer(chatReducer, INITIAL_CHAT);
   const [draft, setDraft] = useState("");
-  const [phase, setPhase] = useState<OrbState>("idle");
   const [showLatest, setShowLatest] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLOListElement>(null);
   const pinnedRef = useRef(true);
-  const pendingRef = useRef(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const generationRef = useRef(0);
+  const requestRef = useRef<{ id: string; controller: AbortController } | null>(null);
   const active = messages.length > 0;
 
   useEffect(() => () => {
-    generationRef.current++;
-    if (timerRef.current !== null) clearTimeout(timerRef.current);
+    requestRef.current?.controller.abort();
+    requestRef.current = null;
   }, []);
 
   // Keep the composer in the visible area when mobile keyboards resize or pan
@@ -78,45 +72,51 @@ export function ChatWindow() {
     return () => observer.disconnect();
   }, [active]);
 
+  async function generate(context: ContextMessage[], user?: Message) {
+    // Ref guards same-tick submissions before React commits the pending state.
+    if (requestRef.current) return;
+    const controller = new AbortController();
+    const id = crypto.randomUUID();
+    requestRef.current = { id, controller };
+    dispatch({ type: "start", requestId: id, context, user });
+    try {
+      await streamChat(context, controller.signal, (text) => {
+        dispatch({ type: "delta", requestId: id, text });
+      });
+      if (!controller.signal.aborted) dispatch({ type: "finish", requestId: id, outcome: "complete" });
+    } catch (failure) {
+      if (!controller.signal.aborted) dispatch({ type: "finish", requestId: id, outcome: "interrupted",
+        error: failure instanceof ChatStreamError ? failure.message : "Unable to reach Lain. Please try again." });
+    } finally {
+      if (requestRef.current?.id === id) requestRef.current = null;
+    }
+  }
+
   function send() {
     const text = draft.trim();
-    // Ref guards same-tick submissions as well as the disabled submit button.
-    if (!text || pendingRef.current) return;
-    pendingRef.current = true;
-    pinnedRef.current = true;
-    setShowLatest(false);
-    const generation = generationRef.current;
-    const reply = REPLIES[messages.filter((message) => message.role === "user").length % REPLIES.length];
-    const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: text };
-    setMessages((previous) => [...previous, userMessage]);
+    if (!text || text.length > MAX_MESSAGE_CHARS || requestRef.current) return;
+    const user: Message = { id: crypto.randomUUID(), role: "user", content: text };
+    void generate(conversationContext([...messages, user]), user);
     setDraft("");
-    inputRef.current?.focus();
-    setPhase("thinking");
-    timerRef.current = setTimeout(() => {
-      if (generation !== generationRef.current) return;
-      const assistantMessage: Message = { id: crypto.randomUUID(), role: "assistant", content: reply };
-      setMessages((previous) => [...previous, assistantMessage]);
-      setPhase("talking");
-      timerRef.current = setTimeout(() => {
-        if (generation !== generationRef.current) return;
-        timerRef.current = null;
-        pendingRef.current = false;
-        setPhase("idle");
-      }, 1600);
-    }, 900);
+    inputRef.current?.focus({ preventScroll: true });
+  }
+
+  function stop() {
+    const request = requestRef.current;
+    if (!request) return;
+    request.controller.abort();
+    requestRef.current = null;
+    dispatch({ type: "finish", requestId: request.id, outcome: "interrupted" });
   }
 
   function reset() {
-    generationRef.current++;
-    if (timerRef.current !== null) clearTimeout(timerRef.current);
-    timerRef.current = null;
-    pendingRef.current = false;
+    requestRef.current?.controller.abort();
+    requestRef.current = null;
+    dispatch({ type: "reset" });
     pinnedRef.current = true;
-    setMessages([]);
     setDraft("");
-    setPhase("idle");
     setShowLatest(false);
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }
 
   return (
@@ -142,7 +142,7 @@ export function ChatWindow() {
             role="log"
             aria-label="Conversation"
             aria-live="polite"
-            aria-relevant="additions"
+            aria-relevant="additions text"
             tabIndex={0}
             onScroll={(event) => {
               const node = event.currentTarget;
@@ -169,7 +169,8 @@ export function ChatWindow() {
           }}>Jump to latest <span aria-hidden="true">↓</span></button>
         )}
       </main>
-      <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} inputRef={inputRef} />
+      <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={stop}
+        error={error} onRetry={() => { void generate(retryContext); }} inputRef={inputRef} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export function ChatHeader({ canReset, onReset }: { canReset: boolean; onReset: 
     <header className={styles.header}>
       <div className={styles.identity}>
         <h1>LAIN <span>2.0</span></h1>
-        <span className={styles.preview}>Local preview</span>
+        <span className={styles.preview}>Conversation</span>
       </div>
       <NewChat disabled={!canReset} onReset={onReset} />
     </header>

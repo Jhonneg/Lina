@@ -95,8 +95,14 @@ function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnost
     shellMaterial.current.opacity = current.shellOpacity;
     if (!reduced) {
       const cappedDt = Math.min(dt, 0.05);
-      group.current.rotation.x += (pointer.current[1] * 0.15 - group.current.rotation.x) * Math.min(1, cappedDt * 2.6);
-      group.current.rotation.y += (pointer.current[0] * 0.24 - group.current.rotation.y) * Math.min(1, cappedDt * 1.2);
+      const follow = 1 - Math.exp(-cappedDt * 4);
+      group.current.rotation.x += (pointer.current[1] * 0.24 - group.current.rotation.x) * follow;
+      group.current.rotation.y += (pointer.current[0] * 0.4 - group.current.rotation.y) * follow;
+      group.current.position.x += (pointer.current[0] * 0.18 - group.current.position.x) * follow;
+      group.current.position.y += (-pointer.current[1] * 0.12 - group.current.position.y) * follow;
+    } else {
+      group.current.rotation.set(0, 0, 0);
+      group.current.position.set(0, 0, 0);
     }
   });
 
@@ -132,18 +138,28 @@ export default function NoiseOrb({ state, diagnosticsRef }: { state: OrbState; d
   const pointer = useRef<[number, number]>([0, 0]);
   const [lost, setLost] = useState(false);
 
+  useEffect(() => {
+    if (reduced || lost) return;
+    const reset = () => { pointer.current[0] = 0; pointer.current[1] = 0; };
+    const move = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      pointer.current[0] = Math.max(-1, Math.min(1, event.clientX / window.innerWidth * 2 - 1));
+      pointer.current[1] = Math.max(-1, Math.min(1, event.clientY / window.innerHeight * 2 - 1));
+    };
+    window.addEventListener("pointermove", move);
+    document.documentElement.addEventListener("pointerleave", reset);
+    window.addEventListener("blur", reset);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener("pointerleave", reset);
+      window.removeEventListener("blur", reset);
+      reset();
+    };
+  }, [reduced, lost]);
+
   if (lost) return <OrbFallback unavailable />;
   return (
-    <div
-      style={{ width: "100%", height: "100%" }}
-      onPointerMove={(event) => {
-        if (reduced || event.pointerType === "touch") return;
-        const bounds = event.currentTarget.getBoundingClientRect();
-        pointer.current[0] = (event.clientX - bounds.left) / bounds.width * 2 - 1;
-        pointer.current[1] = (event.clientY - bounds.top) / bounds.height * 2 - 1;
-      }}
-      onPointerLeave={() => { pointer.current[0] = 0; pointer.current[1] = 0; }}
-    >
+    <div style={{ width: "100%", height: "100%" }}>
       <Canvas
         flat
         camera={{ position: [0, 0, CAMERA_Z], fov: 42, near: 0.1, far: 100 }}

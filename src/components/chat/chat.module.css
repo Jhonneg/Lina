@@ -61,6 +61,8 @@
 .keyboardHint, .notice { text-align: center; font-size: 10px; line-height: 1.6; color: rgb(244 229 207 / 53%); }
 .keyboardHint { margin: 10px 0 0; }
 .notice { margin: 4px 0 0; }
+.error { margin-bottom: 12px; color: var(--lain-cream); font-size: 12px; line-height: 1.5; }
+.error p { margin: 0 0 8px; }
 .window ::selection { background: rgb(197 159 96 / 28%); }
 
 @media (min-width: 640px) {
