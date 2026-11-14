@@ -1,6 +1,7 @@
 import "server-only";
 import OpenAI from "openai";
 import { ModelError, type StreamingModelAdapter } from "./model-adapter";
+import { LAIN_PERSONALITY_INSTRUCTIONS } from "./personality";
 
 export const MODEL_TIMEOUT_MS = 20_000;
 export const MAX_OUTPUT_TOKENS = 768;
@@ -22,6 +23,7 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
         signal.throwIfAborted();
         upstream = await client.responses.create({
           model: config.model,
+          instructions: LAIN_PERSONALITY_INSTRUCTIONS,
           input: messages.map(({ role, content }) => ({ role, content })),
           max_output_tokens: MAX_OUTPUT_TOKENS,
           store: false,
@@ -51,6 +53,7 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
       try {
         const response = await client.responses.create({
           model: config.model,
+          instructions: LAIN_PERSONALITY_INSTRUCTIONS,
           input: messages.map(({ role, content }) => ({ role, content })),
           max_output_tokens: MAX_OUTPUT_TOKENS,
           store: false,

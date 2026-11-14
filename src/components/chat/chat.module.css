@@ -39,9 +39,16 @@
 .window[data-active="true"] .status { top: 224px; }
 .window[data-active="true"] .welcome { opacity: 0; visibility: hidden; transform: translateY(-8px); }
 
-.messages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; overflow-anchor: none; scrollbar-gutter: stable both-edges; scrollbar-width: thin; scrollbar-color: rgb(197 159 96 / 25%) transparent; padding: 20px 2px 28px; }
+.messages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; overflow-anchor: none; scrollbar-gutter: stable both-edges; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 30%, transparent) transparent; padding: 20px 2px 28px; }
+.messages::-webkit-scrollbar { width: 6px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb { border-radius: 6px; background: color-mix(in srgb, var(--lain-gold) 30%, transparent); }
+.messages::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--lain-gold) 50%, transparent); }
 .messages:focus-visible { outline: 1px solid var(--lain-gold); outline-offset: -2px; border-radius: 8px; }
 .messageList { display: flex; flex-direction: column; gap: 28px; width: min(100%, 680px); padding: 0; margin: 0 auto; list-style: none; }
+@keyframes messageEnter { from { opacity: 0.65; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+/* Stable message keys keep this mount-only entrance independent of deltas. */
+.messageList > li { animation: messageEnter 180ms ease-out; }
 .userMessage { align-self: flex-end; max-width: 88%; }
 .assistantMessage { align-self: flex-start; width: 100%; }
 .sender { margin: 0 0 8px; color: var(--lain-gold); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -137,5 +144,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .messageList > li { animation: none; }
   .window *, .window *::before, .window *::after { transition: none !important; scroll-behavior: auto !important; }
 }

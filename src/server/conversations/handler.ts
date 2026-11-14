@@ -2,7 +2,7 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionService, sessionCookieSettings } from "../sessions";
 import { createConversationRepository } from "./repository";
-import { identifier, queryPage, StorageInputError, STORAGE_LIMITS, titleInput } from "./validation";
+import { identifier, queryPage, StorageInputError, STORAGE_LIMITS, titleInput, renameTitleInput } from "./validation";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 function fail(status: number, code: string, message: string) {
@@ -12,7 +12,7 @@ function safeFailure(error: unknown) {
   return error instanceof StorageInputError ? fail(error.status, error.code, error.message)
     : fail(503, "STORAGE_UNAVAILABLE", "Conversation storage is unavailable. Please try again later.");
 }
-async function readCreate(request: NextRequest): Promise<{ title: string | null }> {
+async function readTitle(request: NextRequest, rename = false): Promise<{ title: string | null }> {
   if (request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase() !== "application/json" ||
       ![null, "identity"].includes(request.headers.get("content-encoding"))) {
     throw new StorageInputError("Use uncompressed application/json.", 415, "UNSUPPORTED_MEDIA_TYPE");
@@ -50,11 +50,11 @@ async function readCreate(request: NextRequest): Promise<{ title: string | null 
   let parsed: unknown;
   try { parsed = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
   catch { throw new StorageInputError("Provide valid UTF-8 JSON."); }
-  return { title: titleInput(parsed) };
+  return { title: rename ? renameTitleInput(parsed) : titleInput(parsed) };
 }
 
 export function createConversationHandlers({ repository = createConversationRepository(), service = createSessionService() }: {
-  repository?: Pick<ReturnType<typeof createConversationRepository>, "create" | "list" | "get">;
+  repository?: Pick<ReturnType<typeof createConversationRepository>, "create" | "list" | "get"> & Partial<Pick<ReturnType<typeof createConversationRepository>, "rename" | "remove">>;
   service?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">;
 } = {}) {
   const resolve = (request: NextRequest) => service.getExistingSession(request.cookies.get(sessionCookieSettings().name)?.value);
@@ -67,9 +67,37 @@ export function createConversationHandlers({ repository = createConversationRepo
         const session = await resolve(request);
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
-        const conversation = await repository.create(session.id, await readCreate(request));
+        const conversation = await repository.create(session.id, await readTitle(request));
         if (!conversation) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         return NextResponse.json({ ok: true, conversation }, { status: 201, headers });
+      } catch (error) { return safeFailure(error); }
+    },
+    async rename(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+      if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      try {
+        const session = await resolve(request);
+        if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
+        if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
+        const id = identifier((await context.params).id);
+        const input = await readTitle(request, true);
+        if (!repository.rename) throw new Error("Repository unavailable");
+        const conversation = await repository.rename(session.id, id, input);
+        if (!conversation) return fail(404, "NOT_FOUND", "Conversation not found.");
+        return NextResponse.json({ ok: true, conversation }, { headers });
+      } catch (error) { return safeFailure(error); }
+    },
+    async remove(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+      if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      try {
+        const session = await resolve(request);
+        if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
+        if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
+        const id = identifier((await context.params).id);
+        void request.body?.cancel().catch(() => {});
+        if (!repository.remove) throw new Error("Repository unavailable");
+        const deleted = await repository.remove(session.id, id);
+        if (!deleted) return fail(404, "NOT_FOUND", "Conversation not found.");
+        return NextResponse.json({ ok: true, deletedId: deleted.id }, { headers });
       } catch (error) { return safeFailure(error); }
     },
     async list(request: NextRequest) {

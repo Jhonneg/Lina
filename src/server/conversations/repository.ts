@@ -1,8 +1,10 @@
 import "server-only";
-import { and, asc, desc, eq, exists, gt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, exists, gt, isNull, sql } from "drizzle-orm";
 import { getDatabase } from "../db";
 import { conversations, messages, sessions } from "../db/schema";
-import { identifier, messageInput, messagePatch, pageInput, STORAGE_LIMITS, titleInput, type Page } from "./validation";
+import { identifier, messageInput, messagePatch, pageInput, STORAGE_LIMITS, titleInput, renameTitleInput, type Page } from "./validation";
+
+import { automaticConversationTitle } from "./title";
 
 const conversationFields = { id: conversations.id, title: conversations.title, createdAt: conversations.createdAt, updatedAt: conversations.updatedAt };
 const messageFields = { id: messages.id, conversationId: messages.conversationId, role: messages.role, content: messages.content, status: messages.status, createdAt: messages.createdAt };
@@ -15,7 +17,7 @@ function pageResult<T>(rows: T[], page: Page) {
     nextOffset: rows.length > page.limit && next <= STORAGE_LIMITS.offset ? next : null } };
 }
 
-type RepositoryDatabase = Pick<ReturnType<typeof getDatabase>, "select" | "insert" | "update" | "transaction">;
+type RepositoryDatabase = Pick<ReturnType<typeof getDatabase>, "select" | "insert" | "update" | "delete" | "transaction">;
 export function createConversationRepository(database: () => RepositoryDatabase = getDatabase) {
   return {
     async create(sessionId: string, input: unknown = {}) {
@@ -51,6 +53,10 @@ export function createConversationRepository(database: () => RepositoryDatabase 
       sessionId = identifier(sessionId); conversationId = identifier(conversationId);
       const message = messageInput(input);
       return database().transaction(async tx => {
+        // Serialize first-message titles, renames and deletions on the owner row.
+        const [conversation] = await tx.select({ id: conversations.id }).from(conversations)
+          .where(owned(sessionId, conversationId)).for("update");
+        if (!conversation) return null;
         // INSERT ... SELECT makes ownership part of the write itself.
         const [row] = await tx.insert(messages).select(tx.select({
           id: sql<string>`gen_random_uuid()`.as("id"), conversationId: conversations.id,
@@ -58,14 +64,38 @@ export function createConversationRepository(database: () => RepositoryDatabase 
           status: sql<typeof message.status>`${message.status}::message_status`.as("status"), createdAt: sql<Date>`now()`.as("created_at"),
         }).from(conversations).where(owned(sessionId, conversationId))).returning(messageFields);
         if (!row) return null;
+        if (message.role === "user") {
+          const [first] = await tx.select({ content: messages.content }).from(messages)
+            .innerJoin(conversations, eq(messages.conversationId, conversations.id))
+            .where(and(owned(sessionId, conversationId), eq(messages.role, "user")))
+            .orderBy(asc(messages.createdAt), asc(messages.id)).limit(1);
+          if (first) await tx.update(conversations).set({ title: automaticConversationTitle(first.content) })
+            .where(and(owned(sessionId, conversationId), isNull(conversations.title)));
+        }
         await tx.update(conversations).set({ updatedAt: sql`greatest(${conversations.updatedAt}, clock_timestamp())` }).where(owned(sessionId, conversationId));
         return row;
       });
+    },
+    async rename(sessionId: string, conversationId: string, input: unknown): Promise<{ id: string; title: string | null; createdAt: Date; updatedAt: Date } | null> {
+      sessionId = identifier(sessionId); conversationId = identifier(conversationId);
+      const title = renameTitleInput(input);
+      const [row] = await database().update(conversations)
+        .set({ title, updatedAt: sql`greatest(${conversations.updatedAt}, clock_timestamp())` })
+        .where(owned(sessionId, conversationId)).returning(conversationFields);
+      return row ?? null;
+    },
+    async remove(sessionId: string, conversationId: string): Promise<{ id: string } | null> {
+      sessionId = identifier(sessionId); conversationId = identifier(conversationId);
+      const [row] = await database().delete(conversations).where(owned(sessionId, conversationId)).returning({ id: conversations.id });
+      return row ?? null;
     },
     async updateMessage(sessionId: string, conversationId: string, messageId: string, input: unknown) {
       sessionId = identifier(sessionId); conversationId = identifier(conversationId); messageId = identifier(messageId);
       const patch = messagePatch(input);
       return database().transaction(async tx => {
+        const [conversation] = await tx.select({ id: conversations.id }).from(conversations)
+          .where(owned(sessionId, conversationId)).for("update");
+        if (!conversation) return null;
         const ownership = tx.select({ id: conversations.id }).from(conversations).where(owned(sessionId, conversationId));
         const [row] = await tx.update(messages).set(patch).where(and(eq(messages.id, messageId),
           eq(messages.conversationId, conversationId), exists(ownership))).returning(messageFields);

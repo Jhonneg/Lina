@@ -13,17 +13,22 @@
     "db:migrate": "drizzle-kit migrate",
     "test:session:postgres": "node scripts/test-session-postgres.mjs",
     "test:conversations:postgres": "node scripts/test-conversations-postgres.mjs",
-    "test:stream:postgres": "node scripts/test-stream-postgres.mjs"
+    "test:stream:postgres": "node scripts/test-stream-postgres.mjs",
+    "test:management:postgres": "node scripts/test-management-postgres.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "drizzle-orm": "0.45.4",
+    "highlight.js": "11.11.1",
+    "lowlight": "3.3.0",
     "next": "16.4.5",
     "openai": "^7.53.0",
     "pg": "8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
     "server-only": "^0.0.1",
     "three": "^0.187.0"
   },

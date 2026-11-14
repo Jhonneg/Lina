@@ -5,6 +5,7 @@ import { chatReducer, conversationContext, INITIAL_CHAT, MAX_MESSAGE_CHARS, type
 import { ChatStreamError, isUuid, streamChat } from "./chat-stream";
 import { initializeSession, pendingMessages, readPending, reconcileMessages, restoreConversation, savedSubmission,
   submissionConversation, writePending, type PendingStorage, type Submission } from "./chat-persistence";
+import { archiveSubmission, archivedSubmission, clearConversationRecovery, forgetArchivedSubmission } from "./chat-history";
 import type { Message } from "./chat-types";
 
 type Operation = { id: string; abort: AbortController; reconciliation?: AbortController; stopped: boolean };
@@ -27,6 +28,8 @@ export function usePersistentChat() {
   const owner = useRef<string | null>(null);
   const needsSession = useRef(false);
   const submission = useRef<Submission | null>(null);
+  const recoveries = useRef(new Map<string, Submission>());
+  const deletedIds = useRef(new Set<string>());
   const operation = useRef<Operation | null>(null);
   const boot = useRef<AbortController | null>(null);
   const apply = useCallback((action: ChatAction) => {
@@ -34,7 +37,16 @@ export function usePersistentChat() {
     snapshot.current = next;
     setState(next);
   }, []);
-  const remember = useCallback((value: Submission | null) => {
+  const preserve = useCallback((value: Submission) => {
+    recoveries.current.set(value.requestId, value);
+    archiveSubmission(storage(), value);
+  }, []);
+  const remember = useCallback((value: Submission | null, keepRecovery = false) => {
+    const previous = submission.current;
+    if (!value && previous && !keepRecovery) {
+      recoveries.current.delete(previous.requestId);
+      forgetArchivedSubmission(storage(), previous.requestId);
+    }
     submission.current = value;
     writePending(storage(), value);
   }, []);
@@ -46,7 +58,8 @@ export function usePersistentChat() {
   }, []);
 
   const initialize = useCallback(async (forceSession = false) => {
-    if (submission.current) writePending(storage(), submission.current);
+    const activePending = submission.current ?? readPending(storage());
+    if (activePending) { preserve(activePending); writePending(storage(), activePending); }
     abortWork();
     apply({ type: "restore", messages: snapshot.current.messages, conversationId: urlConversation() });
     const controller = new AbortController(); boot.current = controller;
@@ -56,16 +69,21 @@ export function usePersistentChat() {
       if (controller.signal.aborted) return;
       owner.current = ownerId; needsSession.current = false;
       const id = urlConversation();
+      if (id && deletedIds.current.has(id)) throw new ChatStreamError("This conversation was deleted. Start a new chat.", "NOT_FOUND", 404);
       let pending = readPending(storage());
-      if (pending && pending.ownerId !== ownerId) throw new ChatStreamError("The previous browser session is unavailable. Start a new chat.");
       if (pending && submissionConversation(pending) !== id) pending = null;
+      if (!pending && id) pending = [...recoveries.current.values()]
+        .filter(item => item.ownerId === ownerId && submissionConversation(item) === id)
+        .sort((a, b) => b.startedAt - a.startedAt)[0] ?? archivedSubmission(storage(), id, ownerId);
+      if (pending && pending.ownerId !== ownerId) throw new ChatStreamError("The previous browser session is unavailable. Start a new chat.");
       submission.current = pending;
+      writePending(storage(), pending);
       let messages = pending ? pendingMessages(pending) : [];
       if (id) {
         if (!isUuid(id)) throw new ChatStreamError("This conversation is unavailable. Try again or start a new chat.");
         setLoading("Restoring conversation");
         const server = await restoreConversation(id, controller.signal);
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || deletedIds.current.has(id)) return;
         messages = reconcileMessages(server, messages, pending);
         if (savedSubmission(server, pending)) { remember(null); pending = null; }
       }
@@ -83,7 +101,7 @@ export function usePersistentChat() {
     } finally {
       if (boot.current === controller && !controller.signal.aborted) setLoading(null);
     }
-  }, [abortWork, apply, remember]);
+  }, [abortWork, apply, remember, preserve]);
 
   useEffect(() => {
     const initialization = setTimeout(() => { void initialize(); }, 0);
@@ -100,7 +118,8 @@ export function usePersistentChat() {
   }, [retryAt]);
 
   async function generate(intent: Submission, user?: Message) {
-    if (operation.current) return;
+    const id = submissionConversation(intent);
+    if (operation.current || (id && deletedIds.current.has(id))) return;
     const current: Operation = { id: crypto.randomUUID(), abort: new AbortController(), stopped: false };
     operation.current = current;
     const live = () => operation.current === current;
@@ -117,6 +136,7 @@ export function usePersistentChat() {
       }, fetch, { requestId: intent.requestId, conversationId: intent.conversationId, onMetadata: metadata => {
         if (!live()) return;
         intent.metadata = metadata; replay = metadata.replayed;
+        if (deletedIds.current.has(metadata.conversationId)) { conversationDeleted(metadata.conversationId); return; }
         remember(intent); setConversationUrl(metadata.conversationId);
         apply({ type: "metadata", requestId: current.id, metadata });
       } });
@@ -175,15 +195,36 @@ export function usePersistentChat() {
     writePending(storage(), submission.current);
   }
   function reset() {
-    abortWork(); remember(null); setConversationUrl(null); apply({ type: "reset" });
+    if (submission.current) preserve(submission.current);
+    abortWork(); remember(null, true); setConversationUrl(null); apply({ type: "reset" });
     setRetryAt(0); setBootError(false); setLoading(null); setBlocked(false);
     if (!owner.current || needsSession.current) void initialize(needsSession.current);
+  }
+  function selectConversation(id: string) {
+    if (!isUuid(id) || deletedIds.current.has(id)) return;
+    if (snapshot.current.conversationId === id && !bootError) return;
+    setConversationUrl(id);
+    void initialize();
+  }
+  function conversationDeleted(id: string) {
+    deletedIds.current.add(id);
+    clearConversationRecovery(storage(), id);
+    for (const [key, pending] of recoveries.current) {
+      if (submissionConversation(pending) === id) recoveries.current.delete(key);
+    }
+    const associated = submission.current && submissionConversation(submission.current) === id;
+    if (snapshot.current.conversationId === id || urlConversation() === id || associated) {
+      if (submission.current && !associated) preserve(submission.current);
+      abortWork(); submission.current = null;
+      setConversationUrl(null); apply({ type: "reset" });
+      setRetryAt(0); setBootError(false); setLoading(null); setBlocked(false);
+    }
   }
   function retry() {
     if (loading || operation.current || retryAt > Date.now()) return;
     if (bootError || needsSession.current || !submission.current) { void initialize(needsSession.current); return; }
     void generate(submission.current);
   }
-  return { state, loading, blocked, bootError, retryAt, send, stop, reset, retry,
+  return { state, loading, blocked, bootError, retryAt, send, stop, reset, retry, selectConversation, conversationDeleted,
     retryLabel: bootError ? "Try again" : retryAt ? "Check again in one minute" : "Check saved response" };
 }

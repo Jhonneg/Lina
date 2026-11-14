@@ -1,0 +1,44 @@
+.markdown { position: relative; min-width: 0; color: var(--lain-cream); font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; }
+.markdown > :first-child { margin-top: 0; }
+.markdown > :last-child, .markdown[data-streaming="true"] > :nth-last-child(2) { margin-bottom: 0; }
+/* A static caret sits in the existing gap, without adding a line or a paint loop. */
+.streamingCursor { position: absolute; inset-inline-start: 0; bottom: -10px; width: 2px; height: 7px; border-radius: 1px; background: var(--lain-amber); opacity: 0.75; pointer-events: none; }
+.markdown p, .markdown ul, .markdown ol, .markdown blockquote { margin: 0 0 1em; }
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 { margin: 24px 0 12px; font-weight: 500; line-height: 1.4; color: var(--lain-cream); }
+.markdown h1 { font-size: 1.4em; }
+.markdown h2 { font-size: 1.25em; }
+.markdown h3 { font-size: 1.12em; }
+.markdown h4, .markdown h5, .markdown h6 { font-size: 1em; }
+.markdown ul, .markdown ol { padding-left: 24px; }
+.markdown ul { list-style: disc; }
+.markdown ol { list-style: decimal; }
+.markdown li + li { margin-top: 4px; }
+.markdown li > p { margin-bottom: 6px; }
+.markdown blockquote { padding: 2px 0 2px 16px; border-left: 2px solid var(--lain-gold); color: rgb(244 229 207 / 72%); }
+.markdown blockquote > :last-child { margin-bottom: 0; }
+.markdown a { color: var(--lain-gold); text-decoration: underline; text-underline-offset: 3px; }
+.markdown strong { font-weight: 600; }
+.markdown hr { margin: 20px 0; border: 0; border-top: 1px solid #47323e; }
+.markdown code { font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace); font-size: 0.85em; }
+.markdown :not(pre) > code { padding: 2px 5px; border-radius: 4px; background: #2c1e29; color: var(--lain-amber); white-space: break-spaces; }
+.codeBlock { min-width: 0; max-width: 100%; margin: 16px 0; border: 1px solid #47323e; border-radius: 10px; overflow: hidden; background: #140e15; }
+.codeHeader { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 12px; background: #2c1e29; color: var(--lain-gold); font-size: 11px; }
+.codeHeader > span:first-child { max-width: 100%; overflow-wrap: anywhere; }
+.codeBlock pre { margin: 0; padding: 14px; overflow-x: auto; overscroll-behavior-x: contain; tab-size: 2; white-space: pre; overflow-wrap: normal; line-height: 1.6; }
+.codeBlock pre code { padding: 0; background: none; color: var(--lain-cream); font-size: 13px; }
+.codeBlock :global(.hljs-keyword), .codeBlock :global(.hljs-selector-tag), .codeBlock :global(.hljs-name), .codeBlock :global(.hljs-built_in) { color: var(--lain-amber); }
+.codeBlock :global(.hljs-string), .codeBlock :global(.hljs-attr), .codeBlock :global(.hljs-title), .codeBlock :global(.hljs-type) { color: #cba4ca; }
+.codeBlock :global(.hljs-number), .codeBlock :global(.hljs-literal), .codeBlock :global(.hljs-variable) { color: var(--lain-gold); }
+.codeBlock :global(.hljs-comment), .codeBlock :global(.hljs-quote) { color: rgb(244 229 207 / 48%); }
+.tableScroll { max-width: 100%; margin: 16px 0; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid #47323e; border-radius: 8px; }
+.tableScroll table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tableScroll th, .tableScroll td { padding: 9px 12px; border: 1px solid #47323e; text-align: left; white-space: nowrap; }
+.tableScroll th { background: #2c1e29; color: var(--lain-gold); font-weight: 500; }
+.copyControl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.copy { min-width: 50px; min-height: 32px; margin-top: 4px; padding: 4px 8px; border: 1px solid #47323e; border-radius: 6px; background: transparent; color: var(--lain-gold); font: inherit; font-size: 11px; cursor: pointer; }
+.codeHeader .copy { margin-top: 0; }
+.copy:hover { border-color: var(--lain-gold); }
+.copy:focus-visible, .markdown a:focus-visible, .markdown pre:focus-visible, .tableScroll:focus-visible { outline: 2px solid var(--lain-cream); outline-offset: 2px; }
+.copyError { font-size: 11px; color: var(--lain-cream); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.codeBlock pre, .tableScroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 30%, transparent) transparent; }

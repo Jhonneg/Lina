@@ -72,9 +72,9 @@ export async function restoreConversation(id: string, signal: AbortSignal, fetch
   throw new ChatStreamError(UNAVAILABLE);
 }
 
-export function readPending(storage: PendingStorage | undefined): Submission | null {
+export function readPending(storage: PendingStorage | undefined, key = PENDING_KEY): Submission | null {
   try {
-    const text = storage?.getItem(PENDING_KEY);
+    const text = storage?.getItem(key);
     if (!text) return null;
     if (text.length > 100000) throw new Error();
     const item = JSON.parse(text);
@@ -93,7 +93,7 @@ export function readPending(storage: PendingStorage | undefined): Submission | n
     const result = { requestId: item.requestId, ownerId: item.ownerId, startedAt: item.startedAt, retryAt: item.retryAt, conversationId: item.conversationId, messages, userId: item.userId, partial: item.partial, metadata };
     if (new TextEncoder().encode(JSON.stringify({ mode: "persisted", requestId: result.requestId, conversationId: result.conversationId, messages })).byteLength > 32768) throw new Error();
     return result;
-  } catch { try { storage?.removeItem(PENDING_KEY); } catch { /* Storage is optional. */ } return null; }
+  } catch { try { storage?.removeItem(key); } catch { /* Storage is optional. */ } return null; }
 }
 export function writePending(storage: PendingStorage | undefined, submission: Submission | null) {
   try {

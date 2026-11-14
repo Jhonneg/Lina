@@ -26,7 +26,7 @@ async function find(tx: Transaction, sessionId: string, requestId: string) {
   const [row] = await tx.select({ request: streamRequests, content: messages.content }).from(streamRequests)
     .innerJoin(conversations, and(eq(conversations.id, streamRequests.conversationId), eq(conversations.sessionId, sessionId)))
     .innerJoin(messages, and(eq(messages.id, streamRequests.assistantMessageId), eq(messages.conversationId, conversations.id)))
-    .where(and(eq(streamRequests.sessionId, sessionId), eq(streamRequests.requestId, requestId))).for("update");
+    .where(and(eq(streamRequests.sessionId, sessionId), eq(streamRequests.requestId, requestId))).for("update", { of: conversations });
   return row;
 }
 function claim(row: typeof streamRequests.$inferSelect, content: string, isNew: boolean): StreamClaim {

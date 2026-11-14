@@ -18,6 +18,11 @@ export function titleInput(value: unknown): string | null {
   if (typeof title !== "string" || !title.trim() || title.length > STORAGE_LIMITS.titleChars) throw new StorageInputError("Title must be non-empty text of at most 200 characters, or null.");
   return title.trim();
 }
+export function renameTitleInput(value: unknown): string {
+  const title = titleInput(value);
+  if (title === null) throw new StorageInputError("Provide a non-empty title of at most 200 characters.");
+  return title;
+}
 export type Page = { limit: number; offset: number };
 export function pageInput(value: Page): Page {
   if (!Number.isInteger(value.limit) || value.limit < 1 || value.limit > STORAGE_LIMITS.pageSize ||

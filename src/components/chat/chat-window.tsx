@@ -3,17 +3,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { OrbPresence } from "@/components/orb/orb-presence";
 import type { OrbState } from "@/components/orb/orb-state";
+import { HistoryDrawer } from "./history-drawer";
 import { ChatHeader } from "./chat-header";
 import { ChatInput } from "./chat-input";
 import { ChatMessage } from "./chat-message";
 import { usePersistentChat } from "./use-persistent-chat";
 import styles from "./chat.module.css";
 
-const STATUS: Record<OrbState, string> = { idle: "Ready", thinking: "Thinking", talking: "Responding" };
+const STATUS: Record<OrbState, string> = { idle: "Awaiting input", thinking: "Processing thought", talking: "Transmitting" };
 
 export function ChatWindow() {
   const { state: { messages, phase, error, conversationId }, loading, blocked, bootError, retryAt,
-    send: submit, stop, reset: clearConversation, retry, retryLabel } = usePersistentChat();
+    send: submit, stop, reset: clearConversation, retry, retryLabel, selectConversation, conversationDeleted } = usePersistentChat();
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [showLatest, setShowLatest] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export function ChatWindow() {
 
   return (
     <div ref={windowRef} className={styles.window} data-active={active}>
-      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} />
+      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => setHistoryOpen(open => !open)} />
       <main className={styles.conversation} aria-label="Chat with Lain">
         <div className={styles.presence}>
           <div className={styles.orbFrame} role="img" aria-label="Lain’s amber presence">
@@ -91,8 +93,8 @@ export function ChatWindow() {
             <span aria-hidden="true" />{loading ?? STATUS[phase]}
           </div>
           <div className={styles.welcome} aria-hidden={active}>
-            <h2>Room for a thought.</h2>
-            <p>No rush. Start wherever you are.</p>
+            <h2>You are connected.</h2>
+            <p>What shall we explore?</p>
           </div>
         </div>
         {active && (
@@ -114,7 +116,7 @@ export function ChatWindow() {
             }}
           >
             <ol ref={contentRef} className={styles.messageList}>
-              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} />)}
+              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} transmitting={phase === "talking"} />)}
             </ol>
           </div>
         )}
@@ -132,6 +134,10 @@ export function ChatWindow() {
       <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={stop}
         error={error} onRetry={retry} retryLabel={retryLabel} retryDisabled={Boolean(loading) || retryAt > 0}
         disabled={Boolean(loading) || blocked || bootError} inputRef={inputRef} />
+      <HistoryDrawer onDeleted={conversationDeleted} open={historyOpen} activeId={conversationId} onClose={() => setHistoryOpen(false)}
+        onNewChat={reset} onSelect={id => {
+          selectConversation(id); setDraft(""); setShowLatest(false); pinnedRef.current = true;
+        }} />
     </div>
   );
 }
