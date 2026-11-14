@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { OrbPresence } from "@/components/orb/orb-presence";
 import type { OrbState } from "@/components/orb/orb-state";
 import { ChatHeader } from "./chat-header";
 import { ChatInput } from "./chat-input";
 import { ChatMessage } from "./chat-message";
-import type { Message } from "./chat-types";
-import { chatReducer, conversationContext, INITIAL_CHAT, MAX_MESSAGE_CHARS } from "./chat-state";
-import { ChatStreamError, streamChat, type ContextMessage } from "./chat-stream";
+import { usePersistentChat } from "./use-persistent-chat";
 import styles from "./chat.module.css";
 
 const STATUS: Record<OrbState, string> = { idle: "Ready", thinking: "Thinking", talking: "Responding" };
 
 export function ChatWindow() {
-  const [{ messages, phase, error, retryContext }, dispatch] = useReducer(chatReducer, INITIAL_CHAT);
+  const { state: { messages, phase, error, conversationId }, loading, blocked, bootError, retryAt,
+    send: submit, stop, reset: clearConversation, retry, retryLabel } = usePersistentChat();
   const [draft, setDraft] = useState("");
   const [showLatest, setShowLatest] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -22,13 +21,7 @@ export function ChatWindow() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLOListElement>(null);
   const pinnedRef = useRef(true);
-  const requestRef = useRef<{ id: string; controller: AbortController } | null>(null);
   const active = messages.length > 0;
-
-  useEffect(() => () => {
-    requestRef.current?.controller.abort();
-    requestRef.current = null;
-  }, []);
 
   // Keep the composer in the visible area when mobile keyboards resize or pan
   // the visual viewport. Do not reflow the app while the user pinch-zooms.
@@ -72,47 +65,14 @@ export function ChatWindow() {
     return () => observer.disconnect();
   }, [active]);
 
-  async function generate(context: ContextMessage[], user?: Message) {
-    // Ref guards same-tick submissions before React commits the pending state.
-    if (requestRef.current) return;
-    const controller = new AbortController();
-    const id = crypto.randomUUID();
-    requestRef.current = { id, controller };
-    dispatch({ type: "start", requestId: id, context, user });
-    try {
-      await streamChat(context, controller.signal, (text) => {
-        dispatch({ type: "delta", requestId: id, text });
-      });
-      if (!controller.signal.aborted) dispatch({ type: "finish", requestId: id, outcome: "complete" });
-    } catch (failure) {
-      if (!controller.signal.aborted) dispatch({ type: "finish", requestId: id, outcome: "interrupted",
-        error: failure instanceof ChatStreamError ? failure.message : "Unable to reach Lain. Please try again." });
-    } finally {
-      if (requestRef.current?.id === id) requestRef.current = null;
-    }
-  }
-
   function send() {
-    const text = draft.trim();
-    if (!text || text.length > MAX_MESSAGE_CHARS || requestRef.current) return;
-    const user: Message = { id: crypto.randomUUID(), role: "user", content: text };
-    void generate(conversationContext([...messages, user]), user);
+    if (!submit(draft.trim())) return;
     setDraft("");
     inputRef.current?.focus({ preventScroll: true });
   }
 
-  function stop() {
-    const request = requestRef.current;
-    if (!request) return;
-    request.controller.abort();
-    requestRef.current = null;
-    dispatch({ type: "finish", requestId: request.id, outcome: "interrupted" });
-  }
-
   function reset() {
-    requestRef.current?.controller.abort();
-    requestRef.current = null;
-    dispatch({ type: "reset" });
+    clearConversation();
     pinnedRef.current = true;
     setDraft("");
     setShowLatest(false);
@@ -121,14 +81,14 @@ export function ChatWindow() {
 
   return (
     <div ref={windowRef} className={styles.window} data-active={active}>
-      <ChatHeader canReset={active} onReset={reset} />
+      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} />
       <main className={styles.conversation} aria-label="Chat with Lain">
         <div className={styles.presence}>
           <div className={styles.orbFrame} role="img" aria-label="Lain’s amber presence">
             <OrbPresence state={phase} />
           </div>
           <div className={styles.status} role="status" aria-live="polite" data-orb-state={phase}>
-            <span aria-hidden="true" />{STATUS[phase]}
+            <span aria-hidden="true" />{loading ?? STATUS[phase]}
           </div>
           <div className={styles.welcome} aria-hidden={active}>
             <h2>Room for a thought.</h2>
@@ -154,7 +114,7 @@ export function ChatWindow() {
             }}
           >
             <ol ref={contentRef} className={styles.messageList}>
-              {messages.map((message) => <ChatMessage key={message.id} message={message} />)}
+              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} />)}
             </ol>
           </div>
         )}
@@ -170,7 +130,8 @@ export function ChatWindow() {
         )}
       </main>
       <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={stop}
-        error={error} onRetry={() => { void generate(retryContext); }} inputRef={inputRef} />
+        error={error} onRetry={retry} retryLabel={retryLabel} retryDisabled={Boolean(loading) || retryAt > 0}
+        disabled={Boolean(loading) || blocked || bootError} inputRef={inputRef} />
     </div>
   );
 }

@@ -9,6 +9,8 @@ export function ChatMessage({ message }: { message: Message }) {
         <p className={styles.sender}>{user ? "You" : "Lain"}</p>
         <p className={styles.messageContent}>{message.content}</p>
         {message.status === "interrupted" && <p className={styles.notice}>Response interrupted</p>}
+        {message.status === "failed" && <p className={styles.notice}>Response failed</p>}
+        {message.status === "pending" && <p className={styles.notice}>Response not yet saved</p>}
       </article>
     </li>
   );
