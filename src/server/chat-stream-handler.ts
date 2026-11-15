@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "./request-origin";
 import { stagingAccessFailure } from "./staging-access";
 import { createUsageService, type UsageLease, type UsageTransaction } from "./usage/service";
 import { UsageError } from "./usage/policy";
@@ -61,7 +62,7 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
           source: JSON.stringify({ instructions: LAIN_PERSONALITY_INSTRUCTIONS, messages: input.messages }) }, tx);
       };
       if (input.mode === "persisted") {
-        if (request.headers.get("origin") !== new URL(request.url).origin) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+        if (!hasSameOrigin(request)) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
         const cookies = new NextRequest(request.url, { headers: request.headers }).cookies;
         let session;
         try { session = await sessionService.getExistingSession(cookies.get(sessionCookieSettings().name)?.value); }

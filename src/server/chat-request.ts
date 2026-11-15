@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "./request-origin";
 import "server-only";
 import type { ConversationMessage } from "./ai/model-adapter";
 
@@ -44,8 +45,7 @@ export function validateMessages(body: unknown): ConversationMessage[] {
 }
 
 export function validateHeaders(request: Request) {
-  const origin = request.headers.get("origin");
-  if ((origin !== null && origin !== new URL(request.url).origin) || request.headers.get("sec-fetch-site") === "cross-site") {
+  if (!hasSameOrigin(request, true)) {
     throw new RequestError(403, "FORBIDDEN_ORIGIN", "Cross-origin requests are not allowed.");
   }
   if (request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase() !== "application/json") {

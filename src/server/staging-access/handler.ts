@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "../request-origin";
 import "server-only";
 import { NextResponse } from "next/server";
 import { createApiGuard, type ApiGuard } from "../abuse/guard";
@@ -6,9 +7,6 @@ import { RequestError, validateHeaders } from "../chat-request";
 import { ACCESS_TTL_SECONDS, accessCookie, accessError, accessPolicy, accessStatus, createAccessToken, matchesAccessSecret } from "./index";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
-function sameOrigin(request: Request) {
-  return request.headers.get("origin") === new URL(request.url).origin && request.headers.get("sec-fetch-site") !== "cross-site";
-}
 async function credentials(request: Request) {
   validateHeaders(request);
   const length = request.headers.get("content-length");
@@ -42,7 +40,7 @@ export function createStagingAccessHandlers({ abuse = createApiGuard() }: { abus
     },
     async POST(request: Request) {
       if (process.env.NODE_ENV === "production" && new URL(request.url).protocol !== "https:") return accessError(403, "HTTPS_REQUIRED", "Use HTTPS for operator access.");
-      if (!sameOrigin(request)) return accessError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      if (!hasSameOrigin(request)) return accessError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
         const policy = accessPolicy();
         if (!policy.restricted) return accessError(404, "NOT_FOUND", "Not found.");
@@ -61,7 +59,7 @@ export function createStagingAccessHandlers({ abuse = createApiGuard() }: { abus
       }
     },
     DELETE(request: Request) {
-      if (!sameOrigin(request)) return accessError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      if (!hasSameOrigin(request)) return accessError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       const response = NextResponse.json({ ok: true }, { headers });
       response.cookies.set({ ...accessCookie(), value: "", maxAge: 0 });
       return response;

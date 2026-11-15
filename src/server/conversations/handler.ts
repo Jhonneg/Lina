@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "../request-origin";
 import { stagingAccessFailure } from "../staging-access";
 import "server-only";
 import { createApiGuard, type ApiGuard } from "../abuse/guard";
@@ -71,7 +72,7 @@ export function createConversationHandlers({ repository = createConversationRepo
   return {
     async create(request: NextRequest) {
       const denied = stagingAccessFailure(request); if (denied) return denied;
-      if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") {
+      if (!hasSameOrigin(request)) {
         return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       }
       try {
@@ -85,7 +86,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     },
     async rename(request: NextRequest, context: { params: Promise<{ id: string }> }) {
       const denied = stagingAccessFailure(request); if (denied) return denied;
-      if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      if (!hasSameOrigin(request)) return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
         const session = await resolve(request, "mutate");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
@@ -100,7 +101,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     },
     async remove(request: NextRequest, context: { params: Promise<{ id: string }> }) {
       const denied = stagingAccessFailure(request); if (denied) return denied;
-      if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      if (!hasSameOrigin(request)) return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
         const session = await resolve(request, "mutate");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");

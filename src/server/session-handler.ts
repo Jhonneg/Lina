@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "./request-origin";
 import { stagingAccessFailure } from "./staging-access";
 import "server-only";
 import { createApiGuard, type ApiGuard } from "./abuse/guard";
@@ -16,8 +17,8 @@ export function createSessionHandler({ service = createSessionService(), product
 } = {}) {
   return async function POST(request: NextRequest) {
     const denied = stagingAccessFailure(request); if (denied) return denied;
-    // Require an explicit matching Origin. Do not trust forwarded host headers.
-    if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") {
+    // Require an explicit matching public Origin, including behind OpenNext.
+    if (!hasSameOrigin(request)) {
       return failure(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
     }
     // Ignore caller-supplied IDs/body; only a validated cookie proves ownership.

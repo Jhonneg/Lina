@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "../request-origin";
 import { stagingAccessFailure } from "../staging-access";
 import "server-only";
 import { createUsageService, type UsageLease } from "../usage/service";
@@ -27,7 +28,7 @@ export function createCloudVoiceHandler({ connect = connectRealtime, development
     let text: string, voice: string, delivery: string | undefined, lease = usageLease;
     try {
       validateHeaders(request);
-      if (request.headers.get("origin") !== new URL(request.url).origin) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+      if (!hasSameOrigin(request)) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       const body = await readChatBody(request, signal);
       if (!body || typeof body !== "object" || Array.isArray(body)) throw new RequestError(400, "INVALID_REQUEST", "Provide text, voice and explicit confirmation.");
       const value = body as Record<string, unknown>;

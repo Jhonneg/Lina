@@ -80,6 +80,12 @@ forged IP headers, concurrent sessions, IPv4/IPv6 and direct function URLs. Addi
 proxies must not bypass Netlify ingress; shared NATs share quotas and rotating IPs
 remain an anonymous-abuse limitation.
 
+With `USAGE_TRUSTED_PROXY=netlify`, API origin checks use the canonical HTTPS
+`getContext().site.url`, rather than OpenNext's reconstructed request URL, which
+can differ from the public browser origin. Missing platform site metadata fails
+closed. Forwarded host headers are never trusted; alternate deployment aliases
+are not automatically allowlisted. Local development retains request-URL checks.
+
 ## Neon setup and migration procedure
 
 Use a dedicated production database/branch, not `lain_dev`, and separate isolated

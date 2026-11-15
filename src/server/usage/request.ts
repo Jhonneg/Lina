@@ -1,10 +1,11 @@
+import { hasSameOrigin } from "../request-origin";
 import "server-only";
 import { NextRequest } from "next/server";
 import { createSessionService, sessionCookieSettings } from "../sessions";
 import { RequestError } from "../chat-request";
 import { UsageError } from "./policy";
 export function sameOrigin(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
+  if (!hasSameOrigin(request)) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
 }
 export async function billingSession(request: Request, service: Pick<ReturnType<typeof createSessionService>, "getExistingSession"> = createSessionService()) {
   sameOrigin(request);
