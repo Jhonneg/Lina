@@ -1,0 +1,274 @@
+{
+  "milestone": "6E.1",
+  "buildSource": "User completed npm run build outside sandbox; existing artifact reused without rebuilding.",
+  "buildId": "ReOCvKNDh1uMGnU2affYX",
+  "bundles": {
+    "description": "All emitted static JS/CSS assets, including lazy routes; NOT first-load or wire-transfer size.",
+    "totals": {
+      "js": {
+        "bytes": 1828871,
+        "gzipBytes": 525358,
+        "files": 14
+      },
+      "css": {
+        "bytes": 33739,
+        "gzipBytes": 7921,
+        "files": 2
+      }
+    },
+    "largest": [
+      {
+        "path": ".next/static/chunks/3d6nrph1ad4gu.js",
+        "bytes": 930895,
+        "gzipBytes": 245625
+      },
+      {
+        "path": ".next/static/chunks/3il0vhznymb6_.js",
+        "bytes": 229318,
+        "gzipBytes": 71782
+      },
+      {
+        "path": ".next/static/chunks/0_vlzocg7nh7k.js",
+        "bytes": 210988,
+        "gzipBytes": 65245
+      },
+      {
+        "path": ".next/static/chunks/1q7spdq2za7oj.js",
+        "bytes": 183091,
+        "gzipBytes": 48854
+      },
+      {
+        "path": ".next/static/chunks/0cz1d0mv5g_q7.js",
+        "bytes": 112594,
+        "gzipBytes": 39627
+      },
+      {
+        "path": ".next/static/chunks/1a1fh_bynjw84.js",
+        "bytes": 68938,
+        "gzipBytes": 22334
+      },
+      {
+        "path": ".next/static/chunks/15w9bk1ei40nz.js",
+        "bytes": 26318,
+        "gzipBytes": 9397
+      },
+      {
+        "path": ".next/static/chunks/0_ms0f1-km13r.css",
+        "bytes": 24571,
+        "gzipBytes": 5400
+      },
+      {
+        "path": ".next/static/chunks/1e_ch-3j8q6m2.js",
+        "bytes": 21947,
+        "gzipBytes": 7330
+      },
+      {
+        "path": ".next/static/chunks/31zq_znolphh4.js",
+        "bytes": 18926,
+        "gzipBytes": 6924
+      }
+    ]
+  },
+  "scan": {
+    "buildId": "ReOCvKNDh1uMGnU2affYX",
+    "clientAssetFiles": 17,
+    "renderedFiles": 20,
+    "serverBundleFiles": 243,
+    "configuredSecretValuesChecked": [
+      {
+        "name": "OPENAI_API_KEY",
+        "present": true
+      },
+      {
+        "name": "DATABASE_URL",
+        "present": true
+      }
+    ],
+    "findings": [],
+    "markerFiles": {
+      "developmentLab": [
+        ".next/static/chunks/15w9bk1ei40nz.js"
+      ],
+      "localModel": [
+        ".next/static/chunks/15w9bk1ei40nz.js"
+      ],
+      "devOverlay": [],
+      "hmr": [],
+      "serverKeyName": [],
+      "databaseName": [],
+      "databaseDriver": [],
+      "personality": []
+    },
+    "sourceMaps": [],
+    "unexpectedFiles": [],
+    "note": "Configured secret values were compared in memory and never printed. This scan is bounded evidence, not proof that every possible secret encoding is absent."
+  },
+  "http": [
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "cache": "s-maxage=31536000",
+      "hsts": "max-age=31536000",
+      "nosniff": "nosniff"
+    },
+    {
+      "path": "/dev/cloud-voice",
+      "method": "GET",
+      "status": 404,
+      "contentType": "text/html; charset=utf-8",
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "cache": "s-maxage=31536000",
+      "hsts": "max-age=31536000",
+      "nosniff": "nosniff"
+    },
+    {
+      "path": "/api/dev/cloud-voice",
+      "method": "POST",
+      "status": 404,
+      "contentType": "application/json",
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "cache": "no-store, no-transform",
+      "hsts": "max-age=31536000",
+      "nosniff": "nosniff",
+      "body": "{\"ok\":false,\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"Not found.\"}}"
+    },
+    {
+      "path": "/api/voice",
+      "method": "POST",
+      "status": 404,
+      "contentType": "application/json",
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "cache": "no-store, no-transform",
+      "hsts": "max-age=31536000",
+      "nosniff": "nosniff",
+      "body": "{\"ok\":false,\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"Cloud voice is unavailable.\"}}"
+    }
+  ],
+  "browser": {
+    "browser": "HeadlessChrome/158.0.8127.18",
+    "welcome": {
+      "welcome": true,
+      "draws": 76,
+      "csp": [],
+      "js": [
+        {
+          "path": "/_next/static/chunks/1e_ch-3j8q6m2.js",
+          "decodedBytes": 21947,
+          "transferBytes": 7630
+        },
+        {
+          "path": "/_next/static/chunks/183x_hxli59v-.js",
+          "decodedBytes": 14262,
+          "transferBytes": 3902
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-077hmtqrhcoji.js",
+          "decodedBytes": 11199,
+          "transferBytes": 4654
+        },
+        {
+          "path": "/_next/static/chunks/1q7spdq2za7oj.js",
+          "decodedBytes": 183091,
+          "transferBytes": 49154
+        },
+        {
+          "path": "/_next/static/chunks/3il0vhznymb6_.js",
+          "decodedBytes": 229318,
+          "transferBytes": 72082
+        },
+        {
+          "path": "/_next/static/chunks/31zq_znolphh4.js",
+          "decodedBytes": 18926,
+          "transferBytes": 7224
+        },
+        {
+          "path": "/_next/static/chunks/0_vlzocg7nh7k.js",
+          "decodedBytes": 210988,
+          "transferBytes": 65545
+        },
+        {
+          "path": "/_next/static/chunks/3d6nrph1ad4gu.js",
+          "decodedBytes": 930895,
+          "transferBytes": 245925
+        }
+      ]
+    },
+    "conversation": {
+      "draws": 116,
+      "csp": [],
+      "messages": 2,
+      "codeBlocks": 1,
+      "tables": 1,
+      "overflow": false,
+      "renderer": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce GTX 1660 SUPER (0x000021C4)), NVIDIA)",
+      "js": [
+        {
+          "path": "/_next/static/chunks/1e_ch-3j8q6m2.js",
+          "decodedBytes": 21947,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/1q7spdq2za7oj.js",
+          "decodedBytes": 183091,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/3il0vhznymb6_.js",
+          "decodedBytes": 229318,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-077hmtqrhcoji.js",
+          "decodedBytes": 11199,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/183x_hxli59v-.js",
+          "decodedBytes": 14262,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/31zq_znolphh4.js",
+          "decodedBytes": 18926,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/0_vlzocg7nh7k.js",
+          "decodedBytes": 210988,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/3d6nrph1ad4gu.js",
+          "decodedBytes": 930895,
+          "transferBytes": 0
+        },
+        {
+          "path": "/_next/static/chunks/1a1fh_bynjw84.js",
+          "decodedBytes": 68938,
+          "transferBytes": 22634
+        }
+      ]
+    },
+    "mockedRequests": 3,
+    "externalRequestsBlocked": [],
+    "errors": [],
+    "note": "Production Next server and real WebGL under shipped CSP; session/history responses intercepted only in Chromium. No database/provider requests. This does not validate Netlify ingress or live streaming."
+  },
+  "additionalHttpChecks": [
+    {
+      "path": "/.env",
+      "status": 404
+    },
+    {
+      "path": "/_next/server/app/api/voice/route.js",
+      "status": 404
+    },
+    {
+      "path": "/_next/static/chunks/15w9bk1ei40nz.js",
+      "status": 200
+    }
+  ]
+}

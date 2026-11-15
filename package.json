@@ -22,9 +22,12 @@
     "test:abuse": "node scripts/test-abuse.mjs",
     "test:abuse:postgres": "node scripts/test-abuse-postgres.mjs",
     "test:usage": "node scripts/test-usage.mjs",
-    "test:usage:postgres": "node scripts/test-usage-postgres.mjs"
+    "test:usage:postgres": "node scripts/test-usage-postgres.mjs",
+    "test:netlify": "node scripts/test-netlify.mjs",
+    "bundles:measure": "node scripts/measure-production-bundles.mjs"
   },
   "dependencies": {
+    "@netlify/functions": "6.1.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "drizzle-orm": "0.45.4",

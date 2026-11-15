@@ -37,13 +37,11 @@ Review tariffs when changing a model or when provider prices change.
 
 `USAGE_TRUSTED_PROXY=none` ignores every forwarded address in local development.
 Production paid requests fail closed with this setting. The supported production
-mode is `vercel`, requiring `VERCEL=1` and a random server-only
-`USAGE_IP_HMAC_KEY` of at least 32 characters. Only
-[`x-vercel-forwarded-for`](https://vercel.com/docs/headers/request-headers)
-is accepted, as one valid IP; generic `Forwarded`/`X-Forwarded-For` are ignored.
-This depends on genuine Vercel ingress overwriting the header and the origin
-being inaccessible through an untrusted bypass. Other deployments need a reviewed
-trusted-ingress adapter before paid use.
+mode is now `netlify`, with a random server-only `USAGE_IP_HMAC_KEY` of at least
+32 characters. It reads only the official Functions SDK's request-context IP;
+missing/malformed identity fails closed. Forwarded headers cannot establish
+identity in this mode. Legacy Vercel support remains for compatibility. See
+[Netlify readiness](netlify-production-6e.md) for hosted verification requirements.
 
 Raw addresses are never stored or logged. Canonical IPs are HMAC-SHA256 hashed
 with a UTC-day salt, limiting correlation across days. IP limits survive cookie

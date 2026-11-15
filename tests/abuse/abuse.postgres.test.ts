@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { withNetlifyIp } from "../netlify/context";
 import { randomUUID } from "node:crypto";
 import { test } from "node:test";
 import { eq, sql } from "drizzle-orm";
@@ -28,6 +29,17 @@ test("API admission, storage and explicit retention against disposable PostgreSQ
   const owner = async () => (await service.getOrCreateSession(undefined)).session.id;
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
+    await t.test("Netlify authoritative IP protects non-billable session creation across cookie rotation", async () => {
+      const factory = policy({ USAGE_TRUSTED_PROXY: "netlify", API_SESSION_IP_DAY: "1" });
+      const guard = createApiGuard(getDatabase, factory);
+      await assert.rejects(guard.take(req(), "session"), UsageError);
+      await withNetlifyIp("203.0.113.219", async () => {
+        await guard.take(req("192.0.2.1"), "session");
+        await assert.rejects(guard.take(req("192.0.2.2", "invalid"), "session"), e => e instanceof UsageError && e.status === 429);
+      });
+      // Isolate fixtures for the pre-existing accounting assertions below.
+      await db.delete(apiRateBuckets);
+    });
     await t.test("IP counters prevent concurrent creation and survive rotation/restarts/spoofed forwarded headers", async () => {
       const factory = policy({ API_SESSION_IP_DAY: "1" }), handler = createSessionHandler({ abuse: createApiGuard(getDatabase, factory) });
       const attempts = await Promise.all([handler(req()), handler(req())]); assert.deepEqual(attempts.map(r => r.status).sort(), [200, 429]);

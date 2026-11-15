@@ -2,7 +2,7 @@
 .icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid rgb(197 159 96 / 24%); border-radius: 10px; color: var(--lain-gold); cursor: pointer; list-style: none; }
 .icon::-webkit-details-marker { display: none; }
 .icon[data-voice-enabled="true"] { background: rgb(197 159 96 / 10%); border-color: var(--lain-gold); }
-.panel { position: absolute; right: -100px; top: calc(100% + 8px); box-sizing: border-box; z-index: 4; display: grid; gap: 10px; width: min(280px, calc(100vw - 48px)); padding: 16px; border: 1px solid rgb(197 159 96 / 30%); border-radius: 12px; background: var(--lain-plum); box-shadow: 0 10px 24px rgb(0 0 0 / 20%); color: var(--lain-cream); font-size: 12px; line-height: 1.6; }
+.panel { position: absolute; right: -100px; top: calc(100% + 8px); box-sizing: border-box; z-index: 4; display: grid; gap: 10px; width: min(280px, calc(100vw - 48px)); max-height: max(80px, calc(var(--chat-height, 100dvh) - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom))); overflow-y: auto; overscroll-behavior: contain; padding: 16px; border: 1px solid rgb(197 159 96 / 30%); border-radius: 12px; background: var(--lain-plum); box-shadow: 0 10px 24px rgb(0 0 0 / 20%); color: var(--lain-cream); font-size: 12px; line-height: 1.6; }
 .panel p, .consent p { margin: 0; }
 .panel label { display: flex; justify-content: space-between; color: var(--lain-gold); }
 .panel input { width: 100%; accent-color: var(--lain-amber); }
@@ -15,3 +15,8 @@
 .consent > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .consent::backdrop { background: rgb(0 0 0 / 60%); }
 .read { margin: 8px 0 0 8px; font-size: 11px; min-height: 32px; }
+
+@media (pointer: coarse) {
+  .icon { width: 44px; height: 44px; }
+  .panel button, .read, .panel input[type="range"] { min-height: 44px; }
+}

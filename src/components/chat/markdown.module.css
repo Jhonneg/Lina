@@ -29,7 +29,7 @@
 .codeBlock :global(.hljs-keyword), .codeBlock :global(.hljs-selector-tag), .codeBlock :global(.hljs-name), .codeBlock :global(.hljs-built_in) { color: var(--lain-amber); }
 .codeBlock :global(.hljs-string), .codeBlock :global(.hljs-attr), .codeBlock :global(.hljs-title), .codeBlock :global(.hljs-type) { color: #cba4ca; }
 .codeBlock :global(.hljs-number), .codeBlock :global(.hljs-literal), .codeBlock :global(.hljs-variable) { color: var(--lain-gold); }
-.codeBlock :global(.hljs-comment), .codeBlock :global(.hljs-quote) { color: rgb(244 229 207 / 48%); }
+.codeBlock :global(.hljs-comment), .codeBlock :global(.hljs-quote) { color: rgb(244 229 207 / 55%); }
 .tableScroll { max-width: 100%; margin: 16px 0; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid #47323e; border-radius: 8px; }
 .tableScroll table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .tableScroll th, .tableScroll td { padding: 9px 12px; border: 1px solid #47323e; text-align: left; white-space: nowrap; }
@@ -41,4 +41,6 @@
 .copy:focus-visible, .markdown a:focus-visible, .markdown pre:focus-visible, .tableScroll:focus-visible { outline: 2px solid var(--lain-cream); outline-offset: 2px; }
 .copyError { font-size: 11px; color: var(--lain-cream); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.codeBlock pre, .tableScroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 30%, transparent) transparent; }
+.codeBlock pre, .tableScroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 60%, transparent) transparent; }
+
+@media (pointer: coarse) { .copy { min-height: 44px; } }

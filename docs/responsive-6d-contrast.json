@@ -1,0 +1,21 @@
+{
+  "method": "WCAG sRGB luminance of alpha-composited CSS colors; calculated, not pixel sampling",
+  "historyDate": {
+    "before": 4.22,
+    "after": 5.16
+  },
+  "codeComment": {
+    "before": 4.25,
+    "after": 5.23
+  },
+  "composerBorder": {
+    "before": 1.59,
+    "after": 3.37
+  },
+  "conversationScrollbar": {
+    "before": 1.76,
+    "after": 3.42
+  },
+  "goldText": 7.34,
+  "creamText": 14.64
+}

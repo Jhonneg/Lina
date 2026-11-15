@@ -89,3 +89,15 @@ test("user text stays literal; only complete assistant responses have whole-resp
     if (status !== 'streaming') assert.ok(html.includes(status === 'pending' ? 'Response not yet saved' : `Response ${status}`));
   }
 });
+
+
+test("composer has an accessible name and only references existing help text", async () => {
+  const { ChatInput } = await import("../../src/components/chat/chat-input");
+  const html = renderToStaticMarkup(<ChatInput draft="" onDraftChange={() => {}} pending={false} onSend={() => {}} onStop={() => {}}
+    error={null} onRetry={() => {}} retryLabel="Retry" retryDisabled={false} disabled={false} inputRef={{ current: null }} />);
+  assert.ok(html.includes('for="message"') && html.includes('Message Lain'));
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]));
+  for (const match of html.matchAll(/aria-describedby="([^"]+)"/g)) {
+    for (const id of match[1].split(" ")) assert.ok(ids.has(id), `Missing description: ${id}`);
+  }
+});

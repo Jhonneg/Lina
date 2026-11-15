@@ -10,11 +10,8 @@ export type UsageLease = { id: string; generationMs: number; audioBytes: number;
   finish(usage?: TokenUsage, speech?: { completed: boolean; generationMs: number; audioBytes: number }): Promise<void> };
 export type UsageInput = { request: Request; sessionId: string; requestId: string; kind: "text" | "speech"; model: string; source: string;
   segment?: { index: number; final: boolean; progressive: boolean; chars: number } };
-export const lockUsage = async (tx: UsageTransaction) => {
-  await tx.execute(sql`SET LOCAL statement_timeout = '5000'`); await tx.execute(sql`SET LOCAL lock_timeout = '3000'`);
-  // One short global admission lock serializes budget and concurrency checks across processes.
-  await tx.execute(sql`SELECT pg_advisory_xact_lock(761915041)`);
-};
+export { lockUsage } from "../db/usage-lock";
+import { lockUsage } from "../db/usage-lock";
 export function createUsageService(database = getDatabase, policyFactory = usagePolicy) {
   async function transaction<T>(work: (tx: UsageTransaction) => Promise<T>, tx?: UsageTransaction) {
     try { return tx ? await work(tx) : await database().transaction(work); }

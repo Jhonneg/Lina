@@ -1,4 +1,5 @@
 import "server-only";
+import { getContext } from "@netlify/functions";
 import { createHmac } from "node:crypto";
 import { isIP } from "node:net";
 import { RequestError } from "../chat-request";
@@ -35,12 +36,17 @@ export function usagePolicy(env: Env = process.env) {
 }
 export function trustedIpPolicy(env: Env = process.env) {
   const proxy = env.USAGE_TRUSTED_PROXY ?? "none";
-  if (!["none", "vercel"].includes(proxy) || (env.NODE_ENV === "production" && proxy === "none") || (proxy === "vercel" && (env.VERCEL !== "1" || !env.USAGE_IP_HMAC_KEY || env.USAGE_IP_HMAC_KEY.length < 32))) throw unavailable();
+  if (!["none", "vercel", "netlify"].includes(proxy) || (env.NODE_ENV === "production" && proxy === "none") || (proxy === "vercel" && (env.VERCEL !== "1" || !env.USAGE_IP_HMAC_KEY || env.USAGE_IP_HMAC_KEY.length < 32))) throw unavailable();
+  if (proxy === "netlify" && (!env.USAGE_IP_HMAC_KEY || env.USAGE_IP_HMAC_KEY.length < 32)) throw unavailable();
   return { proxy, ipKey: env.USAGE_IP_HMAC_KEY };
 }
 export function ipDigest(request: Request, policy: ReturnType<typeof trustedIpPolicy>, date: Date) {
   if (policy.proxy === "none") return null; // Ignore all spoofable forwarded headers in local development.
-  const ip = request.headers.get("x-vercel-forwarded-for")?.trim();
+  let ip: string | undefined;
+  try {
+    // Platform request context, never a caller-controlled forwarded header.
+    ip = policy.proxy === "netlify" ? getContext().ip : request.headers.get("x-vercel-forwarded-for")?.trim();
+  } catch { throw unavailable(); }
   if (!ip || !isIP(ip) || ip.includes(",")) throw unavailable();
   let normalized = isIP(ip) === 6 ? new URL(`http://[${ip}]/`).hostname.toLowerCase() : ip;
   // Treat IPv4-mapped IPv6 as the same address; retain only a daily keyed digest.

@@ -6,7 +6,8 @@
   width: min(100%, 960px);
   height: var(--chat-height, 100dvh);
   margin-inline: auto;
-  padding-inline: 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   container: chat / size;
@@ -39,11 +40,11 @@
 .window[data-active="true"] .status { top: 224px; }
 .window[data-active="true"] .welcome { opacity: 0; visibility: hidden; transform: translateY(-8px); }
 
-.messages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; overflow-anchor: none; scrollbar-gutter: stable both-edges; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 30%, transparent) transparent; padding: 20px 2px 28px; }
+.messages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; overflow-anchor: none; scrollbar-gutter: stable both-edges; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--lain-gold) 60%, transparent) transparent; padding: 20px 2px 28px; }
 .messages::-webkit-scrollbar { width: 6px; }
 .messages::-webkit-scrollbar-track { background: transparent; }
-.messages::-webkit-scrollbar-thumb { border-radius: 6px; background: color-mix(in srgb, var(--lain-gold) 30%, transparent); }
-.messages::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--lain-gold) 50%, transparent); }
+.messages::-webkit-scrollbar-thumb { border-radius: 6px; background: color-mix(in srgb, var(--lain-gold) 60%, transparent); }
+.messages::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--lain-gold) 75%, transparent); }
 .messages:focus-visible { outline: 1px solid var(--lain-gold); outline-offset: -2px; border-radius: 8px; }
 .messageList { display: flex; flex-direction: column; gap: 28px; width: min(100%, 680px); padding: 0; margin: 0 auto; list-style: none; }
 @keyframes messageEnter { from { opacity: 0.65; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -58,7 +59,7 @@
 .latest { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 9px 15px; border: 1px solid rgb(197 159 96 / 35%); border-radius: 999px; background: var(--lain-plum); color: var(--lain-gold); font-size: 12px; white-space: nowrap; cursor: pointer; }
 
 .composerArea { width: min(100%, 680px); margin-inline: auto; padding: 14px 0 max(18px, env(safe-area-inset-bottom)); }
-.composer { display: flex; align-items: flex-end; gap: 12px; padding: 10px 12px; border: 1px solid rgb(197 159 96 / 25%); border-radius: 20px; background: rgb(244 229 207 / 2%); transition: border-color 180ms, box-shadow 180ms; }
+.composer { display: flex; align-items: flex-end; gap: 12px; padding: 10px 12px; border: 1px solid rgb(197 159 96 / 60%); border-radius: 20px; background: rgb(244 229 207 / 2%); transition: border-color 180ms, box-shadow 180ms; }
 .composer:focus-within { border-color: var(--lain-gold); box-shadow: 0 0 0 2px rgb(197 159 96 / 12%); }
 .composer textarea { display: block; flex: 1; min-width: 0; min-height: 40px; max-height: min(160px, calc(var(--chat-height, 100dvh) * 0.25)); margin: 0; padding: 8px 2px; resize: none; border: 0; outline: none; background: transparent; color: var(--lain-cream); font-family: inherit; font-size: 16px; line-height: 24px; overflow-y: auto; scrollbar-width: thin; }
 .composer textarea::placeholder { color: rgb(244 229 207 / 55%); }
@@ -73,7 +74,7 @@
 .window ::selection { background: rgb(197 159 96 / 28%); }
 
 @media (min-width: 640px) {
-  .window { padding-inline: 40px; }
+  .window { padding-left: max(40px, env(safe-area-inset-left)); padding-right: max(40px, env(safe-area-inset-right)); }
   .header { padding-top: max(24px, env(safe-area-inset-top)); padding-bottom: 20px; }
   .identity h1 { font-size: 14px; }
   .preview { display: inline; }
@@ -98,7 +99,7 @@
 }
 
 @container chat (max-height: 500px) {
-  .header { padding-top: 10px; padding-bottom: 10px; }
+  .header { padding-top: max(10px, env(safe-area-inset-top)); padding-bottom: 10px; }
   .composerArea { padding-top: 8px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
   .keyboardHint { display: none; }
   .window[data-active="false"] .welcome { display: none; }
@@ -150,3 +151,8 @@
 
 .headerActions { display: flex; align-items: center; gap: 8px; }
 @media (max-width: 399px) { .header { gap: 8px; } .identity { gap: 10px; } .headerActions { gap: 6px; } .headerActions .newChat { padding-inline: 8px; } }
+
+@media (pointer: coarse) {
+  .newChat, .latest { min-height: 44px; }
+  .composer textarea { min-height: 44px; }
+}

@@ -42,7 +42,7 @@ export function ChatInput({ draft, onDraftChange, pending, onSend, onStop, error
           value={draft}
           onChange={(event) => onDraftChange(event.target.value)}
           placeholder="What’s on your mind?"
-          aria-describedby="composer-help preview-notice"
+          aria-describedby="composer-help"
           onKeyDown={(event) => {
             // Safari can report the IME commit key as Enter with keyCode 229.
             if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing && event.nativeEvent.keyCode !== 229) {

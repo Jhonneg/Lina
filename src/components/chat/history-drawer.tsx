@@ -18,6 +18,20 @@ export function HistoryDrawer({ open, activeId, onClose, onSelect, onNewChat, on
   const visible = useRef(open);
   const deleted = useRef(new Set<string>());
   useEffect(() => { visible.current = open; }, [open]);
+  useEffect(() => {
+    const viewport = window.visualViewport, node = dialog.current;
+    if (!viewport || !node) return;
+    const resize = () => {
+      if (viewport.scale === 1) {
+        node.style.setProperty("--drawer-height", `${viewport.height}px`);
+        node.style.setProperty("--drawer-top", `${viewport.offsetTop}px`);
+      } else {
+        node.style.removeProperty("--drawer-height"); node.style.removeProperty("--drawer-top");
+      }
+    };
+    resize(); viewport.addEventListener("resize", resize); viewport.addEventListener("scroll", resize);
+    return () => { viewport.removeEventListener("resize", resize); viewport.removeEventListener("scroll", resize); };
+  }, []);
   const lastPage = useRef({ offset: 0, reset: true });
   const [items, setItems] = useState<HistoryConversation[]>([]);
   const [nextOffset, setNextOffset] = useState<number | null>(null);

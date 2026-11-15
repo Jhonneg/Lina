@@ -1,0 +1,2104 @@
+{
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/158.0.8127.18",
+    "revision": "@6449d9f9a6a906edff724b7b220199b3fde4615c",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36",
+    "jsVersion": "15.8.62.9"
+  },
+  "emulated": true,
+  "phases": [
+    {
+      "phase": "before",
+      "welcome": [
+        {
+          "width": 320,
+          "height": 740,
+          "visualHeight": 740,
+          "scrollWidth": 320,
+          "composer": {
+            "x": 20,
+            "y": 616,
+            "width": 280,
+            "height": 124,
+            "bottom": 740,
+            "right": 300
+          },
+          "input": {
+            "x": 33,
+            "y": 645,
+            "width": 198,
+            "height": 40,
+            "bottom": 685,
+            "right": 231
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 164.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 204.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 49.96875,
+              "y": 85,
+              "width": 238,
+              "height": 36,
+              "bottom": 121,
+              "right": 287.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 49.96875,
+              "y": 186.1875,
+              "width": 238,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 287.96875
+            },
+            {
+              "name": "New chat",
+              "x": 210.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 300
+            }
+          ],
+          "log": null,
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 375,
+          "height": 812,
+          "visualHeight": 812,
+          "scrollWidth": 375,
+          "composer": {
+            "x": 20,
+            "y": 688,
+            "width": 335,
+            "height": 124,
+            "bottom": 812,
+            "right": 355
+          },
+          "input": {
+            "x": 33,
+            "y": 717,
+            "width": 253,
+            "height": 40,
+            "bottom": 757,
+            "right": 286
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 219.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 259.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 96.96875,
+              "y": 85,
+              "width": 246,
+              "height": 36,
+              "bottom": 121,
+              "right": 342.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 96.96875,
+              "y": 186.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 342.96875
+            },
+            {
+              "name": "New chat",
+              "x": 265.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 355
+            }
+          ],
+          "log": null,
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "visualHeight": 844,
+          "scrollWidth": 390,
+          "composer": {
+            "x": 20,
+            "y": 720,
+            "width": 350,
+            "height": 124,
+            "bottom": 844,
+            "right": 370
+          },
+          "input": {
+            "x": 33,
+            "y": 749,
+            "width": 268,
+            "height": 40,
+            "bottom": 789,
+            "right": 301
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 234.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 274.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 111.96875,
+              "y": 85,
+              "width": 246,
+              "height": 36,
+              "bottom": 121,
+              "right": 357.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 111.96875,
+              "y": 186.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 357.96875
+            },
+            {
+              "name": "New chat",
+              "x": 280.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 370
+            }
+          ],
+          "log": null,
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "visualHeight": 1024,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 892.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 1024,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 921.40625,
+            "width": 598,
+            "height": 40,
+            "bottom": 961.40625,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 80
+            },
+            {
+              "name": "Voice controls",
+              "x": 582.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 728
+            }
+          ],
+          "log": null,
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "visualHeight": 900,
+          "scrollWidth": 1440,
+          "composer": {
+            "x": 380,
+            "y": 768.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 900,
+            "right": 1060
+          },
+          "input": {
+            "x": 393,
+            "y": 797.40625,
+            "width": 598,
+            "height": 40,
+            "bottom": 837.40625,
+            "right": 991
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 280,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 320
+            },
+            {
+              "name": "Voice controls",
+              "x": 1014.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 1054.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 891.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 1137.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 891.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 1137.96875
+            },
+            {
+              "name": "New chat",
+              "x": 1062.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 1160
+            }
+          ],
+          "log": null,
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": false,
+          "tableScroll": false
+        }
+      ],
+      "active": [
+        {
+          "width": 320,
+          "height": 740,
+          "visualHeight": 740,
+          "scrollWidth": 320,
+          "composer": {
+            "x": 20,
+            "y": 616,
+            "width": 280,
+            "height": 124,
+            "bottom": 740,
+            "right": 300
+          },
+          "input": {
+            "x": 33,
+            "y": 645,
+            "width": 198,
+            "height": 40,
+            "bottom": 685,
+            "right": 231
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 164.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 204.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 49.96875,
+              "y": 85,
+              "width": 238,
+              "height": 36,
+              "bottom": 121,
+              "right": 287.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 49.96875,
+              "y": 186.1875,
+              "width": 238,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 287.96875
+            },
+            {
+              "name": "New chat",
+              "x": 210.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 300
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 338,
+            "width": 280,
+            "height": 278,
+            "bottom": 616,
+            "right": 300
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 375,
+          "height": 812,
+          "visualHeight": 812,
+          "scrollWidth": 375,
+          "composer": {
+            "x": 20,
+            "y": 688,
+            "width": 335,
+            "height": 124,
+            "bottom": 812,
+            "right": 355
+          },
+          "input": {
+            "x": 33,
+            "y": 717,
+            "width": 253,
+            "height": 40,
+            "bottom": 757,
+            "right": 286
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 219.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 259.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 96.96875,
+              "y": 85,
+              "width": 246,
+              "height": 36,
+              "bottom": 121,
+              "right": 342.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 96.96875,
+              "y": 186.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 342.96875
+            },
+            {
+              "name": "New chat",
+              "x": 265.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 355
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 338,
+            "width": 335,
+            "height": 350,
+            "bottom": 688,
+            "right": 355
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "visualHeight": 844,
+          "scrollWidth": 390,
+          "composer": {
+            "x": 20,
+            "y": 720,
+            "width": 350,
+            "height": 124,
+            "bottom": 844,
+            "right": 370
+          },
+          "input": {
+            "x": 33,
+            "y": 749,
+            "width": 268,
+            "height": 40,
+            "bottom": 789,
+            "right": 301
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 60
+            },
+            {
+              "name": "Voice controls",
+              "x": 234.96875,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "bottom": 60,
+              "right": 274.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 111.96875,
+              "y": 85,
+              "width": 246,
+              "height": 36,
+              "bottom": 121,
+              "right": 357.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 111.96875,
+              "y": 186.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 222.1875,
+              "right": 357.96875
+            },
+            {
+              "name": "New chat",
+              "x": 280.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 40,
+              "bottom": 60,
+              "right": 370
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 338,
+            "width": 350,
+            "height": 382,
+            "bottom": 720,
+            "right": 370
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "visualHeight": 1024,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 892.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 1024,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 921.40625,
+            "width": 598,
+            "height": 40,
+            "bottom": 961.40625,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 80
+            },
+            {
+              "name": "Voice controls",
+              "x": 582.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 728
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 344,
+            "width": 688,
+            "height": 548.40625,
+            "bottom": 892.40625,
+            "right": 728
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "visualHeight": 900,
+          "scrollWidth": 1440,
+          "composer": {
+            "x": 586.390625,
+            "y": 768.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 900,
+            "right": 1266.390625
+          },
+          "input": {
+            "x": 599.390625,
+            "y": 797.40625,
+            "width": 598,
+            "height": 40,
+            "bottom": 837.40625,
+            "right": 1197.390625
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 160,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 200
+            },
+            {
+              "name": "Voice controls",
+              "x": 1134.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 1174.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 1011.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 1257.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 1011.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 1257.96875
+            },
+            {
+              "name": "New chat",
+              "x": 1182.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 1280
+            }
+          ],
+          "log": {
+            "x": 572.796875,
+            "y": 84,
+            "width": 707.203125,
+            "height": 684.40625,
+            "bottom": 768.40625,
+            "right": 1280
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 768,
+          "height": 375,
+          "visualHeight": 375,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 289,
+            "width": 680,
+            "height": 86,
+            "bottom": 375,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 312,
+            "width": 598,
+            "height": 40,
+            "bottom": 352,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 10,
+              "width": 40,
+              "height": 40,
+              "bottom": 50,
+              "right": 80
+            },
+            {
+              "name": "Voice controls",
+              "x": 582.96875,
+              "y": 10,
+              "width": 40,
+              "height": 40,
+              "bottom": 50,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 75,
+              "width": 246,
+              "height": 36,
+              "bottom": 111,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 176.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 212.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 10,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 50,
+              "right": 728
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 140,
+            "width": 688,
+            "height": 149,
+            "bottom": 289,
+            "right": 728
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "visualHeight": 390,
+          "scrollWidth": 844,
+          "composer": {
+            "x": 82,
+            "y": 304,
+            "width": 680,
+            "height": 86,
+            "bottom": 390,
+            "right": 762
+          },
+          "input": {
+            "x": 95,
+            "y": 327,
+            "width": 598,
+            "height": 40,
+            "bottom": 367,
+            "right": 693
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 10,
+              "width": 40,
+              "height": 40,
+              "bottom": 50,
+              "right": 80
+            },
+            {
+              "name": "Voice controls",
+              "x": 658.96875,
+              "y": 10,
+              "width": 40,
+              "height": 40,
+              "bottom": 50,
+              "right": 698.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 535.96875,
+              "y": 75,
+              "width": 246,
+              "height": 36,
+              "bottom": 111,
+              "right": 781.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 535.96875,
+              "y": 176.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 212.1875,
+              "right": 781.96875
+            },
+            {
+              "name": "New chat",
+              "x": 706.96875,
+              "y": 10,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 50,
+              "right": 804
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 140,
+            "width": 764,
+            "height": 164,
+            "bottom": 304,
+            "right": 804
+          },
+          "describedByMissing": [
+            "preview-notice"
+          ],
+          "codeScroll": true,
+          "tableScroll": false
+        }
+      ],
+      "keyboard": {
+        "width": 390,
+        "height": 844,
+        "visualHeight": 280,
+        "scrollWidth": 390,
+        "composer": {
+          "x": 20,
+          "y": 234,
+          "width": 350,
+          "height": 86,
+          "bottom": 320,
+          "right": 370
+        },
+        "input": {
+          "x": 33,
+          "y": 257,
+          "width": 268,
+          "height": 40,
+          "bottom": 297,
+          "right": 301
+        },
+        "headerControls": [
+          {
+            "name": "Open conversation history",
+            "x": 20,
+            "y": 50,
+            "width": 40,
+            "height": 40,
+            "bottom": 90,
+            "right": 60
+          },
+          {
+            "name": "Voice controls",
+            "x": 234.96875,
+            "y": 50,
+            "width": 40,
+            "height": 40,
+            "bottom": 90,
+            "right": 274.96875
+          },
+          {
+            "name": "Enable voice",
+            "x": 111.96875,
+            "y": 115,
+            "width": 246,
+            "height": 36,
+            "bottom": 151,
+            "right": 357.96875
+          },
+          {
+            "name": "Stop voice",
+            "x": 111.96875,
+            "y": 216.1875,
+            "width": 246,
+            "height": 36,
+            "bottom": 252.1875,
+            "right": 357.96875
+          },
+          {
+            "name": "New chat",
+            "x": 280.96875,
+            "y": 50,
+            "width": 89.03125,
+            "height": 40,
+            "bottom": 90,
+            "right": 370
+          }
+        ],
+        "log": {
+          "x": 20,
+          "y": 180,
+          "width": 350,
+          "height": 54,
+          "bottom": 234,
+          "right": 370
+        },
+        "describedByMissing": [
+          "preview-notice"
+        ],
+        "codeScroll": true,
+        "tableScroll": true
+      },
+      "drawerKeyboard": {
+        "top": 0,
+        "bottom": 844,
+        "height": 844,
+        "focus": "Close history"
+      },
+      "voiceLandscape": {
+        "top": 58,
+        "bottom": 364.3125,
+        "height": 306.3125,
+        "scrollHeight": 304,
+        "clientHeight": 304
+      }
+    },
+    {
+      "phase": "after",
+      "welcome": [
+        {
+          "width": 320,
+          "height": 740,
+          "visualHeight": 740,
+          "scrollWidth": 320,
+          "composer": {
+            "x": 20,
+            "y": 616,
+            "width": 280,
+            "height": 124,
+            "bottom": 740,
+            "right": 300
+          },
+          "input": {
+            "x": 33,
+            "y": 641,
+            "width": 198,
+            "height": 44,
+            "bottom": 685,
+            "right": 231
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 160.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 204.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 49.96875,
+              "y": 89,
+              "width": 238,
+              "height": 44,
+              "bottom": 133,
+              "right": 287.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 49.96875,
+              "y": 226.1875,
+              "width": 238,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 287.96875
+            },
+            {
+              "name": "New chat",
+              "x": 210.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 300
+            }
+          ],
+          "log": null,
+          "describedByMissing": [],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 375,
+          "height": 812,
+          "visualHeight": 812,
+          "scrollWidth": 375,
+          "composer": {
+            "x": 20,
+            "y": 688,
+            "width": 335,
+            "height": 124,
+            "bottom": 812,
+            "right": 355
+          },
+          "input": {
+            "x": 33,
+            "y": 713,
+            "width": 253,
+            "height": 44,
+            "bottom": 757,
+            "right": 286
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 215.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 259.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 96.96875,
+              "y": 89,
+              "width": 246,
+              "height": 44,
+              "bottom": 133,
+              "right": 342.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 96.96875,
+              "y": 226.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 342.96875
+            },
+            {
+              "name": "New chat",
+              "x": 265.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 355
+            }
+          ],
+          "log": null,
+          "describedByMissing": [],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "visualHeight": 844,
+          "scrollWidth": 390,
+          "composer": {
+            "x": 20,
+            "y": 720,
+            "width": 350,
+            "height": 124,
+            "bottom": 844,
+            "right": 370
+          },
+          "input": {
+            "x": 33,
+            "y": 745,
+            "width": 268,
+            "height": 44,
+            "bottom": 789,
+            "right": 301
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 230.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 274.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 111.96875,
+              "y": 89,
+              "width": 246,
+              "height": 44,
+              "bottom": 133,
+              "right": 357.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 111.96875,
+              "y": 226.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 357.96875
+            },
+            {
+              "name": "New chat",
+              "x": 280.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 370
+            }
+          ],
+          "log": null,
+          "describedByMissing": [],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "visualHeight": 1024,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 892.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 1024,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 917.40625,
+            "width": 598,
+            "height": 44,
+            "bottom": 961.40625,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 24,
+              "width": 44,
+              "height": 44,
+              "bottom": 68,
+              "right": 84
+            },
+            {
+              "name": "Voice controls",
+              "x": 578.96875,
+              "y": 24,
+              "width": 44,
+              "height": 44,
+              "bottom": 68,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 93,
+              "width": 246,
+              "height": 44,
+              "bottom": 137,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 230.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 274.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 44,
+              "bottom": 68,
+              "right": 728
+            }
+          ],
+          "log": null,
+          "describedByMissing": [],
+          "codeScroll": false,
+          "tableScroll": false
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "visualHeight": 900,
+          "scrollWidth": 1440,
+          "composer": {
+            "x": 380,
+            "y": 768.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 900,
+            "right": 1060
+          },
+          "input": {
+            "x": 393,
+            "y": 793.40625,
+            "width": 598,
+            "height": 44,
+            "bottom": 837.40625,
+            "right": 991
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 280,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 320
+            },
+            {
+              "name": "Voice controls",
+              "x": 1014.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 1054.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 891.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 1137.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 891.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 1137.96875
+            },
+            {
+              "name": "New chat",
+              "x": 1062.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 1160
+            }
+          ],
+          "log": null,
+          "describedByMissing": [],
+          "codeScroll": false,
+          "tableScroll": false
+        }
+      ],
+      "active": [
+        {
+          "width": 320,
+          "height": 740,
+          "visualHeight": 740,
+          "scrollWidth": 320,
+          "composer": {
+            "x": 20,
+            "y": 616,
+            "width": 280,
+            "height": 124,
+            "bottom": 740,
+            "right": 300
+          },
+          "input": {
+            "x": 33,
+            "y": 641,
+            "width": 198,
+            "height": 44,
+            "bottom": 685,
+            "right": 231
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 160.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 204.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 49.96875,
+              "y": 89,
+              "width": 238,
+              "height": 44,
+              "bottom": 133,
+              "right": 287.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 49.96875,
+              "y": 226.1875,
+              "width": 238,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 287.96875
+            },
+            {
+              "name": "New chat",
+              "x": 210.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 300
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 342,
+            "width": 280,
+            "height": 274,
+            "bottom": 616,
+            "right": 300
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 375,
+          "height": 812,
+          "visualHeight": 812,
+          "scrollWidth": 375,
+          "composer": {
+            "x": 20,
+            "y": 688,
+            "width": 335,
+            "height": 124,
+            "bottom": 812,
+            "right": 355
+          },
+          "input": {
+            "x": 33,
+            "y": 713,
+            "width": 253,
+            "height": 44,
+            "bottom": 757,
+            "right": 286
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 215.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 259.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 96.96875,
+              "y": 89,
+              "width": 246,
+              "height": 44,
+              "bottom": 133,
+              "right": 342.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 96.96875,
+              "y": 226.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 342.96875
+            },
+            {
+              "name": "New chat",
+              "x": 265.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 355
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 342,
+            "width": 335,
+            "height": 346,
+            "bottom": 688,
+            "right": 355
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "visualHeight": 844,
+          "scrollWidth": 390,
+          "composer": {
+            "x": 20,
+            "y": 720,
+            "width": 350,
+            "height": 124,
+            "bottom": 844,
+            "right": 370
+          },
+          "input": {
+            "x": 33,
+            "y": 745,
+            "width": 268,
+            "height": 44,
+            "bottom": 789,
+            "right": 301
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 20,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 64
+            },
+            {
+              "name": "Voice controls",
+              "x": 230.96875,
+              "y": 20,
+              "width": 44,
+              "height": 44,
+              "bottom": 64,
+              "right": 274.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 111.96875,
+              "y": 89,
+              "width": 246,
+              "height": 44,
+              "bottom": 133,
+              "right": 357.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 111.96875,
+              "y": 226.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 270.1875,
+              "right": 357.96875
+            },
+            {
+              "name": "New chat",
+              "x": 280.96875,
+              "y": 20,
+              "width": 89.03125,
+              "height": 44,
+              "bottom": 64,
+              "right": 370
+            }
+          ],
+          "log": {
+            "x": 20,
+            "y": 342,
+            "width": 350,
+            "height": 378,
+            "bottom": 720,
+            "right": 370
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": true
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "visualHeight": 1024,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 892.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 1024,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 917.40625,
+            "width": 598,
+            "height": 44,
+            "bottom": 961.40625,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 24,
+              "width": 44,
+              "height": 44,
+              "bottom": 68,
+              "right": 84
+            },
+            {
+              "name": "Voice controls",
+              "x": 578.96875,
+              "y": 24,
+              "width": 44,
+              "height": 44,
+              "bottom": 68,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 93,
+              "width": 246,
+              "height": 44,
+              "bottom": 137,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 230.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 274.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 44,
+              "bottom": 68,
+              "right": 728
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 348,
+            "width": 688,
+            "height": 544.40625,
+            "bottom": 892.40625,
+            "right": 728
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "visualHeight": 900,
+          "scrollWidth": 1440,
+          "composer": {
+            "x": 586.390625,
+            "y": 768.40625,
+            "width": 680,
+            "height": 131.59375,
+            "bottom": 900,
+            "right": 1266.390625
+          },
+          "input": {
+            "x": 599.390625,
+            "y": 797.40625,
+            "width": 598,
+            "height": 40,
+            "bottom": 837.40625,
+            "right": 1197.390625
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 160,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 200
+            },
+            {
+              "name": "Voice controls",
+              "x": 1134.96875,
+              "y": 24,
+              "width": 40,
+              "height": 40,
+              "bottom": 64,
+              "right": 1174.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 1011.96875,
+              "y": 89,
+              "width": 246,
+              "height": 36,
+              "bottom": 125,
+              "right": 1257.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 1011.96875,
+              "y": 190.1875,
+              "width": 246,
+              "height": 36,
+              "bottom": 226.1875,
+              "right": 1257.96875
+            },
+            {
+              "name": "New chat",
+              "x": 1182.96875,
+              "y": 24,
+              "width": 97.03125,
+              "height": 40,
+              "bottom": 64,
+              "right": 1280
+            }
+          ],
+          "log": {
+            "x": 572.796875,
+            "y": 84,
+            "width": 707.203125,
+            "height": 684.40625,
+            "bottom": 768.40625,
+            "right": 1280
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 768,
+          "height": 375,
+          "visualHeight": 375,
+          "scrollWidth": 768,
+          "composer": {
+            "x": 44,
+            "y": 289,
+            "width": 680,
+            "height": 86,
+            "bottom": 375,
+            "right": 724
+          },
+          "input": {
+            "x": 57,
+            "y": 308,
+            "width": 598,
+            "height": 44,
+            "bottom": 352,
+            "right": 655
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 10,
+              "width": 44,
+              "height": 44,
+              "bottom": 54,
+              "right": 84
+            },
+            {
+              "name": "Voice controls",
+              "x": 578.96875,
+              "y": 10,
+              "width": 44,
+              "height": 44,
+              "bottom": 54,
+              "right": 622.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 459.96875,
+              "y": 79,
+              "width": 246,
+              "height": 44,
+              "bottom": 123,
+              "right": 705.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 459.96875,
+              "y": 216.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 260.1875,
+              "right": 705.96875
+            },
+            {
+              "name": "New chat",
+              "x": 630.96875,
+              "y": 10,
+              "width": 97.03125,
+              "height": 44,
+              "bottom": 54,
+              "right": 728
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 144,
+            "width": 688,
+            "height": 145,
+            "bottom": 289,
+            "right": 728
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": false
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "visualHeight": 390,
+          "scrollWidth": 844,
+          "composer": {
+            "x": 82,
+            "y": 304,
+            "width": 680,
+            "height": 86,
+            "bottom": 390,
+            "right": 762
+          },
+          "input": {
+            "x": 95,
+            "y": 323,
+            "width": 598,
+            "height": 44,
+            "bottom": 367,
+            "right": 693
+          },
+          "headerControls": [
+            {
+              "name": "Open conversation history",
+              "x": 40,
+              "y": 10,
+              "width": 44,
+              "height": 44,
+              "bottom": 54,
+              "right": 84
+            },
+            {
+              "name": "Voice controls",
+              "x": 654.96875,
+              "y": 10,
+              "width": 44,
+              "height": 44,
+              "bottom": 54,
+              "right": 698.96875
+            },
+            {
+              "name": "Enable voice",
+              "x": 535.96875,
+              "y": 79,
+              "width": 246,
+              "height": 44,
+              "bottom": 123,
+              "right": 781.96875
+            },
+            {
+              "name": "Stop voice",
+              "x": 535.96875,
+              "y": 216.1875,
+              "width": 246,
+              "height": 44,
+              "bottom": 260.1875,
+              "right": 781.96875
+            },
+            {
+              "name": "New chat",
+              "x": 706.96875,
+              "y": 10,
+              "width": 97.03125,
+              "height": 44,
+              "bottom": 54,
+              "right": 804
+            }
+          ],
+          "log": {
+            "x": 40,
+            "y": 144,
+            "width": 764,
+            "height": 160,
+            "bottom": 304,
+            "right": 804
+          },
+          "describedByMissing": [],
+          "codeScroll": true,
+          "tableScroll": false
+        }
+      ],
+      "keyboard": {
+        "width": 390,
+        "height": 844,
+        "visualHeight": 280,
+        "scrollWidth": 390,
+        "composer": {
+          "x": 20,
+          "y": 234,
+          "width": 350,
+          "height": 86,
+          "bottom": 320,
+          "right": 370
+        },
+        "input": {
+          "x": 33,
+          "y": 253,
+          "width": 268,
+          "height": 44,
+          "bottom": 297,
+          "right": 301
+        },
+        "headerControls": [
+          {
+            "name": "Open conversation history",
+            "x": 20,
+            "y": 50,
+            "width": 44,
+            "height": 44,
+            "bottom": 94,
+            "right": 64
+          },
+          {
+            "name": "Voice controls",
+            "x": 230.96875,
+            "y": 50,
+            "width": 44,
+            "height": 44,
+            "bottom": 94,
+            "right": 274.96875
+          },
+          {
+            "name": "Enable voice",
+            "x": 111.96875,
+            "y": 119,
+            "width": 246,
+            "height": 44,
+            "bottom": 163,
+            "right": 357.96875
+          },
+          {
+            "name": "Stop voice",
+            "x": 111.96875,
+            "y": 256.1875,
+            "width": 246,
+            "height": 44,
+            "bottom": 300.1875,
+            "right": 357.96875
+          },
+          {
+            "name": "New chat",
+            "x": 280.96875,
+            "y": 50,
+            "width": 89.03125,
+            "height": 44,
+            "bottom": 94,
+            "right": 370
+          }
+        ],
+        "log": {
+          "x": 20,
+          "y": 184,
+          "width": 350,
+          "height": 50,
+          "bottom": 234,
+          "right": 370
+        },
+        "describedByMissing": [],
+        "codeScroll": true,
+        "tableScroll": true
+      },
+      "drawerKeyboard": {
+        "top": 40,
+        "bottom": 320,
+        "height": 280,
+        "focus": "Close history"
+      },
+      "voiceLandscape": {
+        "top": 62,
+        "bottom": 342,
+        "height": 280,
+        "scrollHeight": 348,
+        "clientHeight": 278
+      }
+    }
+  ],
+  "workflow": {
+    "historyPagination": true,
+    "focusTrap": true,
+    "escapeRestoration": true,
+    "menuKeyboard": true,
+    "conversationSwitch": true,
+    "explicitTouchAudio": true,
+    "stop": true,
+    "disableClosesContext": true,
+    "reducedMotion": true,
+    "canvasStable": true,
+    "accessibleComposerName": true,
+    "webglFallback": true,
+    "apiCalls": 8,
+    "exceptions": []
+  }
+}

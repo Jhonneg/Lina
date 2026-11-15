@@ -1,0 +1,38 @@
+{
+  "before": {
+    "keyboardVoice": {
+      "top": 98,
+      "bottom": 404.3125,
+      "height": 306.3125,
+      "scrollHeight": 304,
+      "clientHeight": 304,
+      "visibleBottom": 320
+    },
+    "safeArea": {
+      "chatLeft": "40px",
+      "chatRight": "40px",
+      "drawerHeaderLeft": "20px",
+      "footerBottom": "21px",
+      "coarse": true,
+      "viewportMeta": "width=device-width, initial-scale=1, interactive-widget=resizes-content"
+    }
+  },
+  "after": {
+    "keyboardVoice": {
+      "top": 102,
+      "bottom": 272,
+      "height": 170,
+      "scrollHeight": 348,
+      "clientHeight": 168,
+      "visibleBottom": 320
+    },
+    "safeArea": {
+      "chatLeft": "44px",
+      "chatRight": "44px",
+      "drawerHeaderLeft": "44px",
+      "footerBottom": "21px",
+      "coarse": true,
+      "viewportMeta": "width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    }
+  }
+}

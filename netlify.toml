@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# The current OpenNext adapter is installed automatically by Netlify.
+# Keep runtime secrets/configuration in Netlify UI/API (Functions scope), not here.
+# Never run migrations or opt into data deletion as part of a build/deploy.

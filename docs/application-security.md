@@ -38,7 +38,7 @@ scan or authorization to deploy. Public production voice remains disabled.
 | Validation / deadlines | Actual streamed bytes are bounded, not just Content-Length: 32 KiB chat/voice bodies; 20 messages, 4,000 characters/message, 12,000 combined; 2 KiB title bodies and bounded pagination. Chat has a 25s deadline/20s SDK timeout, speech 30s cumulative upstream and 60s PCM budgets. Providers have no automatic paid retries. |
 | Usage / concurrency | PostgreSQL admission lock serializes quota, daily shared budget and concurrency checks. Unique session/kind/request/segment reservations and one-time dispatch prevent concurrent duplicate calls. Persisted claim/reservation share a transaction. Completed replay does not regenerate. DB/accounting failure blocks new paid work and prevents successful completion acknowledgement. |
 | Budget accuracy | UTF-8 input bytes plus overhead and provider output caps reserve estimated maxima at snapshotted prices. Final usage reconciles; unknown/interrupted spend keeps the maximum. Unstarted expired reservations can be voided safely; started crashed claims retain charges. Operator tariff errors, unknown usage and provider timing prevent an invoice-cap guarantee. See usage-protection documentation. |
-| IP trust / rotation | Only explicitly enabled genuine Vercel ingress may supply x-vercel-forwarded-for. Other forwarded headers are ignored; missing/malformed trusted addresses fail closed. Daily keyed IP hashes survive cookie/session rotation without storing raw addresses. Production paid requests fail closed without supported trusted-ingress configuration. |
+| IP trust / rotation | Netlify uses only the official Functions request-context IP; absent context fails closed. The legacy Vercel mode remains for compatibility. Other forwarded headers are ignored; missing/malformed trusted addresses fail closed. Daily keyed IP hashes survive cookie/session rotation without storing raw addresses. Production paid requests fail closed without supported trusted-ingress configuration. |
 | Speech authorization | Main speech requires an existing valid session, same-origin POST, server-approved model/voice/delivery, admission and per-sequence limits. Every segment counts; at most three ordered segments and 800 combined characters. Lab delivery is editable only in the development lab. Client request IDs cannot bypass persistent quotas. |
 | Development isolation | Mock adapters fail outside development. Both speech endpoints and the remaining lab page return 404 outside development. Client activation also refuses production. No removed local model/worker is initialized. Development servers must never be publicly deployed. |
 | Logs / errors | Database logging is off; idle pool errors use a constant message. OpenAI text SDK logging is off. Handler error responses are sanitized, do not serialize provider/SQL exceptions, and never include credentials or full conversation logs. Platform/access logs are outside this source audit. |
@@ -65,14 +65,14 @@ artifact and its actual host/proxy still need browser compatibility verification
 
 - **Anonymous abuse is not solved by CSRF or session quotas.** Non-browser clients
   can set Origin and create new sessions. IP limits plus the global cost budget
-  constrain paid use, but session initialization, conversation CRUD/listing and
-  rejected requests lack their own persistent abuse/storage caps. Before public
-  deployment, configure trusted-edge request limits for *all* APIs, bounded
-  request bodies/connections, and decide session/conversation/storage retention.
+  constrain paid use. [Milestone 6B.1](non-billable-abuse-protection.md) added
+  persistent guards/storage caps for session and conversation APIs; rejected
+  ingress traffic still needs trusted-edge limits. Before public deployment,
+  configure ingress body/connection bounds and review scheduled retention.
   Do not infer public readiness from successful paid-usage tests.
 - Trust only the actual hosting platform's overwritten address headers, reject
   unexpected Host/forwarded-host values at ingress, and prevent direct-origin
-  bypass. Current IP support is Vercel-specific. Shared NATs share quotas; changing
+  bypass. Netlify uses `@netlify/functions` request context instead of forwarded headers; see [Milestone 6E](netlify-production-6e.md) for hosted verification requirements. Shared NATs share quotas; changing
   IP/IPv6 addresses can evade per-IP quotas. Daily HMAC rotation resets IP windows
   at UTC midnight. Global reservations remain the final application spend guard.
 - Speech accepts bounded caller-supplied narration for a verified anonymous

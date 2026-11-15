@@ -10,7 +10,7 @@ import { CLOUD_LIMITS, createCloudVoiceHandler } from "./handler";
 import { CLOUD_MODEL, narrationResponse } from "./realtime";
 
 type RelayOptions = NonNullable<Parameters<typeof createCloudVoiceHandler>[0]>;
-const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
+const headers = { "Cache-Control": "no-store, no-transform", "X-Content-Type-Options": "nosniff" };
 const fail = (status: number, code: string, message: string, retryAfter?: number) => Response.json({ ok: false, error: { code, message } }, { status, headers: { ...headers, ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}) } });
 export function createChatVoiceHandler({ service = createSessionService(), relay, development = () => process.env.NODE_ENV === "development", usage = createUsageService() }: {
   service?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">; relay?: (request: Request, limits: RelayOptions) => Promise<Response>; development?: () => boolean; usage?: ReturnType<typeof createUsageService>;

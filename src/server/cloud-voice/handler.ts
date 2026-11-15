@@ -9,7 +9,7 @@ import { RequestError, readChatBody, validateHeaders } from "../chat-request";
 import { CLOUD_MODEL, connectRealtime, estimateCost, narrationResponse } from "./realtime";
 
 export const CLOUD_LIMITS = { textChars: 800, durationMs: 30_000, audioBytes: 24_000 * 2 * 60 } as const;
-const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
+const headers = { "Cache-Control": "no-store, no-transform", "X-Content-Type-Options": "nosniff" };
 const VOICES = ["marin", "shimmer", "coral", "cedar"];
 function failure(status: number, code: string, message: string, retryAfter?: number) { return Response.json({ ok: false, error: { code, message } }, { status, headers: { ...headers, ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}) } }); }
 export function createCloudVoiceHandler({ connect = connectRealtime, development = () => process.env.NODE_ENV === "development", key = () => process.env.OPENAI_API_KEY,

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { withNetlifyIp } from "../netlify/context";
 import { test } from "node:test";
 import { randomBytes, randomUUID } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
@@ -29,6 +30,18 @@ test("persistent usage accounting against disposable PostgreSQL", async t => {
   const session = async () => (await db.insert(sessions).values({ tokenHash: randomBytes(32).toString("hex"), expiresAt: new Date(Date.now() + 3_600_000) }).returning())[0].id;
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
+    await t.test("Netlify context enforces persistent IP limits across sessions and spoofed headers", async () => {
+      await reset();
+      const first = await session(), second = await session();
+      const guard = usage({ USAGE_TRUSTED_PROXY: "netlify", USAGE_IP_HMAC_KEY: "fixture-only-key-at-least-32-characters", USAGE_IP_MINUTE_LIMIT: "1" });
+      await assert.rejects(guard.reserve(input(first)), UsageError);
+      assert.equal((await db.select().from(usageReservations)).length, 0);
+      await withNetlifyIp("203.0.113.21", async () => {
+        const lease = await guard.reserve(input(first)); await lease.start(); await lease.finish();
+        await assert.rejects(guard.reserve(input(second, { request: new Request("http://localhost", { headers: { "x-nf-client-connection-ip": "198.51.100.9" } }) })), e => e instanceof UsageError && e.code === "USAGE_IP_LIMIT");
+      });
+      await reset();
+    });
     await t.test("ordinary application connections enforce query and lock timeouts", async () => {
       const timeout = await db.execute(sql`SHOW statement_timeout`), locks = await db.execute(sql`SHOW lock_timeout`);
       assert.equal(timeout.rows[0].statement_timeout, "5s"); assert.equal(locks.rows[0].lock_timeout, "3s");

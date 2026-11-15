@@ -29,11 +29,12 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy on Netlify
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The approved production stack is Netlify (OpenNext), Neon PostgreSQL, OpenAI and
+GitHub. See [production readiness and deployment instructions](docs/netlify-production-6e.md)
+for environment scopes, migrations, scheduled cleanup, verification and rollback.
+Production build/hosted checks remain blockers; nothing has been deployed.
 
 ## Server-side chat API (Milestone 3A)
 
@@ -260,3 +261,16 @@ new session/history guards. Limits, storage caps and retention defaults are in
 its separate `--apply` option permanently deletes eligible expired data and must
 only be used after reviewing and authorizing the target. Validation uses
 `npm run test:abuse` and `npm run test:abuse:postgres`, never `lain_dev` cleanup.
+
+### Performance review
+
+[Milestone 6C](docs/performance-6c.md) records the paired mock-browser benchmark,
+measured message-row/CPU improvement, unchanged rendering/audio behaviour, and
+hardware/production limitations. Its profiling preview runs from a temporary
+credential-free snapshot; no live API or database is needed.
+
+### Mobile and accessibility review
+
+[Milestone 6D](docs/mobile-accessibility-6d.md) records responsive measurements,
+keyboard/safe-area fixes, touch targets, contrast, focus/audio/fallback checks and
+physical-device limitations. Validation uses mocked APIs and synthetic PCM only.

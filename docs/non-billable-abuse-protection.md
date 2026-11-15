@@ -45,10 +45,10 @@ in force. Successful session creation precedes its first session-only admission;
 a later accounting failure can leave an orphan session without issuing a cookie,
 but its prior IP admission remains charged.
 
-IP trust reuses `USAGE_TRUSTED_PROXY=vercel`, genuine `VERCEL=1`, and a server-only
-HMAC key of at least 32 characters. Only the platform-overwritten
-`x-vercel-forwarded-for` is accepted; generic forwarded headers cannot change the
-bucket. Production fails closed without this configuration. Local development
+IP trust now supports `USAGE_TRUSTED_PROXY=netlify` and a server-only HMAC key
+of at least 32 characters. Only the official Functions SDK request-context IP
+is accepted in this mode; missing context fails closed and forwarded headers
+are ignored. The legacy Vercel mode remains for compatibility. Local development
 with `none` ignores address headers and shares a conservative `local` IP bucket.
 Fixed windows permit a boundary burst (up to two minute allowances across a
 minute boundary); UTC-day HMAC rotation also resets IP windows at midnight.
@@ -130,8 +130,9 @@ body-size and request-rate limits. Rejected/CSRF requests still cost network/CPU
 NAT users share IP limits; attackers with many IP/IPv6 addresses can create many
 bounded sessions. These are per-session caps, not a global disk ceiling. Monitor
 capacity and set trusted-edge/global admission policy before a public rollout.
-Cleanup must be invoked by an operator: counter/expired-session storage continues
-to accumulate if maintenance is never run. Billing-ledger retention is a separate
+[Milestone 6E](netlify-production-6e.md) prepares a Netlify Scheduled Function,
+initially dry-run. An operator must opt into apply mode; counters/expired-session
+storage continues to accumulate until maintenance is applied. Billing-ledger retention is a separate
 future policy. DB backups may retain deleted records. The shared admission lock
 favours correctness over very high throughput and needs load testing on the real
 host. All other [6B deployment requirements](application-security.md) still apply.

@@ -3,6 +3,7 @@ Status: Milestone 1 HD Subtle orb approved and complete. Milestone 2 local chat 
 Product vision
 Lain 2.0 is a minimalist conversational AI application represented by a living, responsive 3D entity. The orb is a visual companion for a chat interface, not a standalone full-screen 3D art exhibit. The user wants a polished, calm experience with expressive but clean and restrained animation.
 Confirmed design choices
+- Approved deployment stack (Milestone 6E): Netlify/OpenNext, Neon PostgreSQL, OpenAI and GitHub. Vercel is no longer the deployment target. Production voice remains disabled pending deployment security verification.
 - Theme: dark plum + muted gold + amber (same direction as the user's portfolio).
 - Approximate palette: background #1C131B; muted gold #C59F60; amber accent #DB924B; light foreground #F4E5CF. These are starting tokens; tweak only modestly for contrast or visual balance.
 - Style: minimalist, spare interface, generous whitespace, subtle effects; no heavy glassmorphism, noisy decorations or huge gradients.

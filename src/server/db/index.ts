@@ -1,24 +1,7 @@
 import "server-only";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "./schema";
+import { createDatabaseConnection } from "./connection";
 
-function createConnection() {
-  const connectionString = process.env.DATABASE_URL?.trim();
-  if (!connectionString) throw new Error("Database is not configured. Set DATABASE_URL on the server.");
-  try {
-    const url = new URL(connectionString);
-    if (url.protocol !== "postgres:" && url.protocol !== "postgresql:") throw new Error();
-  } catch {
-    throw new Error("DATABASE_URL must be a valid PostgreSQL connection URL.");
-  }
-  // pg creates sockets only when a query or connection is requested.
-  const pool = new Pool({ connectionString, max: 5, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000,
-    // Ordinary session/history queries need bounds too, not only usage transactions.
-    statement_timeout: 5000, lock_timeout: 3000, query_timeout: 8000 });
-  pool.on("error", () => { console.error("An idle database connection failed."); });
-  return { pool, db: drizzle(pool, { schema, logger: false }) };
-}
+function createConnection() { return createDatabaseConnection(process.env.DATABASE_URL); }
 
 type Connection = ReturnType<typeof createConnection>;
 const developmentCache = globalThis as typeof globalThis & { lainDatabase?: Connection };
