@@ -147,3 +147,6 @@
   .messageList > li { animation: none; }
   .window *, .window *::before, .window *::after { transition: none !important; scroll-behavior: auto !important; }
 }
+
+.headerActions { display: flex; align-items: center; gap: 8px; }
+@media (max-width: 399px) { .header { gap: 8px; } .identity { gap: 10px; } .headerActions { gap: 6px; } .headerActions .newChat { padding-inline: 8px; } }

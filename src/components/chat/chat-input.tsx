@@ -58,7 +58,7 @@ export function ChatInput({ draft, onDraftChange, pending, onSend, onStop, error
         </button>}
       </form>
       <p id="composer-help" className={styles.keyboardHint}>Enter to send <span aria-hidden="true">·</span> Shift+Enter for a new line</p>
-      <p id="preview-notice" className={styles.notice}>Conversations saved for this browser</p>
+      {/* <p id="preview-notice" className={styles.notice}>Conversations saved for this browser</p> */}
     </footer>
   );
 }

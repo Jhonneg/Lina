@@ -1,7 +1,8 @@
 // Approved HD Subtle shaders from docs/references/lain-noise-orb-hd-subtle.html.
-// Keep reference formulas intact; refinement is fixed to 1 (HD mode).
+// Baseline formulas stay intact; audio additions are zero without an attached source.
 
 export const orbVertexShader = /* glsl */ `
+uniform float audioRms;uniform float audioBass;uniform float audioMid;uniform float audioHigh;
 uniform float time;uniform float energy;uniform float pulse;uniform float glitch;
 varying vec3 vNormal;varying vec3 vPos;varying vec2 vUv;
 void main(){
@@ -13,9 +14,15 @@ void main(){
           *sin(position.z*4.8+time*.7);
  float detail=sin(position.y*13.+position.x*6.+time*(.8+energy*2.5))*.5;
  float displacement=(wave*.20+detail*.045)*(1.+energy*.75+pulse*1.8);
- vec3 pos=position+n*(displacement+glitch*.07*sin(position.y*55.+time*40.));
+ // Vocal wave components from the V3 reference. Reserve headroom around baseline peaks.
+ float vocal=audioBass*.14*sin(position.y*5.+time*8.)*sin(position.x*4.-time*5.)
+            +audioMid*.07*sin(position.z*12.+time*15.)
+            +audioHigh*.035*sin(position.y*32.+time*32.);
+ float headroom=max(0.,.68-abs(displacement));
+ vocal=clamp(vocal,-headroom,headroom);
+ vec3 pos=position+n*(displacement+vocal+glitch*.07*sin(position.y*55.+time*40.));
  vPos=pos;vNormal=normalize(normalMatrix*normal);
- gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.);
+ gl_Position=projectionMatrix*modelViewMatrix*vec4(pos*(1.+audioRms*.045),1.);
 }`;
 
 export const orbFragmentShader = /* glsl */ `

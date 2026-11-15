@@ -14,13 +14,16 @@
     "test:session:postgres": "node scripts/test-session-postgres.mjs",
     "test:conversations:postgres": "node scripts/test-conversations-postgres.mjs",
     "test:stream:postgres": "node scripts/test-stream-postgres.mjs",
-    "test:management:postgres": "node scripts/test-management-postgres.mjs"
+    "test:management:postgres": "node scripts/test-management-postgres.mjs",
+    "test:voice": "node scripts/test-voice.mjs",
+    "test:audio": "node scripts/test-audio-reactivity.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "drizzle-orm": "0.45.4",
     "highlight.js": "11.11.1",
+    "kokoro-js": "1.2.1",
     "lowlight": "3.3.0",
     "next": "16.4.5",
     "openai": "^7.53.0",
@@ -29,8 +32,10 @@
     "react-dom": "19.3.0",
     "react-markdown": "10.1.0",
     "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
     "server-only": "^0.0.1",
-    "three": "^0.187.0"
+    "three": "^0.187.0",
+    "unified": "11.0.5"
   },
   "devDependencies": {
     "@next/env": "16.4.5",

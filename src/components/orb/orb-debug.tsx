@@ -13,7 +13,7 @@ export type OrbDiagnostics = {
   material: ShaderMaterial;
 };
 
-const UNIFORMS = ["time", "energy", "pulse", "glitch", "refinement"];
+const UNIFORMS = ["time", "energy", "pulse", "glitch", "refinement", "audioRms", "audioBass", "audioMid", "audioHigh"];
 
 export function OrbDebug({ diagnosticsRef }: { diagnosticsRef: RefObject<OrbDiagnostics | null> }) {
   const output = useRef<HTMLPreElement>(null);

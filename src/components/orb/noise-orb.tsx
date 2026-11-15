@@ -9,6 +9,8 @@ import { orbFragmentShader, orbVertexShader } from "./shaders";
 import { ORB_GEOMETRY, ORB_SHELL_GEOMETRY } from "./orb-geometry";
 import { advanceOrbMotion, createOrbMotion } from "./orb-animation";
 import type { OrbDiagnostics } from "./orb-debug";
+import type { AudioReactivity } from "../../lib/audio/reactivity";
+import { applyOrbAudio, type OrbAudioUniforms } from "./orb-audio";
 
 const CAMERA_Z = 7.9;
 // Match the approved camera while preserving the existing apparent dimensions.
@@ -41,13 +43,14 @@ function ContextMonitor({ onLost }: { onLost: () => void }) {
   return null;
 }
 
-function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnosticsRef }: {
+function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnosticsRef, audioRef }: {
   state: OrbState;
   reduced: boolean;
   visible: boolean;
   presentationScale: number;
   pointer: RefObject<[number, number]>;
   diagnosticsRef?: RefObject<OrbDiagnostics | null>;
+  audioRef?: RefObject<AudioReactivity | null>;
 }) {
   const invalidate = useThree((root) => root.invalidate);
   const mesh = useRef<Mesh>(null);
@@ -58,6 +61,7 @@ function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnost
   const motion = useRef(createOrbMotion());
   const skipDelta = useRef(true);
   const uniforms = useMemo(() => ({
+    audioRms: { value: 0 }, audioBass: { value: 0 }, audioMid: { value: 0 }, audioHigh: { value: 0 },
     time: { value: 0 }, energy: { value: 0 }, pulse: { value: 0 }, glitch: { value: 0 }, refinement: { value: 1 },
   }), []);
 
@@ -78,6 +82,8 @@ function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnost
     return () => { if (diagnosticsRef) diagnosticsRef.current = null; };
   }, [diagnosticsRef, state, reduced]);
 
+  useEffect(() => () => { applyOrbAudio(uniforms, null, 0, true, 0); }, [uniforms]);
+
   useFrame((_, delta) => {
     if (!mesh.current || !material.current || !shell.current || !shellMaterial.current || !group.current) return;
     const dt = skipDelta.current || !visible ? 0 : delta;
@@ -87,7 +93,8 @@ function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnost
     const live = material.current.uniforms;
     live.time.value = current.elapsed;
     live.energy.value = current.energy;
-    live.pulse.value = current.pulse;
+    const audioScale = applyOrbAudio(live as OrbAudioUniforms, visible ? audioRef?.current : null, dt, reduced, current.pulse);
+    shell.current.scale.setScalar(audioScale);
     live.glitch.value = 0;
     mesh.current.rotation.y = current.meshRotationY;
     mesh.current.rotation.z = current.meshRotationZ;
@@ -131,7 +138,7 @@ function OrbMesh({ state, reduced, visible, presentationScale, pointer, diagnost
   );
 }
 
-export default function NoiseOrb({ state, diagnosticsRef }: { state: OrbState; diagnosticsRef?: RefObject<OrbDiagnostics | null> }) {
+export default function NoiseOrb({ state, diagnosticsRef, audioRef }: { state: OrbState; diagnosticsRef?: RefObject<OrbDiagnostics | null>; audioRef?: RefObject<AudioReactivity | null> }) {
   const reduced = useSyncExternalStore(subscribeMotion, () => window.matchMedia("(prefers-reduced-motion: reduce)").matches, () => true);
   const desktop = useSyncExternalStore(subscribeViewport, () => window.matchMedia("(min-width: 640px)").matches, () => false);
   const visible = useSyncExternalStore(subscribeVisibility, () => !document.hidden, () => true);
@@ -173,7 +180,7 @@ export default function NoiseOrb({ state, diagnosticsRef }: { state: OrbState; d
         }}
       >
         <ContextMonitor onLost={() => setLost(true)} />
-        <OrbMesh state={state} reduced={reduced} visible={visible} presentationScale={desktop ? DESKTOP_SCALE : MOBILE_SCALE} pointer={pointer} diagnosticsRef={diagnosticsRef} />
+        <OrbMesh state={state} reduced={reduced} visible={visible} presentationScale={desktop ? DESKTOP_SCALE : MOBILE_SCALE} pointer={pointer} diagnosticsRef={diagnosticsRef} audioRef={audioRef} />
       </Canvas>
     </div>
   );

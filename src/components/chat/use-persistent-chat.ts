@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { chatReducer, conversationContext, INITIAL_CHAT, MAX_MESSAGE_CHARS, type ChatAction } from "./chat-state";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { chatReducer, conversationContext, INITIAL_CHAT, MAX_MESSAGE_CHARS, type ChatAction, type ChatState } from "./chat-state";
 import { ChatStreamError, isUuid, streamChat } from "./chat-stream";
 import { initializeSession, pendingMessages, readPending, reconcileMessages, restoreConversation, savedSubmission,
   submissionConversation, writePending, type PendingStorage, type Submission } from "./chat-persistence";
@@ -18,7 +18,7 @@ function setConversationUrl(id: string | null) {
 }
 const CHECK_STATUS = "The response was not confirmed saved. Check its saved status before continuing.";
 
-export function usePersistentChat() {
+export function usePersistentChat(stateObserver?: RefObject<((state: ChatState) => void) | null>) {
   const [state, setState] = useState(INITIAL_CHAT);
   const snapshot = useRef(INITIAL_CHAT);
   const [loading, setLoading] = useState<string | null>("Connecting");
@@ -36,7 +36,8 @@ export function usePersistentChat() {
     const next = chatReducer(snapshot.current, action);
     snapshot.current = next;
     setState(next);
-  }, []);
+    try { stateObserver?.current?.(next); } catch { /* Optional speech must never break text chat. */ }
+  }, [stateObserver]);
   const preserve = useCallback((value: Submission) => {
     recoveries.current.set(value.requestId, value);
     archiveSubmission(storage(), value);

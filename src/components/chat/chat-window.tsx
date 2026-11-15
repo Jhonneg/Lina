@@ -4,17 +4,24 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { OrbPresence } from "@/components/orb/orb-presence";
 import type { OrbState } from "@/components/orb/orb-state";
 import { HistoryDrawer } from "./history-drawer";
+import { useChatVoice } from "./use-chat-voice";
+import { ChatVoiceControls } from "./chat-voice-controls";
 import { ChatHeader } from "./chat-header";
 import { ChatInput } from "./chat-input";
 import { ChatMessage } from "./chat-message";
+import type { ChatState } from "./chat-state";
 import { usePersistentChat } from "./use-persistent-chat";
 import styles from "./chat.module.css";
 
 const STATUS: Record<OrbState, string> = { idle: "Awaiting input", thinking: "Processing thought", talking: "Transmitting" };
 
 export function ChatWindow() {
-  const { state: { messages, phase, error, conversationId }, loading, blocked, bootError, retryAt,
-    send: submit, stop, reset: clearConversation, retry, retryLabel, selectConversation, conversationDeleted } = usePersistentChat();
+  const speechObserver = useRef<((state: ChatState) => void) | null>(null);
+  const { state: { messages, phase, error, conversationId, requestId, assistantId }, loading, blocked, bootError, retryAt,
+    send: submit, stop, reset: clearConversation, retry, retryLabel, selectConversation, conversationDeleted } = usePersistentChat(speechObserver);
+  const voice = useChatVoice({ messages, requestId, assistantId, conversationId, loading, streamObserverRef: speechObserver });
+  const voiceBusy = ["activating", "loading", "generating", "buffering"].includes(voice.view.state);
+  const orbPhase: OrbState = voice.view.state === "playing" ? "talking" : phase !== "idle" ? phase : voiceBusy ? "thinking" : "idle";
   const [historyOpen, setHistoryOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [showLatest, setShowLatest] = useState(false);
@@ -68,12 +75,15 @@ export function ChatWindow() {
   }, [active]);
 
   function send() {
+    if (!draft.trim()) return;
+    voice.stop();
     if (!submit(draft.trim())) return;
     setDraft("");
     inputRef.current?.focus({ preventScroll: true });
   }
 
   function reset() {
+    voice.stop();
     clearConversation();
     pinnedRef.current = true;
     setDraft("");
@@ -83,14 +93,15 @@ export function ChatWindow() {
 
   return (
     <div ref={windowRef} className={styles.window} data-active={active}>
-      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => setHistoryOpen(open => !open)} />
+      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => setHistoryOpen(open => !open)}
+        voiceControls={<ChatVoiceControls view={voice.view} consentOpen={voice.consentOpen} onToggle={voice.toggle} onEnable={voice.enable} onConsentCancel={voice.cancelConsent} onStop={voice.stop} onVolume={voice.setVolume} />} />
       <main className={styles.conversation} aria-label="Chat with Lain">
         <div className={styles.presence}>
           <div className={styles.orbFrame} role="img" aria-label="Lain’s amber presence">
-            <OrbPresence state={phase} />
+            <OrbPresence state={orbPhase} audioRef={voice.audio} />
           </div>
-          <div className={styles.status} role="status" aria-live="polite" data-orb-state={phase}>
-            <span aria-hidden="true" />{loading ?? STATUS[phase]}
+          <div className={styles.status} role="status" aria-live="polite" data-orb-state={orbPhase}>
+            <span aria-hidden="true" />{loading ?? (voiceBusy ? voice.view.progress || "Preparing voice…" : STATUS[orbPhase])}
           </div>
           <div className={styles.welcome} aria-hidden={active}>
             <h2>You are connected.</h2>
@@ -116,7 +127,7 @@ export function ChatWindow() {
             }}
           >
             <ol ref={contentRef} className={styles.messageList}>
-              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} transmitting={phase === "talking"} />)}
+              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} transmitting={phase === "talking"} onRead={voice.read} reading={voice.view.messageId === message.id} />)}
             </ol>
           </div>
         )}
@@ -131,12 +142,12 @@ export function ChatWindow() {
           }}>Jump to latest <span aria-hidden="true">↓</span></button>
         )}
       </main>
-      <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={stop}
-        error={error} onRetry={retry} retryLabel={retryLabel} retryDisabled={Boolean(loading) || retryAt > 0}
+      <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={() => { voice.stop(); stop(); }}
+        error={error} onRetry={() => { voice.stop(); retry(); }} retryLabel={retryLabel} retryDisabled={Boolean(loading) || retryAt > 0}
         disabled={Boolean(loading) || blocked || bootError} inputRef={inputRef} />
-      <HistoryDrawer onDeleted={conversationDeleted} open={historyOpen} activeId={conversationId} onClose={() => setHistoryOpen(false)}
+      <HistoryDrawer onDeleted={id => { if (id === conversationId) voice.stop(); conversationDeleted(id); }} open={historyOpen} activeId={conversationId} onClose={() => setHistoryOpen(false)}
         onNewChat={reset} onSelect={id => {
-          selectConversation(id); setDraft(""); setShowLatest(false); pinnedRef.current = true;
+          voice.stop(); selectConversation(id); setDraft(""); setShowLatest(false); pinnedRef.current = true;
         }} />
     </div>
   );
