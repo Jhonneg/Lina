@@ -1,3 +1,12 @@
+
+
+
+
+
+https://github.com/user-attachments/assets/681f6b66-fa26-48c7-9698-8d23b3831821
+
+
+
 # Lain 2.0
 
 Lain is a conversational AI web app centered around a compact procedural 3D orb. It combines streamed assistant replies, anonymous persistent conversations, and optional cloud speech in a restrained plum, amber, and gold interface. Lain's server-side personality instructions are versioned and kept separate from conversation messages.
