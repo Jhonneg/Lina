@@ -31,6 +31,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Netlify
 
+For the public portfolio launch, use the exact [Netlify environment settings](docs/netlify-public-launch.md), including the shared $0.50 budget and explicit production voice opt-in. Earlier private-staging reports are historical.
+
 The approved production stack is Netlify (OpenNext), Neon PostgreSQL, OpenAI and
 GitHub. See [production readiness and deployment instructions](docs/netlify-production-6e.md)
 for environment scopes, migrations, scheduled cleanup, verification and rollback.

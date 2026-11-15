@@ -101,3 +101,13 @@ test("composer has an accessible name and only references existing help text", a
     for (const id of match[1].split(" ")) assert.ok(ids.has(id), `Missing description: ${id}`);
   }
 });
+
+
+test("restricted visitors see an operator link and a disabled composer", async () => {
+  const { ChatInput } = await import("../../src/components/chat/chat-input");
+  const html = renderToStaticMarkup(<ChatInput stagingRestricted draft="" onDraftChange={() => {}} pending={false} onSend={() => {}} onStop={() => {}}
+    error={null} onRetry={() => {}} retryLabel="Retry" retryDisabled={false} disabled inputRef={{ current: null }} />);
+  assert.ok(html.includes('role="status"') && html.includes('temporarily unavailable to visitors'));
+  assert.ok(html.includes('href="/staging-access"'));
+  assert.match(html, /<textarea[^>]*disabled/);
+});

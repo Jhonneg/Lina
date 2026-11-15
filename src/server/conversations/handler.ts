@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "../staging-access";
 import "server-only";
 import { createApiGuard, type ApiGuard } from "../abuse/guard";
 import { UsageError } from "../usage/policy";
@@ -69,6 +70,7 @@ export function createConversationHandlers({ repository = createConversationRepo
   };
   return {
     async create(request: NextRequest) {
+      const denied = stagingAccessFailure(request); if (denied) return denied;
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") {
         return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       }
@@ -82,6 +84,7 @@ export function createConversationHandlers({ repository = createConversationRepo
       } catch (error) { return safeFailure(error); }
     },
     async rename(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+      const denied = stagingAccessFailure(request); if (denied) return denied;
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
         const session = await resolve(request, "mutate");
@@ -96,6 +99,7 @@ export function createConversationHandlers({ repository = createConversationRepo
       } catch (error) { return safeFailure(error); }
     },
     async remove(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+      const denied = stagingAccessFailure(request); if (denied) return denied;
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
         const session = await resolve(request, "mutate");
@@ -110,6 +114,7 @@ export function createConversationHandlers({ repository = createConversationRepo
       } catch (error) { return safeFailure(error); }
     },
     async list(request: NextRequest) {
+      const denied = stagingAccessFailure(request); if (denied) return denied;
       try {
         const session = await resolve(request, "read");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
@@ -118,6 +123,7 @@ export function createConversationHandlers({ repository = createConversationRepo
       } catch (error) { return safeFailure(error); }
     },
     async get(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+      const denied = stagingAccessFailure(request); if (denied) return denied;
       try {
         const session = await resolve(request, "read");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");

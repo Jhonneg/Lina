@@ -1,0 +1,9 @@
+.main { width: min(100% - 40px, 420px); margin: 12dvh auto; color: var(--lain-cream); line-height: 1.6; }
+.main h1 { font-size: 24px; font-weight: 400; }
+.main p { color: var(--lain-gold); }
+.main form { display: grid; gap: 12px; margin: 28px 0; }
+.main input { width: 100%; min-width: 0; min-height: 44px; padding: 10px; border: 1px solid var(--lain-gold); border-radius: 10px; background: transparent; color: var(--lain-cream); font-size: 16px; }
+.main button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--lain-gold); border-radius: 10px; color: var(--lain-gold); background: transparent; cursor: pointer; }
+.main button:disabled { opacity: 0.5; cursor: default; }
+.main a { display: block; width: fit-content; margin-top: 20px; color: var(--lain-gold); }
+.main :is(input, button, a):focus-visible { outline: 2px solid var(--lain-cream); outline-offset: 4px; }

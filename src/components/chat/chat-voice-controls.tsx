@@ -31,7 +31,7 @@ export function ChatVoiceControls({ view, onToggle, onEnable, onStop, onVolume }
         {view.error && <p role="alert">{view.error} Text chat is still available.</p>}
         {view.notice && <p role="status">{view.notice}</p>}
         {!view.enabled && view.preferredEnabled && <p>Previously enabled. Enable voice again to allow playback this visit.</p>}
-        <p>AI-generated cloud speech · Shimmer · Lain robo preset. Enabling voice sends completed replies to OpenAI for paid narration. Up to 800 spoken characters; code blocks are skipped. Available in local development only.</p>
+        <p>AI-generated cloud speech · Shimmer · Lain robo preset. Enabling voice sends eligible response text to OpenAI for paid narration. Up to 800 spoken characters; code blocks are skipped.</p>
       </section>
     </details>
 

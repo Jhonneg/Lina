@@ -1,5 +1,7 @@
 # Netlify production readiness — Milestone 6E
 
+Current launch direction: public portfolio, temporary access disabled, main-chat voice explicitly configurable. See [public launch settings](netlify-public-launch.md); earlier private-access/voice rollout requirements below are historical.
+
 Reviewed 15 November 2026. Target: GitHub → Netlify/OpenNext → Neon PostgreSQL,
 with server-side OpenAI. **No deployment or billable request was performed.**
 Public production voice remains disabled. This is preparation, not deployment
@@ -39,9 +41,10 @@ Milestone 6E.1 subsequently validated the user-built production artifact locally
 currently lists App Router, Route Handlers, response streaming, Turbopack and Cache
 Components support. The published adapter inspected was `@netlify/plugin-nextjs`
 5.16.7. The application uses Next 16.4.5. Automatic adapter updates are recommended;
-record the actual adapter version in the eventual hosted build log. No adapter
-packaging or hosted compatibility run completed here. Partial prefetching and the
-exact framework/adapter combination need that run.
+record the actual adapter version in hosted build logs. [Milestone 7B](netlify-staging-7b.md)
+subsequently confirmed successful packaging with adapter 5.16.6 and the Node 24
+streaming handler. Visitor protection failed, so credential-dependent hosted
+compatibility checks remain blocked.
 
 The [Functions API](https://docs.netlify.com/build/functions/api/) documents a
 60-second streaming execution window and a 20 MB streamed response limit. Both

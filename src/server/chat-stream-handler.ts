@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "./staging-access";
 import { createUsageService, type UsageLease, type UsageTransaction } from "./usage/service";
 import { UsageError } from "./usage/policy";
 import { billingSession, requestKey } from "./usage/request";
@@ -38,6 +39,7 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
   sessionService?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">;
 } = {}) {
   return async function POST(request: Request): Promise<Response> {
+    const denied = stagingAccessFailure(request); if (denied) return denied;
     const deadline = new AbortController();
     const lifetime = new AbortController();
     const signal = AbortSignal.any([request.signal, deadline.signal, lifetime.signal]);

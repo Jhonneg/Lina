@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "../staging-access";
 import "server-only";
 import { NextRequest } from "next/server";
 import { APPROVED_VOICE_PRESET } from "../../lib/cloud-voice/approved-preset";
@@ -12,10 +13,15 @@ import { CLOUD_MODEL, narrationResponse } from "./realtime";
 type RelayOptions = NonNullable<Parameters<typeof createCloudVoiceHandler>[0]>;
 const headers = { "Cache-Control": "no-store, no-transform", "X-Content-Type-Options": "nosniff" };
 const fail = (status: number, code: string, message: string, retryAfter?: number) => Response.json({ ok: false, error: { code, message } }, { status, headers: { ...headers, ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}) } });
-export function createChatVoiceHandler({ service = createSessionService(), relay, development = () => process.env.NODE_ENV === "development", usage = createUsageService() }: {
+export function chatVoiceEnabled(env: Record<string, string | undefined> = process.env) {
+  return env.LAIN_VOICE_ENABLED === undefined ? env.NODE_ENV === "development" : env.LAIN_VOICE_ENABLED === "true";
+}
+
+export function createChatVoiceHandler({ service = createSessionService(), relay, development = chatVoiceEnabled, usage = createUsageService() }: {
   service?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">; relay?: (request: Request, limits: RelayOptions) => Promise<Response>; development?: () => boolean; usage?: ReturnType<typeof createUsageService>;
 } = {}) {
   return async (request: NextRequest) => {
+    const denied = stagingAccessFailure(request); if (denied) return denied;
     if (!development()) return fail(404, "NOT_FOUND", "Cloud voice is unavailable.");
     let lease: UsageLease | undefined, streaming = false;
     let bytes = 0, started = 0;
@@ -44,7 +50,9 @@ export function createChatVoiceHandler({ service = createSessionService(), relay
       const forwarded = new Headers(request.headers); forwarded.delete("content-length");
       const input = new Request(request.url, { method: "POST", headers: forwarded, signal: request.signal,
         body: JSON.stringify({ text, voice: APPROVED_VOICE_PRESET.voice, delivery: APPROVED_VOICE_PRESET.delivery, confirmed: true }) });
-      const response = relay ? await relay(input, limits) : await createCloudVoiceHandler(limits)(input);
+      // Only this session-authorized, reserved request enables the internal relay.
+      // The public development-lab route retains its production 404 gate.
+      const response = relay ? await relay(input, limits) : await createCloudVoiceHandler({ ...limits, development: () => true })(input);
       if (!response.ok || !response.body) return response;
       const reader = response.body.getReader(), receipt = lease;
       streaming = true;

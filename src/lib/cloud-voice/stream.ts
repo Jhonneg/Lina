@@ -1,7 +1,7 @@
 export type VoiceSegment = { index: number; final: boolean };
 export class CloudVoiceRequestError extends Error {}
 export type CloudVoiceResult = { generationMs: number; estimatedCostUsd: number | null; transcript: string };
-/** Narrow NDJSON-in-SSE protocol for the development audio relay. */
+/** Narrow NDJSON-in-SSE protocol for the session-authorized audio relay. */
 export async function streamCloudVoice(text: string, voice: string, signal: AbortSignal, audio: (pcm: string) => void,
   fetchImpl: typeof fetch = fetch, chatRequestId?: string, labDelivery?: string, segment?: VoiceSegment): Promise<CloudVoiceResult> {
   const response = await fetchImpl(chatRequestId ? "/api/voice" : "/api/dev/cloud-voice", { method: "POST", credentials: "same-origin", signal,

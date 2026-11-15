@@ -1,5 +1,5 @@
-import { ChatWindow } from "@/components/chat/chat-window";
+import { StagingChat } from "@/components/chat/staging-chat";
 
 export default function Home() {
-  return <ChatWindow />;
+  return <StagingChat />;
 }

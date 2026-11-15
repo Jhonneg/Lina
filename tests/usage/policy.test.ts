@@ -9,6 +9,7 @@ import { mockLease } from "./fixtures";
 
 const env = { NODE_ENV: "test", USAGE_TEXT_INPUT_USD_PER_MILLION: "1", USAGE_TEXT_OUTPUT_USD_PER_MILLION: "2" };
 test("pricing uses conservative byte-based reservations and exact integer-micro reconciliation", () => {
+  assert.equal(usagePolicy(env).budgetMicro, 500_000);
   const policy = usagePolicy(env), reservation = reserveEstimate("text", "A short input", policy);
   assert.equal(reservation.micro, (2048 + 13) + 768 * 2);
   assert.equal(costMicro({ input: 100, cached: 20, output: 30, audio: 0 }, { input: 1, cached: .1, output: 2, audio: 20 }), 142);

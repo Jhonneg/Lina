@@ -15,10 +15,10 @@ import styles from "./chat.module.css";
 
 const STATUS: Record<OrbState, string> = { idle: "Awaiting input", thinking: "Processing thought", talking: "Transmitting" };
 
-export function ChatWindow() {
+export function ChatWindow({ stagingRestricted = false }: { stagingRestricted?: boolean }) {
   const speechObserver = useRef<((state: ChatState) => void) | null>(null);
   const { state: { messages, phase, error, conversationId, requestId, assistantId }, loading, blocked, bootError, retryAt,
-    send: submit, stop, reset: clearConversation, retry, retryLabel, selectConversation, conversationDeleted } = usePersistentChat(speechObserver);
+    send: submit, stop, reset: clearConversation, retry, retryLabel, selectConversation, conversationDeleted } = usePersistentChat(speechObserver, !stagingRestricted);
   const voice = useChatVoice({ messages, requestId, assistantId, conversationId, loading, streamObserverRef: speechObserver });
   const voiceBusy = ["activating", "loading", "generating", "buffering"].includes(voice.view.state);
   const orbPhase: OrbState = voice.view.state === "playing" ? "talking" : phase !== "idle" ? phase : voiceBusy ? "thinking" : "idle";
@@ -93,15 +93,15 @@ export function ChatWindow() {
 
   return (
     <div ref={windowRef} className={styles.window} data-active={active}>
-      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => setHistoryOpen(open => !open)}
-        voiceControls={<ChatVoiceControls view={voice.view} onToggle={voice.toggle} onEnable={voice.enable} onStop={voice.stop} onVolume={voice.setVolume} />} />
+      <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => { if (!stagingRestricted) setHistoryOpen(open => !open); }}
+        voiceControls={!stagingRestricted && <ChatVoiceControls view={voice.view} onToggle={voice.toggle} onEnable={voice.enable} onStop={voice.stop} onVolume={voice.setVolume} />} />
       <main className={styles.conversation} aria-label="Chat with Lain">
         <div className={styles.presence}>
           <div className={styles.orbFrame} role="img" aria-label="Lain’s amber presence">
             <OrbPresence state={orbPhase} audioRef={voice.audio} />
           </div>
           <div className={styles.status} role="status" aria-live="polite" data-orb-state={orbPhase}>
-            <span aria-hidden="true" />{loading ?? (voiceBusy ? voice.view.progress || "Preparing voice…" : STATUS[orbPhase])}
+            <span aria-hidden="true" />{stagingRestricted ? STATUS.idle : loading ?? (voiceBusy ? voice.view.progress || "Preparing voice…" : STATUS[orbPhase])}
           </div>
           <div className={styles.welcome} aria-hidden={active}>
             <h2>You are connected.</h2>
@@ -142,9 +142,9 @@ export function ChatWindow() {
           }}>Jump to latest <span aria-hidden="true">↓</span></button>
         )}
       </main>
-      <ChatInput draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={() => { voice.stop(); stop(); }}
+      <ChatInput stagingRestricted={stagingRestricted} draft={draft} onDraftChange={setDraft} pending={phase !== "idle"} onSend={send} onStop={() => { voice.stop(); stop(); }}
         error={error} onRetry={() => { voice.stop(); retry(); }} retryLabel={retryLabel} retryDisabled={Boolean(loading) || retryAt > 0}
-        disabled={Boolean(loading) || blocked || bootError} inputRef={inputRef} />
+        disabled={stagingRestricted || Boolean(loading) || blocked || bootError} inputRef={inputRef} />
       <HistoryDrawer onDeleted={id => { if (id === conversationId) voice.stop(); conversationDeleted(id); }} open={historyOpen} activeId={conversationId} onClose={() => setHistoryOpen(false)}
         onNewChat={reset} onSelect={id => {
           voice.stop(); selectConversation(id); setDraft(""); setShowLatest(false); pinnedRef.current = true;

@@ -4,7 +4,8 @@ import { useLayoutEffect, type RefObject } from "react";
 import styles from "./chat.module.css";
 import { MAX_MESSAGE_CHARS } from "./chat-state";
 
-export function ChatInput({ draft, onDraftChange, pending, onSend, onStop, error, onRetry, retryLabel, retryDisabled, disabled, inputRef }: {
+export function ChatInput({ stagingRestricted = false, draft, onDraftChange, pending, onSend, onStop, error, onRetry, retryLabel, retryDisabled, disabled, inputRef }: {
+  stagingRestricted?: boolean;
   draft: string;
   onDraftChange: (value: string) => void;
   pending: boolean;
@@ -26,6 +27,7 @@ export function ChatInput({ draft, onDraftChange, pending, onSend, onStop, error
 
   return (
     <footer className={styles.composerArea}>
+      {stagingRestricted && <p className={styles.notice} role="status">Conversational features are temporarily unavailable to visitors. <a href="/staging-access">Operator access</a></p>}
       {error && <div className={styles.error}>
         <p role="alert">{error}</p>
         <button type="button" className={styles.newChat} onClick={onRetry} disabled={pending || retryDisabled}>{retryLabel}</button>
@@ -33,6 +35,7 @@ export function ChatInput({ draft, onDraftChange, pending, onSend, onStop, error
       <form className={styles.composer} onSubmit={(event) => { event.preventDefault(); onSend(); }}>
         <label className="sr-only" htmlFor="message">Message Lain</label>
         <textarea
+          disabled={stagingRestricted}
           ref={inputRef}
           id="message"
           name="message"

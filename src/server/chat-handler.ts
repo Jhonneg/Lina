@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "./staging-access";
 import { createUsageService, type UsageLease } from "./usage/service";
 import { billingSession, requestKey } from "./usage/request";
 import { UsageError } from "./usage/policy";
@@ -34,6 +35,7 @@ export function createChatHandler({ getAdapter = createModelAdapter, timeoutMs =
   timeoutMs?: number; usage?: ReturnType<typeof createUsageService>;
 } = {}) {
   return async function POST(request: Request): Promise<Response> {
+    const denied = stagingAccessFailure(request); if (denied) return denied;
     const deadline = new AbortController();
     const signal = AbortSignal.any([request.signal, deadline.signal]);
     const timer = setTimeout(() => deadline.abort(new DOMException("Timed out", "TimeoutError")), timeoutMs);

@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "./staging-access";
 import "server-only";
 import { createApiGuard, type ApiGuard } from "./abuse/guard";
 import { UsageError } from "./usage/policy";
@@ -14,6 +15,7 @@ export function createSessionHandler({ service = createSessionService(), product
   production?: boolean; abuse?: ApiGuard;
 } = {}) {
   return async function POST(request: NextRequest) {
+    const denied = stagingAccessFailure(request); if (denied) return denied;
     // Require an explicit matching Origin. Do not trust forwarded host headers.
     if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") {
       return failure(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");

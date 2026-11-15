@@ -9,7 +9,7 @@ import type { Message } from "./chat-types";
 export const INITIAL_CLOUD_VOICE: VoiceView = { enabled: false, permitted: false, preferredEnabled: false, volume: 1,
   state: "idle", messageId: null, progress: "", error: null, notice: null };
 type Player = Pick<DesignVoicePlayer, "analyser" | "unlock" | "append" | "finish" | "reset" | "stop" | "setVolume" | "beginSegment" | "endSegment">;
-type Options = { createPlayer?: (playing: (value: boolean) => void) => Player; stream?: typeof streamCloudVoice; development?: boolean };
+type Options = { createPlayer?: (playing: (value: boolean) => void) => Player; stream?: typeof streamCloudVoice; available?: boolean };
 type SpeechJob = { id: string; progressive: boolean; buffer: CloudSpeechBuffer; abort: AbortController; requestId: string; wake?: () => void;
   complete: Promise<void>; resolve: () => void; timer?: ReturnType<typeof setTimeout> };
 const KEY = "lain.cloud-voice-preferences.v1";
@@ -29,11 +29,11 @@ export class CloudChatVoiceController {
   private handled = new Set<string>();
   private readonly createPlayer: NonNullable<Options["createPlayer"]>;
   private readonly stream: typeof streamCloudVoice;
-  private readonly development: boolean;
+  private readonly available: boolean;
   constructor(readonly audio: { current: AudioReactivity | null }, private readonly storage?: Pick<Storage, "getItem" | "setItem">, options: Options = {}) {
     this.createPlayer = options.createPlayer ?? (playing => new DesignVoicePlayer({ ...APPROVED_VOICE_PRESET.effects }, playing));
     this.stream = options.stream ?? streamCloudVoice;
-    this.development = options.development ?? process.env.NODE_ENV === "development";
+    this.available = options.available ?? true; // Server-side configuration authorizes billable requests.
     try {
       const saved = JSON.parse(storage?.getItem(KEY) ?? "null");
       if (saved?.version === 1) this.view = { ...INITIAL_CLOUD_VOICE, preferredEnabled: saved.enabled === true,
@@ -58,7 +58,7 @@ export class CloudChatVoiceController {
   }
   async enable() {
     if (this.disposed) return false;
-    if (!this.development) { this.publish({ error: "Cloud speech is available only in local development.", state: "error" }); return false; }
+    if (!this.available) { this.publish({ error: "Cloud speech is currently unavailable.", state: "error" }); return false; }
     this.stop(); const revision = this.revision;
     this.publish({ state: "activating", error: null });
     try {

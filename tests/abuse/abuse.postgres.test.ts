@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createStagingAccessHandlers } from "../../src/server/staging-access/handler";
 import { withNetlifyIp } from "../netlify/context";
 import { randomUUID } from "node:crypto";
 import { test } from "node:test";
@@ -29,6 +30,19 @@ test("API admission, storage and explicit retention against disposable PostgreSQ
   const owner = async () => (await service.getOrCreateSession(undefined)).session.id;
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
+    await t.test("staging login limits persist across handlers and cookie rotation before credential acceptance", async () => {
+      const fixtureSecret = randomUUID().replaceAll("-", "").repeat(2);
+      await withEnv({ STAGING_ACCESS_MODE: "restricted", STAGING_ACCESS_SECRET: fixtureSecret }, async () => {
+        const factory = policy({ API_ACCESS_IP_MINUTE: "2" });
+        const handlers = [createStagingAccessHandlers({ abuse: createApiGuard(getDatabase, factory) }), createStagingAccessHandlers({ abuse: createApiGuard(getDatabase, factory) })];
+        const attempt = (secret: string, cookie = "") => new NextRequest("http://localhost/api/staging-access", { method: "POST", headers: { Origin: "http://localhost", "Content-Type": "application/json", "x-vercel-forwarded-for": "203.0.113.211", Cookie: `lain_session=${cookie}` }, body: JSON.stringify({ secret }) });
+        assert.equal((await handlers[0].POST(attempt("wrong"))).status, 401);
+        assert.equal((await handlers[1].POST(attempt("wrong", "rotated"))).status, 401);
+        const response = await handlers[0].POST(attempt(fixtureSecret));
+        assert.equal(response.status, 429); assert.ok(response.headers.has("Retry-After")); assert.ok(!response.headers.has("Set-Cookie"));
+      });
+      await db.delete(apiRateBuckets); // This runner is guarded to its own newly created disposable DB.
+    });
     await t.test("Netlify authoritative IP protects non-billable session creation across cookie rotation", async () => {
       const factory = policy({ USAGE_TRUSTED_PROXY: "netlify", API_SESSION_IP_DAY: "1" });
       const guard = createApiGuard(getDatabase, factory);

@@ -1,7 +1,7 @@
 import "server-only";
 import { retentionPolicy } from "./retention-policy";
 import { trustedIpPolicy, UsageError } from "../usage/policy";
-export type ApiKind = "session" | "create" | "read" | "mutate";
+export type ApiKind = "session" | "create" | "read" | "mutate" | "access";
 export function abusePolicy(env: Record<string, string | undefined> = process.env) {
   const integer = (name: string, fallback: number, max = 100000) => {
     const value = env[name]?.trim() ? Number(env[name]) : fallback;
@@ -13,7 +13,7 @@ export function abusePolicy(env: Record<string, string | undefined> = process.en
     sessionMinute: integer(`API_${kind.toUpperCase()}_SESSION_MINUTE`, sessionMinute), sessionDay: integer(`API_${kind.toUpperCase()}_SESSION_DAY`, sessionDay),
   });
   return { ip: trustedIpPolicy(env), limits: {
-    session: limits("session", 20, 200, 20, 200), create: limits("create", 10, 100, 5, 50),
+    access: limits("access", 5, 30, 5, 30), session: limits("session", 20, 200, 20, 200), create: limits("create", 10, 100, 5, 50),
     read: limits("read", 120, 2000, 60, 1000), mutate: limits("mutate", 30, 300, 15, 150),
   }, conversations: integer("STORAGE_CONVERSATIONS_PER_SESSION", 50), messages: integer("STORAGE_MESSAGES_PER_SESSION", 1000),
     ...retentionPolicy(env) };

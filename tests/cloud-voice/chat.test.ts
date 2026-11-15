@@ -23,12 +23,12 @@ function fixture(development = true) {
     calls.push({ text, voice, signal, emit, id, segment, resolve: () => resolve({ transcript: text, generationMs: 1, estimatedCostUsd: null }), reject: () => reject(Error("Failure")) });
     signal.addEventListener("abort", () => reject(new DOMException("Stopped", "AbortError")), { once: true });
   });
-  const options = { development, stream, createPlayer: (notify: (value: boolean) => void) => { playing = notify; const player = new Player(); players.push(player); return player as unknown as DesignVoicePlayer; } };
+  const options = { available: development, stream, createPlayer: (notify: (value: boolean) => void) => { playing = notify; const player = new Player(); players.push(player); return player as unknown as DesignVoicePlayer; } };
   const controller = new CloudChatVoiceController(audio, { getItem: key => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, value); } }, options);
   return { controller, players, calls, storage, audio, playing: (value: boolean) => playing(value) };
 }
 
-test("cloud activation is explicit, disabled by default, requires no download consent and is blocked in production", async () => {
+test("cloud activation is explicit, disabled by default, requires no download consent and respects explicit availability", async () => {
   const f = fixture(); assert.equal(f.controller.view.enabled, false); assert.equal(f.players.length, 0);
   await f.controller.play(message()); assert.equal(f.calls.length, 0);
   assert.equal(await f.controller.enable(), true); assert.equal(f.calls.length, 0); assert.equal(f.players.length, 1);
@@ -81,7 +81,7 @@ test("Stop, switching, New Chat and disable abort billing/playback and reject st
 test("saved cloud preferences preserve volume but never grant playback or local-download consent", () => {
   const controller = new CloudChatVoiceController({ current: null }, { getItem: key => {
     assert.equal(key, "lain.cloud-voice-preferences.v1"); return JSON.stringify({ version: 1, enabled: true, volume: .35, consented: true });
-  }, setItem() {} }, { development: true, createPlayer: () => { throw Error("Must remain lazy"); } });
+  }, setItem() {} }, { available: true, createPlayer: () => { throw Error("Must remain lazy"); } });
   assert.equal(controller.view.enabled, false); assert.equal(controller.view.permitted, false); assert.equal(controller.view.preferredEnabled, true);
   assert.equal(controller.view.volume, .35); assert.equal("consented" in controller.view, false); controller.dispose();
 });
@@ -123,4 +123,16 @@ test("progressive Stop discards queued words and stale chunks; the 800-character
   assert.equal(f.calls.length, 2); assert.ok(f.calls.map(call => call.text).join(" ").length <= 800); assert.ok(f.controller.view.notice?.includes("800"));
   f.controller.stop(); f.calls[1].emit("STALE"); await setImmediate(); assert.ok(f.calls[1].signal.aborted); assert.equal(f.players[0].appended.length, 0);
   update("First thought. " + "A clear thought. ".repeat(100), true); await setImmediate(); assert.equal(f.calls.length, 2); f.controller.dispose();
+});
+
+
+test("default browser controller permits production activation without starting a billable request", async () => {
+  let players = 0, requests = 0;
+  const controller = new CloudChatVoiceController({ current: null }, undefined, {
+    createPlayer: () => { players++; return new Player() as unknown as DesignVoicePlayer; },
+    stream: async () => { requests++; throw Error("No provider calls allowed"); },
+  });
+  assert.equal(controller.view.enabled, false);
+  assert.equal(await controller.enable(), true); assert.equal(players, 1); assert.equal(requests, 0);
+  controller.dispose();
 });

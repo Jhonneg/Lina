@@ -1,3 +1,4 @@
+import { stagingAccessFailure } from "../staging-access";
 import "server-only";
 import { createUsageService, type UsageLease } from "../usage/service";
 import { billingSession, requestKey } from "../usage/request";
@@ -16,6 +17,7 @@ export function createCloudVoiceHandler({ connect = connectRealtime, development
   durationMs = CLOUD_LIMITS.durationMs as number, onFinish = () => {}, allowDelivery = false, onAudio = () => {}, onDone = () => {}, audioByteLimit = CLOUD_LIMITS.audioBytes as number, usageLease }: { connect?: typeof connectRealtime; development?: () => boolean; key?: () => string | undefined; durationMs?: number; onFinish?: () => void; allowDelivery?: boolean; onAudio?: (bytes: number) => void; onDone?: (usage?: RealtimeResponseUsage) => void; usageLease?: UsageLease; audioByteLimit?: number } = {}) {
   let busy = false;
   return async function POST(request: Request) {
+    const denied = stagingAccessFailure(request); if (denied) return denied;
     if (!development()) return failure(404, "NOT_FOUND", "Not found.");
     if (busy) return failure(429, "VOICE_BUSY", "Another voice evaluation is active. Stop it or wait for completion.");
     busy = true;

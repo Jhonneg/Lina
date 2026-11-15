@@ -18,7 +18,7 @@ function setConversationUrl(id: string | null) {
 }
 const CHECK_STATUS = "The response was not confirmed saved. Check its saved status before continuing.";
 
-export function usePersistentChat(stateObserver?: RefObject<((state: ChatState) => void) | null>) {
+export function usePersistentChat(stateObserver?: RefObject<((state: ChatState) => void) | null>, enabled = true) {
   const [state, setState] = useState(INITIAL_CHAT);
   const snapshot = useRef(INITIAL_CHAT);
   const [loading, setLoading] = useState<string | null>("Connecting");
@@ -59,6 +59,7 @@ export function usePersistentChat(stateObserver?: RefObject<((state: ChatState) 
   }, []);
 
   const initialize = useCallback(async (forceSession = false) => {
+    if (!enabled) return;
     const activePending = submission.current ?? readPending(storage());
     if (activePending) { preserve(activePending); writePending(storage(), activePending); }
     abortWork();
@@ -102,16 +103,17 @@ export function usePersistentChat(stateObserver?: RefObject<((state: ChatState) 
     } finally {
       if (boot.current === controller && !controller.signal.aborted) setLoading(null);
     }
-  }, [abortWork, apply, remember, preserve]);
+  }, [abortWork, apply, remember, preserve, enabled]);
 
   useEffect(() => {
+    if (!enabled) return;
     const initialization = setTimeout(() => { void initialize(); }, 0);
     const navigate = () => { void initialize(); };
     const save = () => { if (submission.current) writePending(storage(), submission.current); };
     window.addEventListener("popstate", navigate);
     window.addEventListener("pagehide", save);
     return () => { clearTimeout(initialization); save(); abortWork(); window.removeEventListener("popstate", navigate); window.removeEventListener("pagehide", save); };
-  }, [initialize, abortWork]);
+  }, [initialize, abortWork, enabled]);
   useEffect(() => {
     if (!retryAt) return;
     const timer = setTimeout(() => setRetryAt(0), Math.max(0, retryAt - Date.now()));

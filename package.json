@@ -23,6 +23,7 @@
     "test:abuse:postgres": "node scripts/test-abuse-postgres.mjs",
     "test:usage": "node scripts/test-usage.mjs",
     "test:usage:postgres": "node scripts/test-usage-postgres.mjs",
+    "test:staging-access": "node scripts/test-staging-access.mjs",
     "test:netlify": "node scripts/test-netlify.mjs",
     "bundles:measure": "node scripts/measure-production-bundles.mjs"
   },

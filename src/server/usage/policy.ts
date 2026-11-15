@@ -26,7 +26,7 @@ export function usagePolicy(env: Env = process.env) {
     speechHour: count("USAGE_SPEECH_HOURLY_LIMIT", 20), speechDay: count("USAGE_SPEECH_DAILY_LIMIT", 60), speechMinute: count("USAGE_SPEECH_MINUTE_LIMIT", 3),
     sessionConcurrent, globalConcurrent,
     ipMinute: count("USAGE_IP_MINUTE_LIMIT", 20), ipHour: count("USAGE_IP_HOURLY_LIMIT", 100),
-    budgetMicro: Math.floor(number("USAGE_DAILY_BUDGET_USD", 1, 10000) * 1_000_000),
+    budgetMicro: Math.floor(number("USAGE_DAILY_BUDGET_USD", 0.5, 10000) * 1_000_000),
     proxy, ipKey,
     textPricing: env.USAGE_TEXT_INPUT_USD_PER_MILLION?.trim() && env.USAGE_TEXT_OUTPUT_USD_PER_MILLION?.trim() ? {
       input: number("USAGE_TEXT_INPUT_USD_PER_MILLION", 0, 10000), cached: number("USAGE_TEXT_CACHED_USD_PER_MILLION", Number(env.USAGE_TEXT_INPUT_USD_PER_MILLION), 10000),
