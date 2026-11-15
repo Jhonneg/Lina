@@ -1,278 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lain 2.0
 
-## Getting Started
+Lain is a conversational AI web app centered around a compact procedural 3D orb. It combines streamed assistant replies, anonymous persistent conversations, and optional cloud speech in a restrained plum, amber, and gold interface. Lain's server-side personality instructions are versioned and kept separate from conversation messages.
 
-First, run the development server:
+## Technology
+
+- Next.js App Router, React, and TypeScript
+- Three.js and React Three Fiber for the Noise Orb
+- PostgreSQL with Drizzle ORM for sessions, conversations, messages, and usage accounting
+- OpenAI Responses API for text and Realtime API for optional speech
+- Netlify OpenNext and Neon PostgreSQL for hosting
+
+## Local development
+
+Requirements: Node.js 24 and npm. Docker Compose is needed for local PostgreSQL.
+
+Install dependencies and prepare local configuration:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm ci
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set a strong local `POSTGRES_PASSWORD` in `.env`. Set `DATABASE_URL` to the Compose database, using the same password URL-encoded:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+postgresql://lain:URL_ENCODED_PASSWORD@127.0.0.1:5432/lain_dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Start PostgreSQL and apply the reviewed migrations:
 
-## Learn More
+```bash
+docker compose up -d --wait postgres
+npm run db:migrate
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Netlify
-
-For the public portfolio launch, use the exact [Netlify environment settings](docs/netlify-public-launch.md), including the shared $0.50 budget and explicit production voice opt-in. Earlier private-staging reports are historical.
-
-The approved production stack is Netlify (OpenNext), Neon PostgreSQL, OpenAI and
-GitHub. See [production readiness and deployment instructions](docs/netlify-production-6e.md)
-for environment scopes, migrations, scheduled cleanup, verification and rollback.
-Production build/hosted checks remain blockers; nothing has been deployed.
-
-## Server-side chat API (Milestone 3A)
-
-The UI still uses its existing local simulation. The new backend is independently
-available at `POST /api/chat`; it does not stream yet.
-
-Copy the variable names from `.env.example` into your server environment (or a
-git-ignored `.env.local`). Never use `NEXT_PUBLIC_` for these values:
-
-| Variable | Configuration |
-| --- | --- |
-| `LAIN_AI_MODE` | `mock` only in development; explicitly set `openai` to enable real calls. Unset/invalid modes fail closed. |
-| `OPENAI_API_KEY` | Required only in `openai` mode. Server-side secret; leave blank for mock verification. |
-| `OPENAI_MODEL` | Required only in `openai` mode. Choose an available Responses API model; there is no hardcoded model fallback. |
-
-Start a development mock without an API key:
+Run with deterministic mock chat. This does not need an OpenAI key:
 
 ```bash
 LAIN_AI_MODE=mock npm run dev
 ```
 
-```bash
-curl http://localhost:3000/api/chat \
-  -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"Hello"}]}'
-```
+Visit <http://localhost:3000>. The development mock is intentionally unavailable in production. Real text generation requires a server-side `OPENAI_API_KEY`, `OPENAI_MODEL`, and explicit `LAIN_AI_MODE=openai`, along with a configured database, trusted IP protection, and usage pricing/limits. Keep secrets in ignored environment files or the hosting provider's secret store; never use `NEXT_PUBLIC_` for credentials.
 
-Success: `{"ok":true,"message":{"role":"assistant","content":"..."}}`.
-Errors: `{"ok":false,"error":{"code":"INVALID_REQUEST","message":"..."}}`.
-Send only `messages` at the root, and only `role`/`content` per message; omit UI IDs.
-Roles are restricted to `user` and `assistant`. Content is trimmed; blank messages
-are rejected. Limits are 20 messages, 4,000 UTF-16 code units per message,
-12,000 combined code units, and 32 KiB of actual UTF-8 JSON bytes (including JSON
-syntax). Compressed bodies are rejected. Origin-bearing requests must match the
-endpoint origin; no permissive CORS headers are emitted.
-
-HTTP errors: 400 invalid input, 403 disallowed origin, 413 oversized body,
-415 unsupported media, 408 cancellation, 503 missing/disallowed configuration,
-502 upstream failure/empty or incomplete output, 504 timeout, or 500 unexpected
-failure. Responses are not cached; errors omit provider details and user content.
-
-The server-only provider uses the official [OpenAI Responses SDK](https://developers.openai.com/api/reference/typescript),
-`store: false`, a 768-output-token cap, no automatic retries, SDK logging disabled,
-and a 20-second SDK timeout. A 25-second overall deadline also bounds slow body
-uploads and stalled adapters. Configure the deployment's function/proxy timeout
-to allow that deadline to return a JSON error.
-
-`npm test` runs focused Node built-in tests with TypeScript compiled into a temporary
-directory (Node 24 for the test runner). SDK calls use fake transports and external
-fetch is blocked in tests; no paid requests are needed. Mock mode fails closed
-outside `NODE_ENV=development`, even if credentials are present.
-
-**Before public deployment:** this anonymous endpoint still needs rate limiting,
-concurrency/cost budgets and abuse protection at the gateway/application layer.
-Payload limits, origin checks and timeouts do not prevent direct clients from
-making repeated calls. Enforce upload limits at the reverse proxy too. Do not
-deploy the real provider until these controls and the chosen model's cost/output
-budget have been reviewed. The app does not log full conversations or credentials.
-
-### Backend streaming (Milestone 3B)
-
-`POST /api/chat/stream` accepts the same JSON request and limits as `/api/chat`.
-The existing endpoint and local-demo frontend are unchanged. Verify streaming
-without API credits using `LAIN_AI_MODE=mock npm run dev`, then:
+To stop PostgreSQL while retaining its data volume:
 
 ```bash
-curl -N http://localhost:3000/api/chat/stream \
-  -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"Hello"}]}'
+docker compose stop postgres
 ```
 
-The POST response uses SSE with JSON payloads and blank-line frame separators:
+`docker compose down` also stops and removes the container and network but preserves the named data volume. Do not remove that volume if you need its database contents.
 
-```text
-event: delta
-data: {"text":"incremental text"}
+## Commands
 
-event: done
-data: {"finishReason":"completed"}
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve a production build |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Check TypeScript types |
+| `npm test` | Run the main mocked regression suite |
+| `npm run test:netlify` | Test Netlify runtime and scheduled cleanup behavior |
+| `npm run test:usage` | Test usage quotas and accounting |
+| `npm run test:abuse` | Test non-billable abuse controls |
+| `npm run test:cloud-voice` | Test cloud voice and progressive audio behavior with mocks |
+| `npm run db:generate -- --name=change_name` | Generate a Drizzle migration |
+| `npm run db:migrate` | Apply pending migrations to the configured database |
+| `npm run sessions:cleanup` | Preview bounded expired-session cleanup |
 
-```
+Database migrations are explicit; the application does not apply them at startup. Check which database `DATABASE_URL` or `DATABASE_MIGRATION_URL` targets before running migration or cleanup commands. PostgreSQL integration scripts expect isolated disposable databases and must not be pointed at `lain_dev` or any database containing user data.
 
-On stream failure, `event: error` carries `{"code":"AI_UNAVAILABLE","message":"..."}`
-(or a safe timeout/internal error code) and closes without `done`. Validation and
-configuration failures return the existing JSON error envelope with an HTTP error
-status before opening SSE; after opening, failures use SSE because HTTP status is
-already 200. Treat EOF without `done` as interrupted output. Partial text can
-precede an error; there are no retries or resumable event IDs.
+## Application behavior
 
-Streams share the 25-second overall deadline, 768-token provider cap and server-only
-configuration. They additionally limit emitted text to 16,000 UTF-8 bytes and use
-demand-driven reads. Client disconnects or cancelling the response reader abort
-provider work; completion/error/cancellation clears timers and closes iterators.
-Mock chunks arrive every 80ms and remain development-only. In browsers use POST
-`fetch` and its response reader; native `EventSource` uses GET. Hosting/proxies must
-support streaming and disconnect propagation; buffering is discouraged by response
-headers but needs verification on the deployment platform. Public-deployment abuse
-protections described above are still required. `npm test` covers both endpoints
-with fake SDK transports; no billable calls are made.
+Anonymous browser sessions use an opaque HttpOnly cookie. The server stores only a hash of the session token and derives conversation ownership from that cookie. Conversations and messages persist in PostgreSQL and can be restored from the URL. The history drawer supports resuming, renaming, and deleting conversations.
 
-### Database foundation (Milestone 4A)
+Assistant text streams over `POST /api/chat/stream` as server-sent events. Requests are bounded and checked for session ownership and same-origin access. Persistent database-backed quotas, concurrency limits, idempotency, and a shared estimated daily budget protect billable OpenAI requests; accounting failure blocks provider calls. The documented public launch configuration currently recommends a `$0.50` estimated daily global budget. Estimates and conservative reservations are not a guaranteed provider invoice ceiling.
 
-PostgreSQL uses Drizzle ORM with `pg` (node-postgres). Set `DATABASE_URL` in your
-ignored `.env.local` or server environment using a PostgreSQL connection URL.
-Drizzle CLI loads Next.js environment files through `@next/env`. Do not use a
-`NEXT_PUBLIC_` variable or commit real credentials. Configure verified TLS according
-to your database provider; this setup does not disable certificate verification.
+Optional speech is cloud-generated using the approved Shimmer voice and Lain robo preset. It is off by default in the browser and requires an explicit user action to activate. Production availability is separately controlled by server configuration. The development voice lab is at `/dev/cloud-voice`; it does not load local speech models and is restricted to development.
 
-```bash
-npm run db:generate -- --name=describe_schema_change  # Offline SQL + metadata
-npm run db:migrate                                  # Applies pending SQL to DATABASE_URL
-```
+## Deployment
 
-Generated migrations and their `drizzle/meta` journal/snapshots belong in source
-control. Review SQL and confirm the target database before applying; migrations
-are explicit commands and never run on application startup. PostgreSQL 13+ provides
-the `gen_random_uuid()` used by primary-key defaults without an extra extension.
-No PostgreSQL instance is provisioned automatically; local Compose setup is below.
+Netlify with Neon is the deployment target. Follow [public launch configuration](docs/netlify-public-launch.md) for recommended environment variable names and conservative defaults. The [Netlify readiness guide](docs/netlify-production-6e.md) covers direct migration and pooled runtime connections, role timeouts, scheduled cleanup, deployment checks, and rollback. Keep the pooled `lain_app` connection in the application runtime; use the direct migration role only for operator-run migrations. Never place migration credentials in the runtime environment.
 
-The schema in `src/server/db/schema.ts` defines sessions, conversations and messages.
-Deleting a session cascades to its conversations and messages; deleting a
-conversation cascades to its messages. Token hashes are uniquely indexed;
-conversation listing uses `(session_id, updated_at DESC, id)` and ordered message
-retrieval uses `(conversation_id, created_at, id)`. An expiration index supports
-future cleanup, but no cleanup/session logic is implemented. Store only token
-hashes in `token_hash`, never raw session tokens.
+## Documentation
 
-All timestamps use `timestamptz`; creation/update timestamps default to database
-`now()`. Expiration must be supplied explicitly. `updated_at` is initialized on
-insert and must be advanced by future persistence code; no update trigger exists.
-Database enums enforce user/assistant roles and completed/interrupted/failed
-message status (default completed). The UUID tie-breakers give deterministic order
-when timestamps match; they do not represent insertion sequence.
-
-Future server code can call `getDatabase()` from `src/server/db`. Importing that
-module does not read configuration or open connections. The first call validates
-configuration and creates a pool (max 5); sockets open only for actual queries.
-Development reloads reuse the pool. Pool sizing and provider connection limits
-must be reviewed for the eventual hosting platform. No application code currently
-calls this client, so mock/streaming chat, tests and UI builds work without a
-database. There are no cookies, sessions, CRUD routes or persistence yet.
-
-`npm test` includes offline schema/migration and lazy-client checks; it never
-applies migrations or queries a live database. Migrations are not applied automatically; choose the intended local development
-database explicitly before applying them.
-
-
-### Local PostgreSQL with Docker Compose
-
-`compose.yaml` runs PostgreSQL 17 with the existing `lain` Compose project,
-`lain` database user, `lain_dev` database, and persistent `lain_postgres_data`
-named volume. Port 5432 is published only on `127.0.0.1`.
-
-If `.env` does not exist, copy `.env.example` to `.env`. Set a non-empty
-`POSTGRES_PASSWORD` there, then set `DATABASE_URL` to
-`postgresql://lain:URL_ENCODED_PASSWORD@127.0.0.1:5432/lain_dev`, substituting the
-same password with special characters URL-encoded. `.env` is ignored by Git;
-never commit it or print resolved Compose configuration containing credentials.
-Keep any `.env.local` or exported `DATABASE_URL` aligned: these can override
-`.env` for the application/Drizzle. Compose reads its password from `.env`.
-
-```bash
-docker compose config --quiet                    # Validate without printing secrets
-docker compose up -d --no-recreate --wait postgres # Start/reuse the local database
-docker compose ps postgres                       # Check container health and port
-docker compose exec -T postgres pg_isready -U lain -d lain_dev
-```
-
-After confirming the effective `DATABASE_URL` targets this disposable local
-`lain_dev` database, apply the reviewed migrations explicitly:
-
-```bash
-npm run db:migrate
-docker compose stop postgres                     # Stop; retain container and volume
-```
-
-The health check uses `pg_isready`; it does not replace application credential
-verification. PostgreSQL initialization variables apply only to an empty volume.
-Changing `.env` does not change an existing database password. No volumes or
-existing containers need to be deleted for normal start/stop or migrations.
-
-### Paid API usage protection
-
-Paid text and speech now require PostgreSQL usage reservations and a valid
-anonymous session. Review/apply the new migration with `npm run db:migrate`
-and configure the limits and model prices in `.env.example` before enabling
-paid calls. Mock text remains database-independent; public production voice
-remains disabled. See [usage protection](docs/api-usage-protection.md) for defaults,
-trusted-IP deployment requirements, idempotency headers, and accounting limits.
-Run `npm run test:usage` or the isolated `npm run test:usage:postgres` verification.
-
-### Voice runtime
-
-Speech uses the cloud adapter and approved Lain robo preset. Kokoro, local neural
-workers/model downloads, and the old `/dev/audio-orb` and `/dev/voice-benchmark`
-previews have been removed. The development voice design lab remains at
-`/dev/cloud-voice`; no local model setup is needed. Public production voice stays
-disabled. See [voice runtime](docs/voice-engine.md) and
-[cleanup/audit results](docs/legacy-voice-cleanup.md). Shared DSP tests run with
-`npm run test:voice`, and cloud playback tests with `npm run test:cloud-voice`.
-
-### Dependency security
-
-See [the Milestone 6A review](docs/dependency-security.md) for the remaining
-11 moderate development-tool findings, their inspected exposure, and mitigations.
-The production-only npm audit is clean. Current upstream dependency ranges offer
-no compatible fixes for these two advisory chains; no overrides or forced fixes
-were applied. Recheck upstream releases before the production security review.
-
-### Application security
-
-[Milestone 6B](docs/application-security.md) documents the application security
-review, enforced browser headers, bounded database queries, tested boundaries,
-and remaining deployment requirements. Public production voice remains disabled;
-this review does not approve public deployment or replace trusted-ingress, abuse,
-privacy and production-artifact validation.
-
-### Non-billable API limits and retention
-
-Apply the reviewed `0003_fuzzy_elektra.sql` migration explicitly before using the
-new session/history guards. Limits, storage caps and retention defaults are in
-`.env.example`; see [non-billable protection](docs/non-billable-abuse-protection.md).
-`npm run sessions:cleanup` is a bounded dry-run. No cleanup runs automatically;
-its separate `--apply` option permanently deletes eligible expired data and must
-only be used after reviewing and authorizing the target. Validation uses
-`npm run test:abuse` and `npm run test:abuse:postgres`, never `lain_dev` cleanup.
-
-### Performance review
-
-[Milestone 6C](docs/performance-6c.md) records the paired mock-browser benchmark,
-measured message-row/CPU improvement, unchanged rendering/audio behaviour, and
-hardware/production limitations. Its profiling preview runs from a temporary
-credential-free snapshot; no live API or database is needed.
-
-### Mobile and accessibility review
-
-[Milestone 6D](docs/mobile-accessibility-6d.md) records responsive measurements,
-keyboard/safe-area fixes, touch targets, contrast, focus/audio/fallback checks and
-physical-device limitations. Validation uses mocked APIs and synthetic PCM only.
+- [Project context](PROJECT_CONTEXT.md) — product goals and approved design decisions
+- [Implementation plan](IMPLEMENTATION_PLAN.md) — milestone scope and progress
+- [Application security](docs/application-security.md) — security controls and residual deployment risks
+- [Non-billable abuse protection](docs/non-billable-abuse-protection.md) — rate limits, storage caps, and cleanup
+- [API usage protection](docs/api-usage-protection.md) — paid request quotas, idempotency, and accounting
+- [Voice engine](docs/voice-engine.md) — cloud speech pipeline and approved audio processing
+- [Progressive cloud speech](docs/progressive-cloud-speech.md) — segmentation, ordering, and cancellation
+- [Dependency security](docs/dependency-security.md) — audit findings and mitigations
+- [Performance review](docs/performance-6c.md) — measured performance work and limitations
+- [Mobile and accessibility review](docs/mobile-accessibility-6d.md) — responsive and accessibility findings
