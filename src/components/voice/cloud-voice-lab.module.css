@@ -1,0 +1,21 @@
+.lab { max-width: 660px; margin: 0 auto; padding: 24px; color: var(--lain-cream); font-size: 14px; line-height: 1.6; }
+.lab h1 { color: var(--lain-gold); font-size: 22px; font-weight: 500; }
+.lab p { margin: 12px 0; }
+.orb { width: 320px; height: 300px; max-width: 100%; margin: 8px auto; }
+.lab form { display: grid; gap: 10px; }
+.lab label, .lab dt { color: var(--lain-gold); }
+.lab :is(select, textarea, button) { padding: 10px 12px; border: 1px solid rgb(197 159 96 / 35%); border-radius: 8px; background: #1c131b; color: inherit; font: inherit; }
+.lab textarea { width: 100%; box-sizing: border-box; font-size: 16px; resize: vertical; }
+.lab input { accent-color: var(--lain-amber); width: 100%; }
+.controls { display: flex; gap: 12px; }
+.controls button { color: var(--lain-gold); cursor: pointer; }
+.lab :disabled { opacity: .5; cursor: default; }
+.lab :is(button, select, textarea, input):focus-visible { outline: 2px solid var(--lain-cream); outline-offset: 3px; }
+.lab dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lab dd { margin: 0; }
+.lab details p { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 639px) { .orb { width: 200px; height: 190px; } .lab dl { grid-template-columns: 1fr; } }
+.effects { display: grid; gap: 12px; padding: 14px; border: 1px solid rgb(197 159 96 / 25%); border-radius: 8px; }
+.effects legend { padding: 0 6px; color: var(--lain-gold); }
+.lab input[type="text"] { padding: 10px 12px; box-sizing: border-box; border: 1px solid rgb(197 159 96 / 35%); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.controls { flex-wrap: wrap; }

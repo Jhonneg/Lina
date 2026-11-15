@@ -77,6 +77,9 @@ test("database client imports without configuration and initializes lazily witho
     const db = getDatabase();
     assert.equal(getDatabase(), db);
     assert.equal(db.$client.totalCount, 0);
+    assert.equal(db.$client.options.statement_timeout, 5000);
+    assert.equal(db.$client.options.lock_timeout, 3000);
+    assert.equal(db.$client.options.query_timeout, 8000);
     assert.equal(connect.mock.callCount(), 0);
     db.$client.emit("error", new Error("DO_NOT_LEAK"));
     assert.deepEqual(logging.mock.calls.map(x => x.arguments), [["An idle database connection failed."]]);

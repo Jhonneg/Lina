@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 import { automaticConversationTitle } from "../../src/server/conversations/title";
 import { renameTitleInput, StorageInputError } from "../../src/server/conversations/validation";
 import { createConversationRepository } from "../../src/server/conversations/repository";
-import { createConversationHandlers } from "../../src/server/conversations/handler";
+import { createConversationHandlers as makeHandler } from "../../src/server/conversations/handler";
 import { sessionCookieSettings } from "../../src/server/sessions";
 
 const owner = randomUUID(), id = randomUUID();
@@ -81,3 +81,8 @@ test("missing/foreign conversations share 404 responses and database failures re
     assert.equal(body.error.code, "STORAGE_UNAVAILABLE"); assert.ok(!JSON.stringify(body).includes("PRIVATE_DATABASE_CONTENT"));
   }
 });
+
+// In-memory contract fixtures; real admission is verified against disposable PostgreSQL.
+function createConversationHandlers(options: Parameters<typeof makeHandler>[0] = {}) {
+  return makeHandler({ ...options, abuse: { async take() {} } });
+}

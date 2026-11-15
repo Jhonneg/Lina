@@ -1,11 +1,11 @@
-# Audio-reactive orb — development preview
+# Audio-reactive orb
 
-Run `npm run dev` and open `/dev/audio-orb`. The route returns 404 outside
-`NODE_ENV=development`. It uses the approved HD Subtle orb and existing Nicole
-Refined engine. Press **Speak** to load/generate speech; **Stop** cancels and clears
-reactivity. The slider changes visual sensitivity only, never voice processing.
-Opening the preview creates no speech worker, model download or AudioContext.
-Main-chat consent and playback are documented separately in `chat-voice.md`.
+The former local-model `/dev/audio-orb` preview was removed in Milestone 5F.5.
+Use `/dev/cloud-voice` in local development for the existing audio-reactive HD
+Subtle orb and voice design controls, or enable voice in chat. Cloud generation
+requires an explicit billable action, a valid anonymous session and usage admission;
+no model downloads or microphone access occur. See [the lab guide](cloud-voice-lab.md).
+The approved orb implementation and shared audio analysis are unchanged.
 
 `src/lib/audio/reactivity.ts` attaches to an existing AnalyserNode and preallocates
 its waveform/frequency buffers. `sample(delta)` mutates one signal object; it
@@ -33,17 +33,12 @@ rotation and state targets stay unchanged.
 
 Stop/error/completion/pagehide dispose the reader and remove its reference;
 uniforms reset on the next rendered frame. Unmount clears material audio values.
-The reader never disconnects the analyser: the voice engine owns that graph.
+The reader never disconnects the analyser: the PCM player owns that graph.
 Reduced motion disables sampling, zeros audio uniforms, resets shell scale and
 retains the approved demand-rendered static orb. Hidden tabs reset rendered audio
 values and do not poll the analyser.
 
-The preview includes the existing 250ms DOM-only diagnostic panel, expanded with
-actual audio uniforms; per-frame allocation occurs neither in sampling nor uniform
-updates. Remove this temporary route/component after the eventual voice UI is
-approved. Headless Chromium verification covers actual speech and shader values;
-subjective listening/motion review and physical-device performance remain separate.
-
 Validation: `npm run test:audio` covers normalization, band separation,
 frame-rate-independent smoothing, noise/silence, buffer reuse, reduced motion and
-cleanup; `npm run test:voice` retains reference-DSP and voice lifecycle coverage.
+cleanup; `npm run test:voice` retains reference-DSP equivalence coverage;
+`npm run test:cloud-voice` covers PCM lifecycle, cancellation and cleanup.

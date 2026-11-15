@@ -5,12 +5,14 @@ export type ConversationMessage = {
   content: string;
 };
 
+export type ModelUsage = { input: number; cached: number; output: number; audio: number };
 export interface ModelAdapter {
-  generate(messages: readonly ConversationMessage[], signal: AbortSignal): Promise<string>;
+  billing?: { model: string };
+  generate(messages: readonly ConversationMessage[], signal: AbortSignal, onUsage?: (usage: ModelUsage) => void): Promise<string>;
 }
 
 export interface StreamingModelAdapter extends ModelAdapter {
-  stream(messages: readonly ConversationMessage[], signal: AbortSignal): AsyncIterable<string>;
+  stream(messages: readonly ConversationMessage[], signal: AbortSignal, onUsage?: (usage: ModelUsage) => void): AsyncIterable<string>;
 }
 
 export class ModelError extends Error {

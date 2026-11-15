@@ -5,7 +5,7 @@ import { CHAT_LIMITS, validateMessages } from "../../src/server/chat-request";
 import { createModelAdapter } from "../../src/server/ai";
 import { ModelError, type ModelAdapter } from "../../src/server/ai/model-adapter";
 import { createMockAdapter, MOCK_RESPONSE } from "../../src/server/ai/mock-adapter";
-import { createOpenAIAdapter, MAX_OUTPUT_TOKENS } from "../../src/server/ai/openai-adapter";
+import { createOpenAIAdapter as makeOpenAIAdapter, MAX_OUTPUT_TOKENS } from "../../src/server/ai/openai-adapter";
 
 // Even an accidentally configured SDK client cannot make a billable call here.
 const network = mock.method(globalThis, "fetch", async () => { throw new Error("Network disabled in unit tests"); });
@@ -187,3 +187,10 @@ test("SDK failures are sanitized, not retried, and incomplete output is rejected
     await expectError(await createChatHandler({ getAdapter: () => adapter })(request()), 502, "AI_UNAVAILABLE");
   }
 });
+
+
+// These SDK contract tests always inject a mock transport, never a billable provider.
+function createOpenAIAdapter(...args: Parameters<typeof makeOpenAIAdapter>) {
+  if (!args[1]) throw Error("A mock SDK transport is required.");
+  return { ...makeOpenAIAdapter(...args), billing: undefined };
+}

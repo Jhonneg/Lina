@@ -1,14 +1,18 @@
 import "server-only";
+import { createApiGuard, type ApiGuard } from "../abuse/guard";
+import { UsageError } from "../usage/policy";
+import type { ApiKind } from "../abuse/policy";
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionService, sessionCookieSettings } from "../sessions";
 import { createConversationRepository } from "./repository";
 import { identifier, queryPage, StorageInputError, STORAGE_LIMITS, titleInput, renameTitleInput } from "./validation";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
-function fail(status: number, code: string, message: string) {
-  return NextResponse.json({ ok: false, error: { code, message } }, { status, headers });
+function fail(status: number, code: string, message: string, retryAfter?: number) {
+  return NextResponse.json({ ok: false, error: { code, message } }, { status, headers: { ...headers, ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}) } });
 }
 function safeFailure(error: unknown) {
+  if (error instanceof UsageError) return fail(error.status, error.code, error.message, error.retryAfter);
   return error instanceof StorageInputError ? fail(error.status, error.code, error.message)
     : fail(503, "STORAGE_UNAVAILABLE", "Conversation storage is unavailable. Please try again later.");
 }
@@ -53,18 +57,23 @@ async function readTitle(request: NextRequest, rename = false): Promise<{ title:
   return { title: rename ? renameTitleInput(parsed) : titleInput(parsed) };
 }
 
-export function createConversationHandlers({ repository = createConversationRepository(), service = createSessionService() }: {
+export function createConversationHandlers({ repository = createConversationRepository(), service = createSessionService(), abuse = createApiGuard() }: {
   repository?: Pick<ReturnType<typeof createConversationRepository>, "create" | "list" | "get"> & Partial<Pick<ReturnType<typeof createConversationRepository>, "rename" | "remove">>;
-  service?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">;
+  service?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">; abuse?: ApiGuard;
 } = {}) {
-  const resolve = (request: NextRequest) => service.getExistingSession(request.cookies.get(sessionCookieSettings().name)?.value);
+  const resolve = async (request: NextRequest, kind: ApiKind) => {
+    await abuse.take(request, kind);
+    const session = await service.getExistingSession(request.cookies.get(sessionCookieSettings().name)?.value);
+    if (session) await abuse.take(request, kind, session.id);
+    return session;
+  };
   return {
     async create(request: NextRequest) {
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") {
         return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       }
       try {
-        const session = await resolve(request);
+        const session = await resolve(request, "create");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
         const conversation = await repository.create(session.id, await readTitle(request));
@@ -75,7 +84,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     async rename(request: NextRequest, context: { params: Promise<{ id: string }> }) {
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
-        const session = await resolve(request);
+        const session = await resolve(request, "mutate");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
         const id = identifier((await context.params).id);
@@ -89,7 +98,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     async remove(request: NextRequest, context: { params: Promise<{ id: string }> }) {
       if (request.headers.get("origin") !== new URL(request.url).origin || request.headers.get("sec-fetch-site") === "cross-site") return fail(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
       try {
-        const session = await resolve(request);
+        const session = await resolve(request, "mutate");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         if (new URL(request.url).search) throw new StorageInputError("Unsupported query parameters.");
         const id = identifier((await context.params).id);
@@ -102,7 +111,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     },
     async list(request: NextRequest) {
       try {
-        const session = await resolve(request);
+        const session = await resolve(request, "read");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         const result = await repository.list(session.id, queryPage(new URL(request.url).searchParams));
         return NextResponse.json({ ok: true, conversations: result.items, pagination: result.pagination }, { headers });
@@ -110,7 +119,7 @@ export function createConversationHandlers({ repository = createConversationRepo
     },
     async get(request: NextRequest, context: { params: Promise<{ id: string }> }) {
       try {
-        const session = await resolve(request);
+        const session = await resolve(request, "read");
         if (!session) return fail(401, "SESSION_REQUIRED", "A valid session is required.");
         const id = identifier((await context.params).id);
         const result = await repository.get(session.id, id, queryPage(new URL(request.url).searchParams));

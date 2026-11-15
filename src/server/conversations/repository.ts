@@ -1,4 +1,5 @@
 import "server-only";
+import { assertStorageCapacity } from "../abuse/storage";
 import { and, asc, desc, eq, exists, gt, isNull, sql } from "drizzle-orm";
 import { getDatabase } from "../db";
 import { conversations, messages, sessions } from "../db/schema";
@@ -20,16 +21,18 @@ function pageResult<T>(rows: T[], page: Page) {
 type RepositoryDatabase = Pick<ReturnType<typeof getDatabase>, "select" | "insert" | "update" | "delete" | "transaction">;
 export function createConversationRepository(database: () => RepositoryDatabase = getDatabase) {
   return {
-    async create(sessionId: string, input: unknown = {}) {
+    async create(sessionId: string, input: unknown = {}): Promise<{ id: string; title: string | null; createdAt: Date; updatedAt: Date } | null> {
       sessionId = identifier(sessionId);
       const title = titleInput(input);
       // Insert only for an existing, unexpired owner; UUID/timestamps are DB-generated.
-      const db = database();
+      return database().transaction(async db => {
+        await assertStorageCapacity(db, sessionId, { conversations: 1 });
       const [row] = await db.insert(conversations).select(db.select({
         id: sql<string>`gen_random_uuid()`.as("id"), sessionId: sessions.id, title: sql<string | null>`${title}::text`.as("title"),
         createdAt: sql<Date>`now()`.as("created_at"), updatedAt: sql<Date>`now()`.as("updated_at"),
       }).from(sessions).where(and(eq(sessions.id, sessionId), gt(sessions.expiresAt, sql`now()`)))).returning(conversationFields);
       return row ?? null;
+      });
     },
     async list(sessionId: string, pagination: Page = { limit: 20, offset: 0 }) {
       sessionId = identifier(sessionId);
@@ -53,6 +56,7 @@ export function createConversationRepository(database: () => RepositoryDatabase 
       sessionId = identifier(sessionId); conversationId = identifier(conversationId);
       const message = messageInput(input);
       return database().transaction(async tx => {
+        await assertStorageCapacity(tx, sessionId, { messages: 1 });
         // Serialize first-message titles, renames and deletions on the owner row.
         const [conversation] = await tx.select({ id: conversations.id }).from(conversations)
           .where(owned(sessionId, conversationId)).for("update");

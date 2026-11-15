@@ -13,7 +13,9 @@ function createConnection() {
     throw new Error("DATABASE_URL must be a valid PostgreSQL connection URL.");
   }
   // pg creates sockets only when a query or connection is requested.
-  const pool = new Pool({ connectionString, max: 5, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000 });
+  const pool = new Pool({ connectionString, max: 5, connectionTimeoutMillis: 5000, idleTimeoutMillis: 30_000,
+    // Ordinary session/history queries need bounds too, not only usage transactions.
+    statement_timeout: 5000, lock_timeout: 3000, query_timeout: 8000 });
   pool.on("error", () => { console.error("An idle database connection failed."); });
   return { pool, db: drizzle(pool, { schema, logger: false }) };
 }

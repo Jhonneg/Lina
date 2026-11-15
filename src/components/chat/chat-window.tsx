@@ -94,7 +94,7 @@ export function ChatWindow() {
   return (
     <div ref={windowRef} className={styles.window} data-active={active}>
       <ChatHeader canReset={active || Boolean(conversationId) || Boolean(error)} onReset={reset} historyOpen={historyOpen} onToggleHistory={() => setHistoryOpen(open => !open)}
-        voiceControls={<ChatVoiceControls view={voice.view} consentOpen={voice.consentOpen} onToggle={voice.toggle} onEnable={voice.enable} onConsentCancel={voice.cancelConsent} onStop={voice.stop} onVolume={voice.setVolume} />} />
+        voiceControls={<ChatVoiceControls view={voice.view} onToggle={voice.toggle} onEnable={voice.enable} onStop={voice.stop} onVolume={voice.setVolume} />} />
       <main className={styles.conversation} aria-label="Chat with Lain">
         <div className={styles.presence}>
           <div className={styles.orbFrame} role="img" aria-label="Lain’s amber presence">
@@ -127,7 +127,7 @@ export function ChatWindow() {
             }}
           >
             <ol ref={contentRef} className={styles.messageList}>
-              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} transmitting={phase === "talking"} onRead={voice.read} reading={voice.view.messageId === message.id} />)}
+              {messages.filter(message => message.role === "user" || message.content || message.status !== "pending").map((message) => <ChatMessage key={message.id} message={message} transmitting={message.status === "streaming" && phase === "talking"} onRead={voice.read} reading={voice.view.messageId === message.id} />)}
             </ol>
           </div>
         )}

@@ -1,0 +1,53 @@
+{
+  "before": {
+    "responses": 9,
+    "messageWork": 4748,
+    "markdownWork": 75,
+    "scriptMs": 894.7162222222222,
+    "taskMs": 1145.9834444444443,
+    "wallMs": 4343.666666666667,
+    "p95FrameMs": 16.733333333333576,
+    "decodedDevelopmentJsBytes": 9173600,
+    "maxSources": 20,
+    "heapGrowthBytes": [
+      3276396,
+      3345776,
+      3326860
+    ]
+  },
+  "after": {
+    "responses": 9,
+    "messageWork": 78,
+    "markdownWork": 75,
+    "scriptMs": 685.5686666666666,
+    "taskMs": 935.0998888888888,
+    "wallMs": 4348.222222222223,
+    "p95FrameMs": 16.755555555555574,
+    "decodedDevelopmentJsBytes": 9174466,
+    "maxSources": 21,
+    "heapGrowthBytes": [
+      3297268,
+      3265280,
+      3227500
+    ]
+  },
+  "changePercent": {
+    "messageWork": -98.35720303285595,
+    "scriptMs": -23.375853746799436,
+    "taskMs": -18.401972260409817
+  },
+  "unchangedSourceHashes": {
+    "src/components/orb/noise-orb.tsx": "244088077d5c24a8b209bb4b465f001f878b897df1c911936d0fc1346ed4fa4a",
+    "src/components/orb/shaders.ts": "b2d71d1cbb3933913f398f3c60f8ded057769100cfc166e6cd68b0a9e2c64cd2",
+    "src/components/orb/orb-geometry.ts": "bb074acdac51d00d2367f962a7450a18588dcf8eccde8654ec178dfaa1393517",
+    "src/components/orb/orb-animation.ts": "9dfff0d67941ffbe35675361223dfb734b5d18b87274b8050b8e268eefd6adb6",
+    "src/lib/cloud-voice/design-player.ts": "a5071fb20eb2c553a6efb3b35d5b7491cd060fc63b39638dfb5294e6e95a9051",
+    "src/lib/cloud-voice/design-dsp.ts": "faf0d53e6e55ca0e8906895b4ac3a6b1be297ad44c1023457e4359d80b7c0c58",
+    "docs/references/lain-voice-preset.json": "f67c50199c37df677c5993e5e7aca547c55568dd58501e53054db0f9014b68a5",
+    "src/server/ai/personality.ts": "bbfd313bc321bcfcbc69a395132e04a1ca8efddc66a70f5141bc106685d5d92b",
+    "src/server/usage/service.ts": "998b254b37dd74e799e9660cd570dabef4993e7b27e45a90d86ba636496c3fc2",
+    "src/server/abuse/guard.ts": "1046c43bfcae5432d7f1d3c80764d26f1293143843850815920ecf7cd60cf905",
+    "next.config.ts": "61d0ae30ffa49d6bff9d2afaef55f8e8fd28ae499de4b005a683d1f333ec4480"
+  },
+  "assertionsPassed": true
+}

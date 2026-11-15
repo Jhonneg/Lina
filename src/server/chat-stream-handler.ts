@@ -1,3 +1,7 @@
+import { createUsageService, type UsageLease, type UsageTransaction } from "./usage/service";
+import { UsageError } from "./usage/policy";
+import { billingSession, requestKey } from "./usage/request";
+import { LAIN_PERSONALITY_INSTRUCTIONS } from "./ai/personality";
 import "server-only";
 import { NextRequest } from "next/server";
 import { readStreamRequest } from "./persisted-stream-request";
@@ -10,7 +14,8 @@ import { RequestError, validateHeaders } from "./chat-request";
 
 export const MAX_STREAM_OUTPUT_BYTES = 16_000;
 
-function safeError(error: unknown, request: Request, deadline: AbortSignal) {
+function safeError(error: unknown, request: Request, deadline: AbortSignal): { status: number; code: string; message: string; retryAfter?: number } {
+  if (error instanceof UsageError) return { status: error.status, code: error.code, message: error.message, retryAfter: error.retryAfter };
   if (error instanceof RequestError) return { status: error.status, code: error.code, message: error.message };
   if (deadline.aborted || (error instanceof ModelError && error.kind === "timeout")) {
     return { status: 504, code: "AI_TIMEOUT", message: "The request timed out. Please try again." };
@@ -26,9 +31,9 @@ function safeError(error: unknown, request: Request, deadline: AbortSignal) {
 }
 
 export function createChatStreamHandler({ getAdapter = createModelAdapter, timeoutMs = REQUEST_TIMEOUT_MS,
-  getPersistence = createStreamPersistence, sessionService = createSessionService() }: {
-  getAdapter?: () => Pick<StreamingModelAdapter, "stream">;
-  timeoutMs?: number;
+  getPersistence = createStreamPersistence, sessionService = createSessionService(), usage = createUsageService() }: {
+  getAdapter?: () => Pick<StreamingModelAdapter, "stream" | "billing">;
+  timeoutMs?: number; usage?: ReturnType<typeof createUsageService>;
   getPersistence?: typeof createStreamPersistence;
   sessionService?: Pick<ReturnType<typeof createSessionService>, "getExistingSession">;
 } = {}) {
@@ -38,11 +43,21 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
     const signal = AbortSignal.any([request.signal, deadline.signal, lifetime.signal]);
     const timer = setTimeout(() => deadline.abort(new DOMException("Timed out", "TimeoutError")), timeoutMs);
     let persistence: ReturnType<typeof createStreamPersistence> | undefined;
-    let receipt: StreamClaim | undefined;
+    let receipt: StreamClaim | undefined, lease: UsageLease | undefined;
+    let actual: import("./usage/policy").TokenUsage | undefined;
+    let adapter: Pick<StreamingModelAdapter, "stream" | "billing"> | undefined;
+    let sessionId: string | undefined;
     try {
       validateHeaders(request);
       const input = await readStreamRequest(request, signal);
       signal.throwIfAborted();
+      const reserve = async (tx?: UsageTransaction) => {
+        adapter ??= getAdapter();
+        if (!adapter.billing || lease) return;
+        sessionId ??= (await billingSession(request, sessionService)).id;
+        lease = await usage.reserve({ request, sessionId, requestId: input.mode === "persisted" ? input.requestId : requestKey(request), kind: "text", model: adapter.billing.model,
+          source: JSON.stringify({ instructions: LAIN_PERSONALITY_INSTRUCTIONS, messages: input.messages }) }, tx);
+      };
       if (input.mode === "persisted") {
         if (request.headers.get("origin") !== new URL(request.url).origin) throw new RequestError(403, "FORBIDDEN_ORIGIN", "A same-origin request is required.");
         const cookies = new NextRequest(request.url, { headers: request.headers }).cookies;
@@ -51,15 +66,18 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
         catch { throw new RequestError(503, "PERSISTENCE_UNAVAILABLE", "Conversation storage is unavailable. Please try again later."); }
         if (!session) throw new RequestError(401, "SESSION_REQUIRED", "A valid session is required.");
         persistence = getPersistence();
-        receipt = await persistence.begin(session.id, input);
+        sessionId = session.id;
+        receipt = await persistence.begin(session.id, input, reserve);
       }
       signal.throwIfAborted();
       const replay = receipt && !receipt.isNew ? receipt : undefined;
+      if (!replay) await reserve();
       const source = replay ? (async function* () {
         if (replay.content) yield replay.content;
         if (replay.state !== "completed") throw new RequestError(409, replay.state === "interrupted" ? "REQUEST_INTERRUPTED" : "REQUEST_FAILED", "This submission did not complete. Its saved result has been replayed.");
-      })() : getAdapter().stream(input.messages, signal);
-      const iterator = source[Symbol.asyncIterator]();
+      })() : undefined;
+      let iterator: AsyncIterator<string> | undefined = source?.[Symbol.asyncIterator]();
+      let dispatched = false;
       const encoder = new TextEncoder();
       let closed = false;
       let ending = false;
@@ -80,7 +98,7 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
         lifetime.abort();
         // Abort first to release a pending next(), then close the iterator.
         // Do not let an uncooperative provider delay response cancellation.
-        try { void Promise.resolve(iterator.return?.()).catch(() => {}); } catch { /* Already closed. */ }
+        try { void Promise.resolve(iterator?.return?.()).catch(() => {}); } catch { /* Already closed. */ }
       }
 
       function finish(error?: unknown, cancelled = false): Promise<void> {
@@ -90,14 +108,16 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
         cleanup();
         finalizing = (async () => {
           let failure = error;
+          try { await lease?.finish(actual); }
+          catch (error) { failure = error; }
           if (persistence && receipt) {
-            try { await persistence.finish(receipt, text, status); }
+            try { await persistence.finish(receipt, text, failure !== undefined && status === "completed" ? "failed" : status); }
             catch { failure = new RequestError(503, "PERSISTENCE_UNAVAILABLE", "Unable to save the response. Retry using the same request ID."); }
           }
           if (!transportGone && !request.signal.aborted) {
             if (failure !== undefined) {
-              const { code, message } = safeError(failure, request, deadline.signal);
-              emit("error", { code, message });
+              const { code, message, retryAfter } = safeError(failure, request, deadline.signal);
+              emit("error", { code, message, ...(retryAfter ? { retryAfter } : {}) });
             } else emit("done", { finishReason: "completed", ...(receipt ? { saved: true } : {}) });
           }
           if (!closed) { controller.close(); closed = true; }
@@ -125,7 +145,14 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
           try {
             // Demand-driven reads keep slow consumers from building a text queue.
             if (ending) return;
-            const next = await iterator.next();
+            if (!dispatched) {
+              dispatched = true;
+              await lease?.start();
+              if (ending) return;
+              signal.throwIfAborted();
+              iterator ??= adapter!.stream(input.messages, signal, value => { actual = value; })[Symbol.asyncIterator]();
+            }
+            const next = await iterator!.next();
             if (ending) return;
             if (next.done) {
               if (!hasText) throw new ModelError("upstream");
@@ -158,13 +185,14 @@ export function createChatStreamHandler({ getAdapter = createModelAdapter, timeo
     } catch (error) {
       clearTimeout(timer);
       lifetime.abort();
+      try { await lease?.finish(actual); } catch (failure) { error = failure; }
       if (persistence && receipt?.isNew) {
         try { await persistence.finish(receipt, "", request.signal.aborted ? "interrupted" : "failed"); }
         catch { error = new RequestError(503, "PERSISTENCE_UNAVAILABLE", "Unable to save the response. Retry using the same request ID."); }
       }
-      const { status, code, message } = safeError(error, request, deadline.signal);
+      const { status, code, message, retryAfter } = safeError(error, request, deadline.signal);
       return Response.json({ ok: false, error: { code, message } }, {
-        status, headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" },
+        status, headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}) },
       });
     }
   };

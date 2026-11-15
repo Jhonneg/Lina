@@ -3,7 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { test } from "node:test";
 import { NextRequest } from "next/server";
 import { createSessionService, sessionCookieSettings, SESSION_LIFETIME_SECONDS, type SessionMetadata, type SessionStore } from "../../src/server/sessions";
-import { createSessionHandler } from "../../src/server/session-handler";
+import { createSessionHandler as makeHandler } from "../../src/server/session-handler";
 
 const now = new Date("2026-11-11T12:00:00Z");
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
@@ -170,3 +170,8 @@ test("database lookup and insertion failures yield safe noncached errors without
     assert.ok(!JSON.stringify(body).includes("token_hash"));
   }
 });
+
+// In-memory contract fixtures; real admission is verified against disposable PostgreSQL.
+function createSessionHandler(options: Parameters<typeof makeHandler>[0] = {}) {
+  return makeHandler({ ...options, abuse: { async take() {} } });
+}

@@ -214,3 +214,49 @@ The health check uses `pg_isready`; it does not replace application credential
 verification. PostgreSQL initialization variables apply only to an empty volume.
 Changing `.env` does not change an existing database password. No volumes or
 existing containers need to be deleted for normal start/stop or migrations.
+
+### Paid API usage protection
+
+Paid text and speech now require PostgreSQL usage reservations and a valid
+anonymous session. Review/apply the new migration with `npm run db:migrate`
+and configure the limits and model prices in `.env.example` before enabling
+paid calls. Mock text remains database-independent; public production voice
+remains disabled. See [usage protection](docs/api-usage-protection.md) for defaults,
+trusted-IP deployment requirements, idempotency headers, and accounting limits.
+Run `npm run test:usage` or the isolated `npm run test:usage:postgres` verification.
+
+### Voice runtime
+
+Speech uses the cloud adapter and approved Lain robo preset. Kokoro, local neural
+workers/model downloads, and the old `/dev/audio-orb` and `/dev/voice-benchmark`
+previews have been removed. The development voice design lab remains at
+`/dev/cloud-voice`; no local model setup is needed. Public production voice stays
+disabled. See [voice runtime](docs/voice-engine.md) and
+[cleanup/audit results](docs/legacy-voice-cleanup.md). Shared DSP tests run with
+`npm run test:voice`, and cloud playback tests with `npm run test:cloud-voice`.
+
+### Dependency security
+
+See [the Milestone 6A review](docs/dependency-security.md) for the remaining
+11 moderate development-tool findings, their inspected exposure, and mitigations.
+The production-only npm audit is clean. Current upstream dependency ranges offer
+no compatible fixes for these two advisory chains; no overrides or forced fixes
+were applied. Recheck upstream releases before the production security review.
+
+### Application security
+
+[Milestone 6B](docs/application-security.md) documents the application security
+review, enforced browser headers, bounded database queries, tested boundaries,
+and remaining deployment requirements. Public production voice remains disabled;
+this review does not approve public deployment or replace trusted-ingress, abuse,
+privacy and production-artifact validation.
+
+### Non-billable API limits and retention
+
+Apply the reviewed `0003_fuzzy_elektra.sql` migration explicitly before using the
+new session/history guards. Limits, storage caps and retention defaults are in
+`.env.example`; see [non-billable protection](docs/non-billable-abuse-protection.md).
+`npm run sessions:cleanup` is a bounded dry-run. No cleanup runs automatically;
+its separate `--apply` option permanently deletes eligible expired data and must
+only be used after reviewing and authorizing the target. Validation uses
+`npm run test:abuse` and `npm run test:abuse:postgres`, never `lain_dev` cleanup.

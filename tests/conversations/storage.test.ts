@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { test } from "node:test";
 import { NextRequest } from "next/server";
-import { createConversationHandlers } from "../../src/server/conversations/handler";
+import { createConversationHandlers as makeHandler } from "../../src/server/conversations/handler";
 import { createConversationRepository } from "../../src/server/conversations/repository";
 import { identifier, messageInput, messagePatch, queryPage, STORAGE_LIMITS, StorageInputError, titleInput } from "../../src/server/conversations/validation";
 import { createSessionService, sessionCookieSettings } from "../../src/server/sessions";
@@ -118,3 +118,8 @@ test("unavailable lookups return uniform 404 and database failures are safe", as
   const sessionFailure = createConversationHandlers({ service: { async getExistingSession() { throw Error("DO_NOT_LEAK"); } } });
   assert.equal((await sessionFailure.list(request())).status, 503);
 });
+
+// In-memory contract fixtures; real admission is verified against disposable PostgreSQL.
+function createConversationHandlers(options: Parameters<typeof makeHandler>[0] = {}) {
+  return makeHandler({ ...options, abuse: { async take() {} } });
+}

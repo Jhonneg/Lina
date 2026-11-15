@@ -17,7 +17,8 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
   });
 
   return {
-    async *stream(messages, signal) {
+    billing: { model: config.model },
+    async *stream(messages, signal, onUsage) {
       let upstream;
       try {
         signal.throwIfAborted();
@@ -34,6 +35,7 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
           if (event.type === "response.output_text.delta") yield event.delta;
           else if (event.type === "response.completed") {
             if (event.response.status !== "completed") throw new ModelError("upstream");
+            if (event.response.usage) onUsage?.({ input: event.response.usage.input_tokens, cached: event.response.usage.input_tokens_details?.cached_tokens ?? 0, output: event.response.usage.output_tokens, audio: 0 });
             return;
           } else if (["response.failed", "response.incomplete", "error"].includes(event.type)) {
             throw new ModelError("upstream");
@@ -49,7 +51,7 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
         upstream?.controller.abort();
       }
     },
-    async generate(messages, signal) {
+    async generate(messages, signal, onUsage) {
       try {
         const response = await client.responses.create({
           model: config.model,
@@ -61,6 +63,7 @@ export function createOpenAIAdapter(config: { apiKey: string; model: string }, f
         }, { signal });
         const text = response.output_text?.trim();
         if (response.status !== "completed" || !text) throw new ModelError("upstream");
+        if (response.usage) onUsage?.({ input: response.usage.input_tokens, cached: response.usage.input_tokens_details?.cached_tokens ?? 0, output: response.usage.output_tokens, audio: 0 });
         return text;
       } catch (error) {
         if (signal.aborted) throw signal.reason;

@@ -1,0 +1,976 @@
+{
+  "label": "after",
+  "at": "2026-11-15T05:27:20.980Z",
+  "environment": {
+    "cpu": "AMD Ryzen 5 5600G with Radeon Graphics",
+    "cpuCount": 12,
+    "chromium": "HeadlessChrome/158.0.8127.18",
+    "gpu": [
+      {
+        "vendorId": 4318,
+        "deviceId": 8644,
+        "vendorString": "Google Inc. (NVIDIA)",
+        "deviceString": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce GTX 1660 SUPER (0x000021C4)), NVIDIA-615.78.8.0)",
+        "driverVendor": "NVIDIA",
+        "driverVersion": "615.78.8.0"
+      }
+    ],
+    "features": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "skia_graphite": "disabled_off",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "disabled_software",
+      "vulkan": "enabled_on",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webgpu_on_vk_via_gl_interop": "disabled_off",
+      "webnn": "disabled_off"
+    },
+    "headless": true,
+    "viewport": [
+      1440,
+      900
+    ],
+    "deviceScaleFactor": 2,
+    "development": true,
+    "mockedApis": true
+  },
+  "trials": [
+    {
+      "idle": {
+        "work": {},
+        "commits": 0,
+        "draws": 300,
+        "triangles": 8236800,
+        "lines": 2066400,
+        "frames": 150,
+        "fps": 59.992800863967844,
+        "medianFrameMs": 16.699999999999818,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 0,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "gl": {
+        "width": 540,
+        "height": 525,
+        "cssWidth": 360,
+        "cssHeight": 350,
+        "dpr": 2,
+        "renderer": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce GTX 1660 SUPER (0x000021C4)), NVIDIA)"
+      },
+      "rounds": [
+        {
+          "wallMs": 4336,
+          "cpuMs": {
+            "ScriptDuration": 849.6990000000001,
+            "TaskDuration": 1155.133,
+            "LayoutDuration": 31.019,
+            "RecalcStyleDuration": 8.356000000000002
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 113,
+          "draws": 520,
+          "triangles": 14277120,
+          "lines": 3581760,
+          "frames": 260,
+          "fps": 59.8320101254171,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.700000000000728,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 20,
+          "audioBuffers": 37,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4362,
+          "cpuMs": {
+            "ScriptDuration": 675.98,
+            "TaskDuration": 921.1140000000003,
+            "LayoutDuration": 20.31999999999999,
+            "RecalcStyleDuration": 9.304999999999998
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 524,
+          "triangles": 14386944,
+          "lines": 3609312,
+          "frames": 262,
+          "fps": 59.973446870830614,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.700000000000728,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 74,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4364,
+          "cpuMs": {
+            "ScriptDuration": 656.9079999999998,
+            "TaskDuration": 920.1989999999997,
+            "LayoutDuration": 23.23399999999999,
+            "RecalcStyleDuration": 7.265999999999995
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 526,
+          "triangles": 14441856,
+          "lines": 3623088,
+          "frames": 263,
+          "fps": 60.17618121496396,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.799999999999272,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 111,
+          "contexts": 1,
+          "liveBuffers": 8
+        }
+      ],
+      "heapBefore": {
+        "usedSize": 12591968,
+        "totalSize": 14069760,
+        "embedderHeapUsedSize": 2730064,
+        "backingStorageSize": 10425572
+      },
+      "heapAfter": {
+        "usedSize": 15889236,
+        "totalSize": 17477632,
+        "embedderHeapUsedSize": 3210584,
+        "backingStorageSize": 10667412
+      },
+      "cleanup": {
+        "activeSources": 0,
+        "contexts": 0,
+        "canvases": 1,
+        "liveBuffers": 8
+      },
+      "hidden": {
+        "work": {},
+        "commits": 0,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.98286203916201,
+        "medianFrameMs": 16.69999999999709,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "reduced": {
+        "work": {},
+        "commits": 0,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.99142979625422,
+        "medianFrameMs": 16.700000000000728,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "resources": [
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_0_f2ff3b9dbj-._.js",
+          "decoded": 600,
+          "transferred": 900
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom-client_development_1cez4iftj5vi3.js",
+          "decoded": 1052157,
+          "transferred": 182657
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_next-devtools_index_1c-nsaxph9lhj.js",
+          "decoded": 886632,
+          "transferred": 254744
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom_development_0prz1w05_qyt8.js",
+          "decoded": 16781,
+          "transferred": 4369
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_17mu9nj0_826s._.js",
+          "decoded": 3969,
+          "transferred": 1305
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-server-dom-turbopack_1tbja8kgax7zd._.js",
+          "decoded": 180807,
+          "transferred": 33442
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_1adp0v362lzqk._.js",
+          "decoded": 145463,
+          "transferred": 27381
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_1vmndtu1i41qi._.js",
+          "decoded": 173070,
+          "transferred": 35596
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40swc_helpers_cjs_02-aroiot9jsb._.js",
+          "decoded": 2028,
+          "transferred": 1063
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_client_1t_nand5-l4ig._.js",
+          "decoded": 925041,
+          "transferred": 200289
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_1anvha4rlo79g._.js",
+          "decoded": 1025,
+          "transferred": 741
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-tmp_lain-6c-preview-3Prv7i_0t0s_wsal_087._.js",
+          "decoded": 112019,
+          "transferred": 28561
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_219uq1sj0q91c._.js",
+          "decoded": 1187,
+          "transferred": 820
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_05gyh2m0vc7uq._.js",
+          "decoded": 64171,
+          "transferred": 13132
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_1-rh74wcka4sw._.js",
+          "decoded": 1570,
+          "transferred": 850
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_0ksdmnsy5yg1v._.js",
+          "decoded": 341176,
+          "transferred": 45618
+        },
+        {
+          "path": "/_next/static/chunks/194k_micromark-core-commonmark_dev_lib_20-n3b92m9_kd._.js",
+          "decoded": 340017,
+          "transferred": 25127
+        },
+        {
+          "path": "/_next/static/chunks/194k_0ti2kwmzka7tr._.js",
+          "decoded": 1123320,
+          "transferred": 165197
+        },
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsayzyj2p6._.js",
+          "decoded": 16525,
+          "transferred": 4413
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_core_1_a6gydnd75gb.js",
+          "decoded": 1603445,
+          "transferred": 296468
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1-k5rlwyw4kdc.js",
+          "decoded": 854216,
+          "transferred": 132582
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1y3zze5vib6ks.js",
+          "decoded": 104231,
+          "transferred": 4808
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40react-three_fiber_dist_0czcym6j4xw22._.js",
+          "decoded": 900878,
+          "transferred": 171116
+        },
+        {
+          "path": "/_next/static/chunks/194k_0fjmu552s69l-._.js",
+          "decoded": 51429,
+          "transferred": 9542
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_orb_1tkw1js2fq73o._.js",
+          "decoded": 39576,
+          "transferred": 6612
+        },
+        {
+          "path": "/_next/static/chunks/194k_1n7oro4es-czq._.js",
+          "decoded": 223769,
+          "transferred": 54231
+        },
+        {
+          "path": "/_next/static/chunks/0uz6_lain-6c-preview-3Prv7i_src_components_chat_highlighted-code_tsx_1whn88is_80vf._.js",
+          "decoded": 9364,
+          "transferred": 1684
+        }
+      ],
+      "apiRequests": 2,
+      "errors": []
+    },
+    {
+      "idle": {
+        "work": {},
+        "commits": 0,
+        "draws": 300,
+        "triangles": 8236800,
+        "lines": 2066400,
+        "frames": 150,
+        "fps": 59.99520038389777,
+        "medianFrameMs": 16.699999999999818,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 0,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "gl": {
+        "width": 540,
+        "height": 525,
+        "cssWidth": 360,
+        "cssHeight": 350,
+        "dpr": 2,
+        "renderer": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce GTX 1660 SUPER (0x000021C4)), NVIDIA)"
+      },
+      "rounds": [
+        {
+          "wallMs": 4364,
+          "cpuMs": {
+            "ScriptDuration": 696.7889999999999,
+            "TaskDuration": 946.545,
+            "LayoutDuration": 20.716,
+            "RecalcStyleDuration": 6.045999999999999
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 113,
+          "draws": 526,
+          "triangles": 14441856,
+          "lines": 3623088,
+          "frames": 263,
+          "fps": 60.150032018946455,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 37,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4363,
+          "cpuMs": {
+            "ScriptDuration": 651.975,
+            "TaskDuration": 888.4539999999998,
+            "LayoutDuration": 19.895999999999997,
+            "RecalcStyleDuration": 5.653000000000001
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 524,
+          "triangles": 14386944,
+          "lines": 3609312,
+          "frames": 262,
+          "fps": 59.95560539144817,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.799999999999272,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 74,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4327,
+          "cpuMs": {
+            "ScriptDuration": 687.7609999999999,
+            "TaskDuration": 947.864,
+            "LayoutDuration": 22.373000000000005,
+            "RecalcStyleDuration": 8.648999999999997
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 520,
+          "triangles": 14277120,
+          "lines": 3581760,
+          "frames": 260,
+          "fps": 59.96309963099631,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.799999999999272,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 111,
+          "contexts": 1,
+          "liveBuffers": 8
+        }
+      ],
+      "heapBefore": {
+        "usedSize": 12708620,
+        "totalSize": 14331904,
+        "embedderHeapUsedSize": 2760160,
+        "backingStorageSize": 10423069
+      },
+      "heapAfter": {
+        "usedSize": 15973900,
+        "totalSize": 17739776,
+        "embedderHeapUsedSize": 3249008,
+        "backingStorageSize": 10667332
+      },
+      "cleanup": {
+        "activeSources": 0,
+        "contexts": 0,
+        "canvases": 1,
+        "liveBuffers": 8
+      },
+      "hidden": {
+        "work": {},
+        "commits": 0,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.98286203916201,
+        "medianFrameMs": 16.700000000000728,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "reduced": {
+        "work": {},
+        "commits": 0,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.99142979561578,
+        "medianFrameMs": 16.69999999999709,
+        "p95FrameMs": 16.799999999999272,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "resources": [
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_0_f2ff3b9dbj-._.js",
+          "decoded": 600,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_next-devtools_index_1c-nsaxph9lhj.js",
+          "decoded": 886632,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom_development_0prz1w05_qyt8.js",
+          "decoded": 16781,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom-client_development_1cez4iftj5vi3.js",
+          "decoded": 1052157,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_17mu9nj0_826s._.js",
+          "decoded": 3969,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-server-dom-turbopack_1tbja8kgax7zd._.js",
+          "decoded": 180807,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_1adp0v362lzqk._.js",
+          "decoded": 145463,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_1vmndtu1i41qi._.js",
+          "decoded": 173070,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40swc_helpers_cjs_02-aroiot9jsb._.js",
+          "decoded": 2028,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_client_1t_nand5-l4ig._.js",
+          "decoded": 925041,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_1anvha4rlo79g._.js",
+          "decoded": 1025,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-tmp_lain-6c-preview-3Prv7i_0t0s_wsal_087._.js",
+          "decoded": 112019,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_219uq1sj0q91c._.js",
+          "decoded": 1187,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_05gyh2m0vc7uq._.js",
+          "decoded": 64171,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_1-rh74wcka4sw._.js",
+          "decoded": 1570,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_0ksdmnsy5yg1v._.js",
+          "decoded": 341176,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_micromark-core-commonmark_dev_lib_20-n3b92m9_kd._.js",
+          "decoded": 340017,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_0ti2kwmzka7tr._.js",
+          "decoded": 1123320,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsayzyj2p6._.js",
+          "decoded": 16525,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_core_1_a6gydnd75gb.js",
+          "decoded": 1603445,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1-k5rlwyw4kdc.js",
+          "decoded": 854216,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1y3zze5vib6ks.js",
+          "decoded": 104231,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40react-three_fiber_dist_0czcym6j4xw22._.js",
+          "decoded": 900878,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_0fjmu552s69l-._.js",
+          "decoded": 51429,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_orb_1tkw1js2fq73o._.js",
+          "decoded": 39576,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_1n7oro4es-czq._.js",
+          "decoded": 223769,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/0uz6_lain-6c-preview-3Prv7i_src_components_chat_highlighted-code_tsx_1whn88is_80vf._.js",
+          "decoded": 9364,
+          "transferred": 300
+        }
+      ],
+      "apiRequests": 2,
+      "errors": []
+    },
+    {
+      "idle": {
+        "work": {},
+        "commits": 0,
+        "draws": 300,
+        "triangles": 8236800,
+        "lines": 2066400,
+        "frames": 150,
+        "fps": 59.99040153579003,
+        "medianFrameMs": 16.699999999999818,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 0,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "gl": {
+        "width": 540,
+        "height": 525,
+        "cssWidth": 360,
+        "cssHeight": 350,
+        "dpr": 2,
+        "renderer": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce GTX 1660 SUPER (0x000021C4)), NVIDIA)"
+      },
+      "rounds": [
+        {
+          "wallMs": 4364,
+          "cpuMs": {
+            "ScriptDuration": 684.0490000000001,
+            "TaskDuration": 923.8090000000001,
+            "LayoutDuration": 22.648,
+            "RecalcStyleDuration": 6.282999999999997
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 113,
+          "draws": 524,
+          "triangles": 14386944,
+          "lines": 3609312,
+          "frames": 262,
+          "fps": 59.91173309549535,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.700000000000728,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 37,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4330,
+          "cpuMs": {
+            "ScriptDuration": 656.2069999999999,
+            "TaskDuration": 878.895,
+            "LayoutDuration": 19.586,
+            "RecalcStyleDuration": 7.788999999999997
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 522,
+          "triangles": 14332032,
+          "lines": 3595536,
+          "frames": 261,
+          "fps": 60.17846026144436,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.700000000000728,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 74,
+          "contexts": 1,
+          "liveBuffers": 8
+        },
+        {
+          "wallMs": 4324,
+          "cpuMs": {
+            "ScriptDuration": 610.7499999999999,
+            "TaskDuration": 833.8859999999997,
+            "LayoutDuration": 20.125000000000004,
+            "RecalcStyleDuration": 8.136999999999999
+          },
+          "work": {
+            "ChatWindow": 108,
+            "ChatMessage": 78,
+            "MarkdownResponse": 75
+          },
+          "commits": 112,
+          "draws": 520,
+          "triangles": 14277120,
+          "lines": 3581760,
+          "frames": 260,
+          "fps": 60.04202942053243,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.799999999999272,
+          "longTaskMs": 0,
+          "longTaskCount": 0,
+          "activeSources": 0,
+          "peakSources": 21,
+          "audioBuffers": 111,
+          "contexts": 1,
+          "liveBuffers": 8
+        }
+      ],
+      "heapBefore": {
+        "usedSize": 12711012,
+        "totalSize": 14069760,
+        "embedderHeapUsedSize": 2763512,
+        "backingStorageSize": 10423424
+      },
+      "heapAfter": {
+        "usedSize": 15938512,
+        "totalSize": 17477632,
+        "embedderHeapUsedSize": 3264344,
+        "backingStorageSize": 10667656
+      },
+      "cleanup": {
+        "activeSources": 0,
+        "contexts": 0,
+        "canvases": 1,
+        "liveBuffers": 8
+      },
+      "hidden": {
+        "work": {},
+        "commits": 2,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.98286203916201,
+        "medianFrameMs": 16.700000000000728,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "reduced": {
+        "work": {},
+        "commits": 0,
+        "draws": 0,
+        "triangles": 0,
+        "lines": 0,
+        "frames": 42,
+        "fps": 59.99142979561578,
+        "medianFrameMs": 16.700000000000728,
+        "p95FrameMs": 16.700000000000728,
+        "longTaskMs": 0,
+        "longTaskCount": 0,
+        "activeSources": 0,
+        "peakSources": 0,
+        "audioBuffers": 111,
+        "contexts": 0,
+        "liveBuffers": 8
+      },
+      "resources": [
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_0_f2ff3b9dbj-._.js",
+          "decoded": 600,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_next-devtools_index_1c-nsaxph9lhj.js",
+          "decoded": 886632,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom-client_development_1cez4iftj5vi3.js",
+          "decoded": 1052157,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_cjs_react-dom_development_0prz1w05_qyt8.js",
+          "decoded": 16781,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-dom_17mu9nj0_826s._.js",
+          "decoded": 3969,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_1adp0v362lzqk._.js",
+          "decoded": 145463,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_compiled_react-server-dom-turbopack_1tbja8kgax7zd._.js",
+          "decoded": 180807,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_client_1t_nand5-l4ig._.js",
+          "decoded": 925041,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_1vmndtu1i41qi._.js",
+          "decoded": 173070,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_1anvha4rlo79g._.js",
+          "decoded": 1025,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40swc_helpers_cjs_02-aroiot9jsb._.js",
+          "decoded": 2028,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_219uq1sj0q91c._.js",
+          "decoded": 1187,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-tmp_lain-6c-preview-3Prv7i_0t0s_wsal_087._.js",
+          "decoded": 112019,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_next_dist_05gyh2m0vc7uq._.js",
+          "decoded": 64171,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_1-rh74wcka4sw._.js",
+          "decoded": 1570,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_micromark-core-commonmark_dev_lib_20-n3b92m9_kd._.js",
+          "decoded": 340017,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_0ksdmnsy5yg1v._.js",
+          "decoded": 341176,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_0ti2kwmzka7tr._.js",
+          "decoded": 1123320,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsayzyj2p6._.js",
+          "decoded": 16525,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_core_1_a6gydnd75gb.js",
+          "decoded": 1603445,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1-k5rlwyw4kdc.js",
+          "decoded": 854216,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_three_build_three_module_1y3zze5vib6ks.js",
+          "decoded": 104231,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_%40react-three_fiber_dist_0czcym6j4xw22._.js",
+          "decoded": 900878,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_0fjmu552s69l-._.js",
+          "decoded": 51429,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/tmp_lain-6c-preview-3Prv7i_src_components_orb_1tkw1js2fq73o._.js",
+          "decoded": 39576,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/194k_1n7oro4es-czq._.js",
+          "decoded": 223769,
+          "transferred": 300
+        },
+        {
+          "path": "/_next/static/chunks/0uz6_lain-6c-preview-3Prv7i_src_components_chat_highlighted-code_tsx_1whn88is_80vf._.js",
+          "decoded": 9364,
+          "transferred": 300
+        }
+      ],
+      "apiRequests": 2,
+      "errors": []
+    }
+  ]
+}

@@ -76,6 +76,7 @@ export class SpeechSegmenter {
   private count = 0;
   private trailing = false;
   private ended = false;
+  constructor(private readonly limit: number = SPEECH_LIMITS.total) {}
   truncated = false;
   rewritten = false;
   update(markdown: string, final = false) {
@@ -87,7 +88,10 @@ export class SpeechSegmenter {
   next(): string | undefined {
     if (this.ended) return;
     if (this.dirty) {
-      const result = stableWords(parseSpeechMarkdown(this.source), this.source, this.final);
+      // GFM may autolink a URL inside an unfinished Markdown destination. Remove
+      // that pending destination before parsing the completed response.
+      const markdown = this.final ? this.source.replace(/\[([^\]\n]+)\]\([^\)\n]*$/gu, "$1") : this.source;
+      const result = stableWords(parseSpeechMarkdown(markdown), markdown, this.final);
       this.available = result.text.replace(/\s+/gu, " ").trim();
       this.trailing = result.blocked ? /\s$/u.test(result.text) : /\s$/u.test(this.source);
       this.dirty = false;
@@ -98,11 +102,11 @@ export class SpeechSegmenter {
     if (!rest) { if (this.final) this.ended = true; return; }
     const end = speechBoundary(rest, this.final, this.trailing, this.count === 0 && !this.final);
     if (!end) return;
-    let segment = rest.slice(0, end).trim();
+    const segment = rest.slice(0, end).trim();
     if (!segment) return;
     const start = this.available.indexOf(rest, this.cursor);
-    if (start + segment.length > SPEECH_LIMITS.total) {
-      const remaining = rest.slice(0, Math.max(0, SPEECH_LIMITS.total - start));
+    if (start + segment.length > this.limit) {
+      const remaining = rest.slice(0, Math.max(0, this.limit - start));
       const boundary = remaining.lastIndexOf(" ");
       this.truncated = true; this.ended = true;
       return boundary > 0 ? remaining.slice(0, boundary) : undefined;

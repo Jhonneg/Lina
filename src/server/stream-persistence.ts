@@ -1,9 +1,11 @@
 import "server-only";
+import { assertStorageCapacity } from "./abuse/storage";
 import { createHash } from "node:crypto";
 import { and, eq, exists, sql } from "drizzle-orm";
 import { getDatabase } from "./db";
 import { conversations, messages, streamRequests } from "./db/schema";
 import { createConversationRepository } from "./conversations/repository";
+import { UsageError } from "./usage/policy";
 import { RequestError } from "./chat-request";
 import type { PersistedStreamInput } from "./persisted-stream-request";
 
@@ -49,7 +51,7 @@ async function save(tx: Transaction, row: typeof streamRequests.$inferSelect, co
 
 export function createStreamPersistence() {
   return {
-    async begin(sessionId: string, input: PersistedStreamInput): Promise<StreamClaim> {
+    async begin(sessionId: string, input: PersistedStreamInput, beforeCreate?: (tx: Transaction) => Promise<void>): Promise<StreamClaim> {
       const fingerprint = createHash("sha256").update(JSON.stringify({ conversationId: input.conversationId ?? null, messages: input.messages })).digest("hex");
       try {
         return await getDatabase().transaction(async tx => {
@@ -70,6 +72,9 @@ export function createStreamPersistence() {
             }
             return claim(previous.request, previous.content, false);
           }
+          // Reserve capacity for both rows before any billable reservation or write.
+          await assertStorageCapacity(tx, sessionId, { conversations: input.conversationId ? 0 : 1, messages: 2 });
+          await beforeCreate?.(tx);
           const repository = createConversationRepository(() => tx);
           const conversationId = input.conversationId ?? (await repository.create(sessionId))?.id;
           if (!conversationId) throw new RequestError(401, "SESSION_REQUIRED", "A valid session is required.");
@@ -86,7 +91,7 @@ export function createStreamPersistence() {
             staleAt: sql`clock_timestamp() + interval '60 seconds'` }).returning();
           return claim(record, "", true);
         });
-      } catch (error) { if (error instanceof RequestError) throw error; throw unavailable(); }
+      } catch (error) { if (error instanceof RequestError || error instanceof UsageError) throw error; throw unavailable(); }
     },
     async finish(receipt: StreamClaim, content: string, status: Exclude<State, "running">): Promise<void> {
       if (!receipt.isNew) return;
@@ -97,7 +102,7 @@ export function createStreamPersistence() {
           if (!found || found.request.state !== "running" || found.request.assistantMessageId !== receipt.assistantMessageId) throw unavailable();
           await save(tx, found.request, content, status);
         });
-      } catch (error) { if (error instanceof RequestError) throw error; throw unavailable(); }
+      } catch (error) { if (error instanceof RequestError || error instanceof UsageError) throw error; throw unavailable(); }
     },
   };
 }

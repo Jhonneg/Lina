@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { test } from "node:test";
-import { createOpenAIAdapter } from "../../src/server/ai/openai-adapter";
+import { createOpenAIAdapter as makeOpenAIAdapter } from "../../src/server/ai/openai-adapter";
 import { LAIN_PERSONALITY_INSTRUCTIONS, LAIN_PERSONALITY_VERSION } from "../../src/server/ai/personality";
 import { createMockAdapter, MOCK_RESPONSE } from "../../src/server/ai/mock-adapter";
 import { createChatHandler } from "../../src/server/chat-handler";
@@ -104,3 +104,10 @@ test("personality integration preserves deterministic mock output for both paths
   for await (const chunk of adapter.stream(messages, new AbortController().signal)) text += chunk;
   assert.equal(text, MOCK_RESPONSE);
 });
+
+
+// These SDK contract tests always inject a mock transport, never a billable provider.
+function createOpenAIAdapter(...args: Parameters<typeof makeOpenAIAdapter>) {
+  if (!args[1]) throw Error("A mock SDK transport is required.");
+  return { ...makeOpenAIAdapter(...args), billing: undefined };
+}

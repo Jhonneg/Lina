@@ -1,28 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { VoiceView } from "./chat-voice-controller";
+import type { VoiceView } from "./voice-types";
 import styles from "./chat-voice.module.css";
 
-export function ChatVoiceControls({ view, consentOpen, onToggle, onEnable, onConsentCancel, onStop, onVolume }: {
-  view: VoiceView; consentOpen: boolean; onToggle: () => void; onEnable: (consent?: boolean) => void;
-  onConsentCancel: () => void; onStop: () => void; onVolume: (volume: number) => void;
+export function ChatVoiceControls({ view, onToggle, onEnable, onStop, onVolume }: {
+  view: VoiceView; onToggle: () => void; onEnable: () => void;
+  onStop: () => void; onVolume: (volume: number) => void;
 }) {
-  const details = useRef<HTMLDetailsElement>(null), dialog = useRef<HTMLDialogElement>(null), cancel = useRef<HTMLButtonElement>(null);
-  const opener = useRef<HTMLElement | null>(null);
+  const details = useRef<HTMLDetailsElement>(null);
   const busy = ["activating", "loading", "generating", "playing", "buffering"].includes(view.state);
   useEffect(() => {
-    const node = dialog.current;
-    if (!node) return;
-    if (consentOpen && !node.open) {
-      opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      node.showModal(); cancel.current?.focus();
-    } else if (!consentOpen && node.open) {
-      node.close(); opener.current?.focus({ preventScroll: true });
-    }
-  }, [consentOpen]);
-  useEffect(() => {
-    const dismiss = (event: PointerEvent) => { if (dialog.current?.open) return; if (event.target instanceof Node && !details.current?.contains(event.target)) details.current?.removeAttribute("open"); };
+    const dismiss = (event: PointerEvent) => { if (event.target instanceof Node && !details.current?.contains(event.target)) details.current?.removeAttribute("open"); };
     document.addEventListener("pointerdown", dismiss);
     return () => document.removeEventListener("pointerdown", dismiss);
   }, []);
@@ -42,14 +31,9 @@ export function ChatVoiceControls({ view, consentOpen, onToggle, onEnable, onCon
         {view.error && <p role="alert">{view.error} Text chat is still available.</p>}
         {view.notice && <p role="status">{view.notice}</p>}
         {!view.enabled && view.preferredEnabled && <p>Previously enabled. Enable voice again to allow playback this visit.</p>}
-        <p>Nicole speaks English. Code blocks are skipped.</p>
+        <p>AI-generated cloud speech · Shimmer · Lain robo preset. Enabling voice sends completed replies to OpenAI for paid narration. Up to 800 spoken characters; code blocks are skipped. Available in local development only.</p>
       </section>
     </details>
-    <dialog ref={dialog} className={styles.consent} aria-labelledby="voice-consent-title" onCancel={event => { event.preventDefault(); onConsentCancel(); }}>
-      <h2 id="voice-consent-title">Enable Lain’s voice?</h2>
-      <p>The first spoken response downloads approximately 93 MB of model data plus runtime assets. Speech is generated on your device using Nicole’s English voice.</p>
-      <p>Your browser may cache these files for later visits. While enabled, new replies are read progressively when playback is permitted. You can also read previous replies individually.</p>
-      <div><button type="button" onClick={() => onEnable(true)}>Allow download and enable voice</button><button ref={cancel} type="button" onClick={onConsentCancel}>Cancel</button></div>
-    </dialog>
+
   </div>;
 }

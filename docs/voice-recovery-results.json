@@ -1,0 +1,262 @@
+{
+  "timing": {
+    "coldFirstSourceMs": 6175.800000000745,
+    "coldFirstSignalMs": 6409.20000000298,
+    "gapsMs": [
+      1425.3999999985099,
+      7286.599999997765
+    ],
+    "prefetchOverlapMs": 2260.89999999851,
+    "warmManualSignalMs": 7348.20000000298
+  },
+  "diagnostics": [
+    {
+      "manual": false,
+      "event": "job-started",
+      "at": 6113.10000000149
+    },
+    {
+      "index": 1,
+      "characters": 18,
+      "elapsedMs": 106.09999999776483,
+      "depth": 1,
+      "event": "segment-eligible",
+      "at": 6219.199999999255
+    },
+    {
+      "characters": 18,
+      "queuedAudio": 0,
+      "event": "preparation-started",
+      "at": 6219.300000000745
+    },
+    {
+      "restart": false,
+      "event": "worker-started",
+      "at": 6219.60000000149
+    },
+    {
+      "index": 2,
+      "characters": 10,
+      "elapsedMs": 411.30000000074506,
+      "depth": 1,
+      "event": "segment-eligible",
+      "at": 6524.400000002235
+    },
+    {
+      "initializationMs": 1531.8999999985099,
+      "inferenceMs": 4046.5,
+      "audioSeconds": 2.025,
+      "rtf": 1.9982716049382716,
+      "reused": false,
+      "event": "synthesis",
+      "at": 11810.400000002235
+    },
+    {
+      "elapsedMs": 6088.599999997765,
+      "audioSeconds": 2.025,
+      "event": "prepared",
+      "at": 12308
+    },
+    {
+      "index": 1,
+      "elapsedMs": 6195.099999997765,
+      "waitMs": 0,
+      "event": "segment-scheduled",
+      "at": 12308.199999999255
+    },
+    {
+      "characters": 10,
+      "queuedAudio": 1,
+      "event": "preparation-started",
+      "at": 12308.300000000745
+    },
+    {
+      "delayMs": 0,
+      "durationMs": 2167.470323134543,
+      "depth": 1,
+      "event": "playback-scheduled",
+      "at": 12394
+    },
+    {
+      "event": "playback-ended",
+      "at": 14569.10000000149
+    },
+    {
+      "completed": 1,
+      "waitingForInference": true,
+      "event": "queue-underrun",
+      "at": 14569.199999999255
+    },
+    {
+      "initializationMs": 0.09999999776482582,
+      "inferenceMs": 3677,
+      "audioSeconds": 1.85,
+      "rtf": 1.9875675675675675,
+      "reused": true,
+      "event": "synthesis",
+      "at": 15987.10000000149
+    },
+    {
+      "elapsedMs": 3681,
+      "audioSeconds": 1.85,
+      "event": "prepared",
+      "at": 15989.400000002235
+    },
+    {
+      "index": 2,
+      "elapsedMs": 9876.300000000745,
+      "waitMs": 1420.2000000029802,
+      "event": "segment-scheduled",
+      "at": 15989.400000002235
+    },
+    {
+      "delayMs": 0,
+      "durationMs": 1979.9099671906913,
+      "depth": 1,
+      "event": "playback-scheduled",
+      "at": 15994.800000000745
+    },
+    {
+      "index": 3,
+      "characters": 37,
+      "elapsedMs": 9898.699999999255,
+      "depth": 1,
+      "event": "segment-eligible",
+      "at": 16011.800000000745
+    },
+    {
+      "characters": 37,
+      "queuedAudio": 1,
+      "event": "preparation-started",
+      "at": 16011.800000000745
+    },
+    {
+      "event": "playback-ended",
+      "at": 17971.900000002235
+    },
+    {
+      "completed": 2,
+      "waitingForInference": true,
+      "event": "queue-underrun",
+      "at": 17971.900000002235
+    },
+    {
+      "initializationMs": 0,
+      "inferenceMs": 9225.39999999851,
+      "audioSeconds": 4.4,
+      "rtf": 2.0966818181814797,
+      "reused": true,
+      "event": "synthesis",
+      "at": 25249.5
+    },
+    {
+      "elapsedMs": 9242.29999999702,
+      "audioSeconds": 4.4,
+      "event": "prepared",
+      "at": 25254.300000000745
+    },
+    {
+      "index": 3,
+      "elapsedMs": 19141.199999999255,
+      "waitMs": 7282.39999999851,
+      "event": "segment-scheduled",
+      "at": 25254.300000000745
+    },
+    {
+      "delayMs": 0,
+      "durationMs": 4712.932296658238,
+      "depth": 1,
+      "event": "playback-scheduled",
+      "at": 25258.5
+    },
+    {
+      "event": "playback-ended",
+      "at": 29973.10000000149
+    },
+    {
+      "eligible": 3,
+      "played": 3,
+      "completed": 3,
+      "truncated": false,
+      "event": "job-completed",
+      "at": 29973.10000000149
+    },
+    {
+      "manual": true,
+      "event": "job-started",
+      "at": 30297.300000000745
+    },
+    {
+      "index": 1,
+      "characters": 29,
+      "elapsedMs": 0.8000000007450581,
+      "depth": 1,
+      "event": "segment-eligible",
+      "at": 30298.10000000149
+    },
+    {
+      "index": 2,
+      "characters": 37,
+      "elapsedMs": 0.8999999985098839,
+      "depth": 2,
+      "event": "segment-eligible",
+      "at": 30298.199999999255
+    },
+    {
+      "characters": 29,
+      "queuedAudio": 0,
+      "event": "preparation-started",
+      "at": 30298.199999999255
+    },
+    {
+      "initializationMs": 0,
+      "inferenceMs": 7090.10000000149,
+      "audioSeconds": 3.375,
+      "rtf": 2.100770370370812,
+      "reused": true,
+      "event": "synthesis",
+      "at": 37391
+    },
+    {
+      "elapsedMs": 7097.10000000149,
+      "audioSeconds": 3.375,
+      "event": "prepared",
+      "at": 37395.400000002235
+    },
+    {
+      "index": 1,
+      "elapsedMs": 7098.10000000149,
+      "waitMs": 0,
+      "event": "segment-scheduled",
+      "at": 37395.400000002235
+    },
+    {
+      "characters": 37,
+      "queuedAudio": 1,
+      "event": "preparation-started",
+      "at": 37395.5
+    },
+    {
+      "delayMs": 0,
+      "durationMs": 3614.3644975585366,
+      "depth": 1,
+      "event": "playback-scheduled",
+      "at": 37400.10000000149
+    },
+    {
+      "eligible": 2,
+      "played": 1,
+      "completed": 0,
+      "event": "job-cancelled",
+      "at": 37651.400000002235
+    },
+    {
+      "event": "inference-cancelled",
+      "at": 37652
+    },
+    {
+      "event": "worker-terminated",
+      "at": 37652
+    }
+  ]
+}
